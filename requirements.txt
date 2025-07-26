@@ -3,3 +3,6 @@ uvicorn
 sqlmodel
 pyodbc
 pydantic
+fastapi
+uvicorn
+gunicorn
