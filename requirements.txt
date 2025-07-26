@@ -5,3 +5,10 @@ pyodbc
 pydantic
 gunicorn
 pandas
+datetime 
+pydantic
+sqlmodel
+typing
+sqlalchemy
+urllib.parse
+json
