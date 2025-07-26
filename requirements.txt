@@ -4,3 +4,4 @@ sqlmodel
 pyodbc
 pydantic
 gunicorn
+pandas
