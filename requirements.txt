@@ -1,14 +1,8 @@
 fastapi
 uvicorn
-sqlmodel
-pyodbc
-pydantic
 gunicorn
-pandas
-datetime 
-pydantic
 sqlmodel
-typing
 sqlalchemy
-urllib.parse
-json
+pydantic
+pandas
+pyodbc
