@@ -146,7 +146,7 @@ def calcul_commun (zone , masque , surface_PV , prod_solaire_existante, pv_saisi
 
 
 
-def repartition_usages(calcul_conso_chauffage , conso_elec , rendement_production , Consommation_ventilation , Conso_specifique, Conso_eclairage,Consommations_annuelles_totales_initiales, usage_thermique,zone_climatique , surface ,  typology ,besoins_ECS , temperature_retenue , type_prod_ecs , jours_ouvrés , rendement , E_T_principal , E_T_appoint , conso_principal_1_convertie , conso_principal_2_convertie , Energie_ECS , systeme_chauffage , zone , masque , surface_PV , prod_solaire_existante, pv_saisie , thermique_saisie , surface_thermique): 
+def repartition_usages(slug_principal , slug_appoint , calcul_conso_chauffage , conso_elec , rendement_production , Consommation_ventilation , Conso_specifique, Conso_eclairage,Consommations_annuelles_totales_initiales, usage_thermique,zone_climatique , surface ,  typology ,besoins_ECS , temperature_retenue , type_prod_ecs , jours_ouvrés , rendement , E_T_principal , E_T_appoint , conso_principal_1_convertie , conso_principal_2_convertie , Energie_ECS , systeme_chauffage , zone , masque , surface_PV , prod_solaire_existante, pv_saisie , thermique_saisie , surface_thermique): 
     P_EnR_locale_solaire_existante  , productible_thermique , productible_PV = calcul_commun (zone , masque , surface_PV , prod_solaire_existante, pv_saisie , thermique_saisie , surface_thermique)
 ##conso_surfacique_clim
     if usage_thermique in ["chauffage + clim + ecs", "chauffage + clim"]:
@@ -408,10 +408,10 @@ def repartition_usages(calcul_conso_chauffage , conso_elec , rendement_productio
     taux_enr_initial = taux * 100
 
     conso_energitiques = [
-    {"Electricité": round(float(ratio_elec) * 100, 2)},
-    {E_T_principal: round(float(ratio_ET1) * 100, 2)},
-    {E_T_appoint: round(float(ratio_ET2) * 100, 2)},
-    {"total": round(float(total_ratio) * 100, 2)}
+    {"elec": round(float(ratio_elec) * 100, 2)},
+    {slug_principal: round(float(ratio_ET1) * 100, 2)},
+    {slug_appoint: round(float(ratio_ET2) * 100, 2)},
+    {"total_cons_energ": round(float(total_ratio) * 100, 2)}
 ]
     
     usages_energitiques = [
@@ -419,7 +419,7 @@ def repartition_usages(calcul_conso_chauffage , conso_elec , rendement_productio
     {"climatisation": round(float(ratio_climatisation) , 2)},
     {"ecs": round(float(ratio_ecs) , 2)},
     {"autre_usages": round(float(ratio_autres_usages) , 2)},
-    {"total": round(float(ratio_total_final) , 2)}
+    {"total_usages_energ": round(float(ratio_total_final) , 2)}
 ]
 
 
@@ -440,13 +440,13 @@ def repartition_usages(calcul_conso_chauffage , conso_elec , rendement_productio
     return conso_surfacique_clim , total_ECS , besoin_60 , perte_bouclage , conso_E_ECS , taux_enr_initial , Prod_enr_bois , conso_elec_PAC , usages_energitiques , conso_energitiques , energie_PAC_delivre
 
 
-def calcul_Pv (type_toiture ,conso_elec , surface , slugs_energie,  strategie , E_T_principal , E_T_appoint , reseau_principal , reseau_appoint , taux_enr_principal , taux_enr_appoint , encombrement_toiture , conso_principal_1_convertie,conso_principal_2_convertie , surface_toiture , surface_parking , zone , masque ,systeme_chauffage , typologie ,  surface_PV , prod_solaire_existante, pv_saisie , thermique_saisie , surface_thermique , calcul_conso_chauffage , rendement_production , Consommation_ventilation , Conso_specifique, Conso_eclairage ,Consommations_annuelles_totales_initiales , Energie_ECS ,  rendement , jours_ouvrés ,besoins_ECS , temperature_retenue , type_prod_ecs , usage_thermique,zone_climatique  ,  typology  ) : 
+def calcul_Pv (slug_principal , slug_appoint ,type_toiture ,conso_elec , surface , slugs_energie,  strategie , E_T_principal , E_T_appoint , reseau_principal , reseau_appoint , taux_enr_principal , taux_enr_appoint , encombrement_toiture , conso_principal_1_convertie,conso_principal_2_convertie , surface_toiture , surface_parking , zone , masque ,systeme_chauffage , typologie ,  surface_PV , prod_solaire_existante, pv_saisie , thermique_saisie , surface_thermique , calcul_conso_chauffage , rendement_production , Consommation_ventilation , Conso_specifique, Conso_eclairage ,Consommations_annuelles_totales_initiales , Energie_ECS ,  rendement , jours_ouvrés ,besoins_ECS , temperature_retenue , type_prod_ecs , usage_thermique,zone_climatique  ,  typology  ) : 
     hypothese_puissance = 180
     taux_baisse = Baisse_conso_besoins.get(strategie, 0)  
 
     P_EnR_locale_solaire_existante  , productible_thermique , productible_PV = calcul_commun(zone , masque , surface_PV , prod_solaire_existante, pv_saisie , thermique_saisie , surface_thermique)
    # conso_surfacique_clim , besoin_60 , perte_bouclage , conso_E_ECS , taux_enr_initial , Prod_enr_bois , conso_elec_PAC , usages_energitiques , conso_energitiques , energie_PAC_delivre = 
-    conso_surfacique_clim , total_ECS , besoin_60 , perte_bouclage , conso_E_ECS , taux_enr_initial , Prod_enr_bois , conso_elec_PAC , usages_energitiques , conso_energitiques , energie_PAC_delivre = repartition_usages(calcul_conso_chauffage , conso_elec , rendement_production , Consommation_ventilation , Conso_specifique, Conso_eclairage,Consommations_annuelles_totales_initiales, usage_thermique,zone_climatique , surface ,  typology ,besoins_ECS , temperature_retenue , type_prod_ecs , jours_ouvrés , rendement , E_T_principal , E_T_appoint , conso_principal_1_convertie , conso_principal_2_convertie , Energie_ECS , systeme_chauffage , zone , masque , surface_PV , prod_solaire_existante, pv_saisie , thermique_saisie , surface_thermique)
+    conso_surfacique_clim , total_ECS , besoin_60 , perte_bouclage , conso_E_ECS , taux_enr_initial , Prod_enr_bois , conso_elec_PAC , usages_energitiques , conso_energitiques , energie_PAC_delivre = repartition_usages(slug_principal , slug_appoint , calcul_conso_chauffage , conso_elec , rendement_production , Consommation_ventilation , Conso_specifique, Conso_eclairage,Consommations_annuelles_totales_initiales, usage_thermique,zone_climatique , surface ,  typology ,besoins_ECS , temperature_retenue , type_prod_ecs , jours_ouvrés , rendement , E_T_principal , E_T_appoint , conso_principal_1_convertie , conso_principal_2_convertie , Energie_ECS , systeme_chauffage , zone , masque , surface_PV , prod_solaire_existante, pv_saisie , thermique_saisie , surface_thermique)
   #  print("productible photovo")
   #  print(productible_PV)
 
@@ -645,17 +645,17 @@ def calcul_Pv (type_toiture ,conso_elec , surface , slugs_energie,  strategie , 
 
 
 
-def calcul_thermique (type_toiture , rendement ,conso_elec , strategie , E_T_principal , E_T_appoint , surface , slugs_energie , taux_enr_principal , taux_enr_appoint , reseau_principal , reseau_appoint ,  conso_principal_1_convertie , conso_principal_2_convertie   , zone , masque , surface_PV , prod_solaire_existante, pv_saisie , thermique_saisie , surface_thermique , calcul_conso_chauffage, rendement_production , Consommation_ventilation , Conso_specifique, Conso_eclairage,Consommations_annuelles_totales_initiales, Energie_ECS , systeme_chauffage , encombrement_toiture ,usage_thermique,zone_climatique , surface_parking ,  surface_toiture , typology ,besoins_ECS , temperature_retenue , typologie ,  type_prod_ecs , jours_ouvrés  ) : 
+def calcul_thermique (slug_principal , slug_appoint , type_toiture , rendement ,conso_elec , strategie , E_T_principal , E_T_appoint , surface , slugs_energie , taux_enr_principal , taux_enr_appoint , reseau_principal , reseau_appoint ,  conso_principal_1_convertie , conso_principal_2_convertie   , zone , masque , surface_PV , prod_solaire_existante, pv_saisie , thermique_saisie , surface_thermique , calcul_conso_chauffage, rendement_production , Consommation_ventilation , Conso_specifique, Conso_eclairage,Consommations_annuelles_totales_initiales, Energie_ECS , systeme_chauffage , encombrement_toiture ,usage_thermique,zone_climatique , surface_parking ,  surface_toiture , typology ,besoins_ECS , temperature_retenue , typologie ,  type_prod_ecs , jours_ouvrés  ) : 
     hypothese_rendement_st = 550
     hypothèses_volume_ST = 50 
     Hypothese_surface_LT_ST = 4
     hypothese_taux_couverture = 60 /100 
     taux_baisse = Baisse_conso_besoins.get(strategie, 0)  
 
-    conso_surfacique_clim , total_ECS , besoin_60 , perte_bouclage , conso_E_ECS , taux_enr_initial , Prod_enr_bois , conso_elec_PAC , usages_energitiques , conso_energitiques , energie_PAC_delivre = repartition_usages(calcul_conso_chauffage , conso_elec , rendement_production , Consommation_ventilation , Conso_specifique, Conso_eclairage,Consommations_annuelles_totales_initiales, usage_thermique,zone_climatique , surface ,  typology ,besoins_ECS , temperature_retenue , type_prod_ecs , jours_ouvrés , rendement , E_T_principal , E_T_appoint , conso_principal_1_convertie , conso_principal_2_convertie , Energie_ECS , systeme_chauffage , zone , masque , surface_PV , prod_solaire_existante, pv_saisie , thermique_saisie , surface_thermique)
+    conso_surfacique_clim , total_ECS , besoin_60 , perte_bouclage , conso_E_ECS , taux_enr_initial , Prod_enr_bois , conso_elec_PAC , usages_energitiques , conso_energitiques , energie_PAC_delivre = repartition_usages(slug_principal , slug_appoint , calcul_conso_chauffage , conso_elec , rendement_production , Consommation_ventilation , Conso_specifique, Conso_eclairage,Consommations_annuelles_totales_initiales, usage_thermique,zone_climatique , surface ,  typology ,besoins_ECS , temperature_retenue , type_prod_ecs , jours_ouvrés , rendement , E_T_principal , E_T_appoint , conso_principal_1_convertie , conso_principal_2_convertie , Energie_ECS , systeme_chauffage , zone , masque , surface_PV , prod_solaire_existante, pv_saisie , thermique_saisie , surface_thermique)
 
     P_EnR_locale_solaire_existante  , productible_solaire_thermique , productible_PV  = calcul_commun(zone , masque , surface_PV , prod_solaire_existante, pv_saisie , thermique_saisie , surface_thermique)
-    Puissance_pv_retenue  ,ratio_conso_totale_projet_pv ,  enr_local_pv , enr_local_max_pv , enr_globale , enr_globale_scenario_max  ,   total_impact_pv, total_cout_pv , conso_thermique_appoint_proj , surface_pv_toiture_max =  calcul_Pv (type_toiture ,conso_elec , surface , slugs_energie,  strategie , E_T_principal , E_T_appoint , reseau_principal , reseau_appoint , taux_enr_principal , taux_enr_appoint , encombrement_toiture , conso_principal_1_convertie,conso_principal_2_convertie , surface_toiture , surface_parking , zone , masque ,systeme_chauffage , typologie ,  surface_PV , prod_solaire_existante, pv_saisie , thermique_saisie , surface_thermique , calcul_conso_chauffage , rendement_production , Consommation_ventilation , Conso_specifique, Conso_eclairage ,Consommations_annuelles_totales_initiales , Energie_ECS ,  rendement , jours_ouvrés ,besoins_ECS , temperature_retenue , type_prod_ecs , usage_thermique,zone_climatique  ,  typology  ) 
+    Puissance_pv_retenue  ,ratio_conso_totale_projet_pv ,  enr_local_pv , enr_local_max_pv , enr_globale , enr_globale_scenario_max  ,   total_impact_pv, total_cout_pv , conso_thermique_appoint_proj , surface_pv_toiture_max =  calcul_Pv (slug_principal , slug_appoint ,type_toiture ,conso_elec , surface , slugs_energie,  strategie , E_T_principal , E_T_appoint , reseau_principal , reseau_appoint , taux_enr_principal , taux_enr_appoint , encombrement_toiture , conso_principal_1_convertie,conso_principal_2_convertie , surface_toiture , surface_parking , zone , masque ,systeme_chauffage , typologie ,  surface_PV , prod_solaire_existante, pv_saisie , thermique_saisie , surface_thermique , calcul_conso_chauffage , rendement_production , Consommation_ventilation , Conso_specifique, Conso_eclairage ,Consommations_annuelles_totales_initiales , Energie_ECS ,  rendement , jours_ouvrés ,besoins_ECS , temperature_retenue , type_prod_ecs , usage_thermique,zone_climatique  ,  typology  ) 
 
 
 ##surface solaire thermique max
@@ -788,16 +788,16 @@ def calcul_thermique (type_toiture , rendement ,conso_elec , strategie , E_T_pri
 
 ####""----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#######
 
-def calcul_hybride(type_toiture , rendement  , conso_elec , slugs_energie , strategie , E_T_principal , E_T_appoint ,  surface , taux_enr_principal , reseau_principal , reseau_appoint , taux_enr_appoint ,  conso_principal_1_convertie , conso_principal_2_convertie , calcul_conso_chauffage ,zone , masque , surface_PV , prod_solaire_existante, pv_saisie , thermique_saisie , surface_thermique ,  rendement_production , Consommation_ventilation , Conso_specifique, Conso_eclairage,Consommations_annuelles_totales_initiales, typology ,besoins_ECS , encombrement_toiture, temperature_retenue , type_prod_ecs , jours_ouvrés ,  usage_thermique,zone_climatique , surface_toiture , surface_parking , typologie, Energie_ECS , systeme_chauffage ) :
+def calcul_hybride(slug_principal , slug_appoint ,type_toiture , rendement  , conso_elec , slugs_energie , strategie , E_T_principal , E_T_appoint ,  surface , taux_enr_principal , reseau_principal , reseau_appoint , taux_enr_appoint ,  conso_principal_1_convertie , conso_principal_2_convertie , calcul_conso_chauffage ,zone , masque , surface_PV , prod_solaire_existante, pv_saisie , thermique_saisie , surface_thermique ,  rendement_production , Consommation_ventilation , Conso_specifique, Conso_eclairage,Consommations_annuelles_totales_initiales, typology ,besoins_ECS , encombrement_toiture, temperature_retenue , type_prod_ecs , jours_ouvrés ,  usage_thermique,zone_climatique , surface_toiture , surface_parking , typologie, Energie_ECS , systeme_chauffage ) :
     #P_EnR_locale_solaire_existante  , productible_solaire_thermique , productible_PV = calcul_commun
     P_EnR_locale_solaire_existante  , productible_solaire_thermique , productible_PV  = calcul_commun(zone , masque , surface_PV , prod_solaire_existante, pv_saisie , thermique_saisie , surface_thermique)
 
-    conso_surfacique_clim , total_ECS , besoin_60 , perte_bouclage , conso_E_ECS , taux_enr_initial , Prod_enr_bois , conso_elec_PAC , usages_energitiques , conso_energitiques , energie_PAC_delivre = repartition_usages(calcul_conso_chauffage , conso_elec , rendement_production , Consommation_ventilation , Conso_specifique, Conso_eclairage,Consommations_annuelles_totales_initiales, usage_thermique,zone_climatique , surface ,  typology ,besoins_ECS , temperature_retenue , type_prod_ecs , jours_ouvrés , rendement , E_T_principal , E_T_appoint , conso_principal_1_convertie , conso_principal_2_convertie , Energie_ECS , systeme_chauffage , zone , masque , surface_PV , prod_solaire_existante, pv_saisie , thermique_saisie , surface_thermique)
+    conso_surfacique_clim , total_ECS , besoin_60 , perte_bouclage , conso_E_ECS , taux_enr_initial , Prod_enr_bois , conso_elec_PAC , usages_energitiques , conso_energitiques , energie_PAC_delivre = repartition_usages(slug_principal , slug_appoint ,calcul_conso_chauffage , conso_elec , rendement_production , Consommation_ventilation , Conso_specifique, Conso_eclairage,Consommations_annuelles_totales_initiales, usage_thermique,zone_climatique , surface ,  typology ,besoins_ECS , temperature_retenue , type_prod_ecs , jours_ouvrés , rendement , E_T_principal , E_T_appoint , conso_principal_1_convertie , conso_principal_2_convertie , Energie_ECS , systeme_chauffage , zone , masque , surface_PV , prod_solaire_existante, pv_saisie , thermique_saisie , surface_thermique)
 
     taux_baisse = Baisse_conso_besoins.get(strategie, 0)  
 
 
-    Puissance_pv_retenue  ,ratio_conso_totale_projet_pv ,  enr_local_pv , enr_local_max_pv , enr_globale , enr_globale_scenario_max  ,   total_impact_pv, total_cout_pv , conso_thermique_appoint_proj , surface_pv_toiture_max =  calcul_Pv (type_toiture ,conso_elec , surface , slugs_energie,  strategie , E_T_principal , E_T_appoint , reseau_principal , reseau_appoint , taux_enr_principal , taux_enr_appoint , encombrement_toiture , conso_principal_1_convertie,conso_principal_2_convertie , surface_toiture , surface_parking , zone , masque ,systeme_chauffage , typologie ,  surface_PV , prod_solaire_existante, pv_saisie , thermique_saisie , surface_thermique , calcul_conso_chauffage , rendement_production , Consommation_ventilation , Conso_specifique, Conso_eclairage ,Consommations_annuelles_totales_initiales , Energie_ECS ,  rendement , jours_ouvrés ,besoins_ECS , temperature_retenue , type_prod_ecs , usage_thermique,zone_climatique  ,  typology  ) 
+    Puissance_pv_retenue  ,ratio_conso_totale_projet_pv ,  enr_local_pv , enr_local_max_pv , enr_globale , enr_globale_scenario_max  ,   total_impact_pv, total_cout_pv , conso_thermique_appoint_proj , surface_pv_toiture_max =  calcul_Pv (slug_principal , slug_appoint , type_toiture ,conso_elec , surface , slugs_energie,  strategie , E_T_principal , E_T_appoint , reseau_principal , reseau_appoint , taux_enr_principal , taux_enr_appoint , encombrement_toiture , conso_principal_1_convertie,conso_principal_2_convertie , surface_toiture , surface_parking , zone , masque ,systeme_chauffage , typologie ,  surface_PV , prod_solaire_existante, pv_saisie , thermique_saisie , surface_thermique , calcul_conso_chauffage , rendement_production , Consommation_ventilation , Conso_specifique, Conso_eclairage ,Consommations_annuelles_totales_initiales , Energie_ECS ,  rendement , jours_ouvrés ,besoins_ECS , temperature_retenue , type_prod_ecs , usage_thermique,zone_climatique  ,  typology  ) 
 
 
     Hypotheses_puissance_PV_hybride = 425/(1.899 * 1.096)
@@ -1042,20 +1042,3 @@ def faisabilite( type_toiture, situation, zone_administrative1):
 
 
  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
