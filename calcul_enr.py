@@ -210,8 +210,8 @@ class ProjetCalcul:
     def run(self):
         self.donnees_saisie = load_donnees_saisie(self.id_projet)
 
-        slug_principal = self.donnees_saisie["e_t_principal"]
-        slug_appoint = self.donnees_saisie["e_t_appoint"]
+        self.slug_principal = self.donnees_saisie["e_t_principal"]
+        self.slug_appoint = self.donnees_saisie["e_t_appoint"]
         reseau_principal = self.donnees_saisie.get("reseau_principal")
         reseau_appoint = self.donnees_saisie.get("reseau_appoint")
         prod_ecs_slug = self.donnees_saisie.get("type_production_ecs")  
@@ -230,8 +230,8 @@ class ProjetCalcul:
 
 
     # 2. Mapper vers libellés
-        E_T_principal = SLUG_TO_ENERGIE.get(slug_principal)
-        E_T_appoint = SLUG_TO_ENERGIE.get(slug_appoint)
+        E_T_principal = SLUG_TO_ENERGIE.get(self.slug_principal)
+        E_T_appoint = SLUG_TO_ENERGIE.get(self.slug_appoint)
         self.type_prod_ecs = SLUG_TO_PRODUCTION_ECS.get(prod_ecs_slug)
 
         if not E_T_principal or not E_T_appoint:
@@ -250,7 +250,7 @@ class ProjetCalcul:
         self.Consommations_annuelles_totales_initiales = conso_elec + conso_principal_1_convertie + conso_principal_2_convertie 
         self.Consommations_annuelles_totales_initiales_ratio = self.Consommations_annuelles_totales_initiales / surface
         consos = [conso_principal_1_convertie ,conso_principal_2_convertie , conso_elec ]
-        self.energis = [slug_principal , slug_appoint , "elec"]
+        self.energis = [self.slug_principal , self.slug_appoint , "elec"]
         self.total_impact, self.total_cout = calcul_carbone_et_cout_sql(self.energis , consos ,reseau_principal , reseau_appoint )
 
        
@@ -259,7 +259,7 @@ class ProjetCalcul:
        # print(self.encombrement_toiture_slug)
         
         
-        self.conso_surfacique_clim , self.total_ECS , self.besoin_60 , self.perte_bouclage , self.conso_E_ECS , self.taux_enr_initial , self.Prod_enr_bois , self.conso_elec_PAC , self.usages_energitiques1 , self.conso_energitiques1 , self.energie_PAC_delivre = repartition_usages(self.calcul_conso_chauffage , self.conso_elec , self.rendement_production , self.Consommation_ventilation , self.Conso_specifique, self.Conso_eclairage,self.Consommations_annuelles_totales_initiales, self.usage_thermique,self.zone_climatique , self.surface ,  self.typology ,self.besoins_ecs_40 , self.temperature_retenue , self.type_prod_ecs , self.jours_ouvrés , self.rendement , E_T_principal , E_T_appoint , conso_principal_1_convertie , conso_principal_2_convertie , self.Energie_ecs , self.systeme_chauffage , self.zone , self.masque , self.surface_pv , self.prod_solaire_existante, self.pv_saisie , self.thermique_saisie , self.surface_thermique)
+        self.conso_surfacique_clim , self.total_ECS , self.besoin_60 , self.perte_bouclage , self.conso_E_ECS , self.taux_enr_initial , self.Prod_enr_bois , self.conso_elec_PAC , self.usages_energitiques1 , self.conso_energitiques1 , self.energie_PAC_delivre = repartition_usages(self.slug_principal , self.slug_appoint ,self.calcul_conso_chauffage , self.conso_elec , self.rendement_production , self.Consommation_ventilation , self.Conso_specifique, self.Conso_eclairage,self.Consommations_annuelles_totales_initiales, self.usage_thermique,self.zone_climatique , self.surface ,  self.typology ,self.besoins_ecs_40 , self.temperature_retenue , self.type_prod_ecs , self.jours_ouvrés , self.rendement , E_T_principal , E_T_appoint , conso_principal_1_convertie , conso_principal_2_convertie , self.Energie_ecs , self.systeme_chauffage , self.zone , self.masque , self.surface_pv , self.prod_solaire_existante, self.pv_saisie , self.thermique_saisie , self.surface_thermique)
         #print(f"les ration sont {ratio_elec}")
         print("type usages =", type(self.usages_energitiques1))
         print("type conso =", type(self.conso_energitiques1))
@@ -275,16 +275,19 @@ class ProjetCalcul:
         print("encombrement_toiture =", self.encombrement_toiture)
         print("typologie =", self.typologie)
 
-        self.Puissance_pv_retenue  ,self.ratio_conso_totale_projet_pv ,  self.enr_local_pv , self.enr_local_max_pv , self.enr_globale , self.enr_globale_scenario_max  ,   self.total_impact_pv, self.total_cout_pv , self.conso_thermique_appoint_proj , self.surface_pv_toiture_max = calcul_Pv (self.type_toiture ,self.conso_elec , self.surface , self.energis,  self.strategie , E_T_principal , E_T_appoint , reseau_principal , reseau_appoint , self.taux_enr_principal , self.taux_enr_appoint , self.encombrement_toiture , conso_principal_1_convertie,conso_principal_2_convertie , self.surface_toiture , self.surface_parking , self.zone , self.masque ,self.systeme_chauffage , self.typologie ,  self.surface_pv , self.prod_solaire_existante, self.pv_saisie , self.thermique_saisie , self.surface_thermique , self.calcul_conso_chauffage , self.rendement_production , self.Consommation_ventilation , self.Conso_specifique, self.Conso_eclairage ,self.Consommations_annuelles_totales_initiales , self.Energie_ecs ,  self.rendement , self.jours_ouvrés ,self.besoins_ecs_40 , self.temperature_retenue , self.type_prod_ecs , self.usage_thermique, self.zone_climatique , self.typology  )  
+        self.Puissance_pv_retenue  ,self.ratio_conso_totale_projet_pv ,  self.enr_local_pv , self.enr_local_max_pv , self.enr_globale , self.enr_globale_scenario_max  ,   self.total_impact_pv, self.total_cout_pv , self.conso_thermique_appoint_proj , self.surface_pv_toiture_max = calcul_Pv (self.slug_principal , self.slug_appoint , self.type_toiture ,self.conso_elec , self.surface , self.energis,  self.strategie , E_T_principal , E_T_appoint , reseau_principal , reseau_appoint , self.taux_enr_principal , self.taux_enr_appoint , self.encombrement_toiture , conso_principal_1_convertie,conso_principal_2_convertie , self.surface_toiture , self.surface_parking , self.zone , self.masque ,self.systeme_chauffage , self.typologie ,  self.surface_pv , self.prod_solaire_existante, self.pv_saisie , self.thermique_saisie , self.surface_thermique , self.calcul_conso_chauffage , self.rendement_production , self.Consommation_ventilation , self.Conso_specifique, self.Conso_eclairage ,self.Consommations_annuelles_totales_initiales , self.Energie_ecs ,  self.rendement , self.jours_ouvrés ,self.besoins_ecs_40 , self.temperature_retenue , self.type_prod_ecs , self.usage_thermique, self.zone_climatique , self.typology  )  
         self.pv_resultat = [ self.Puissance_pv_retenue  ,self.ratio_conso_totale_projet_pv ,  self.enr_local_pv , self.enr_local_max_pv , self.enr_globale , self.enr_globale_scenario_max  ,   self.total_impact_pv,self.total_cout_pv , self.conso_thermique_appoint_proj , self.surface_pv_toiture_max
 ]
-        faisabilite( self.type_toiture, self.situation, self.zone_administrative1)
-        self.surface_solaire_thermique_retenue ,  self.ratio_conso_totale_proj_thermique , self.taux_ENR_Local_thermique , self.taux_ENR_Local_thermique_max , self.enr_globale_thermique , self.enr_globale_thermique_scenario_max ,  self.total_impact_thermique ,    self.total_cout_thermique =calcul_thermique (self.type_toiture , self.rendement ,conso_elec , self.strategie , E_T_principal , E_T_appoint , self.surface , self.energis , self.taux_enr_principal , self.taux_enr_appoint , reseau_principal , reseau_appoint ,  conso_principal_1_convertie , conso_principal_2_convertie   , self.zone , self.masque , self.surface_pv , self.prod_solaire_existante, self.pv_saisie , self.thermique_saisie , self.surface_thermique , self.calcul_conso_chauffage, self.rendement_production , self.Consommation_ventilation , self.Conso_specifique, self.Conso_eclairage,self.Consommations_annuelles_totales_initiales, self.Energie_ecs , self.systeme_chauffage , self.encombrement_toiture ,self.usage_thermique, self.zone_climatique , self.surface_parking ,  self.surface_toiture , self.typology ,self.besoins_ecs_40 , self.temperature_retenue , self.typologie ,  self.type_prod_ecs , self.jours_ouvrés  ) 
+        lettre , self.details_impacts =faisabilite( self.type_toiture, self.situation, self.zone_administrative1)
+        self.details_impacts = str(self.details_impacts)
+        print(f"details impaaaacts , {self.details_impacts}")
+        
+        self.surface_solaire_thermique_retenue ,  self.ratio_conso_totale_proj_thermique , self.taux_ENR_Local_thermique , self.taux_ENR_Local_thermique_max , self.enr_globale_thermique , self.enr_globale_thermique_scenario_max ,  self.total_impact_thermique ,    self.total_cout_thermique =calcul_thermique (self.slug_principal , self.slug_appoint , self.type_toiture , self.rendement ,conso_elec , self.strategie , E_T_principal , E_T_appoint , self.surface , self.energis , self.taux_enr_principal , self.taux_enr_appoint , reseau_principal , reseau_appoint ,  conso_principal_1_convertie , conso_principal_2_convertie   , self.zone , self.masque , self.surface_pv , self.prod_solaire_existante, self.pv_saisie , self.thermique_saisie , self.surface_thermique , self.calcul_conso_chauffage, self.rendement_production , self.Consommation_ventilation , self.Conso_specifique, self.Conso_eclairage,self.Consommations_annuelles_totales_initiales, self.Energie_ecs , self.systeme_chauffage , self.encombrement_toiture ,self.usage_thermique, self.zone_climatique , self.surface_parking ,  self.surface_toiture , self.typology ,self.besoins_ecs_40 , self.temperature_retenue , self.typologie ,  self.type_prod_ecs , self.jours_ouvrés  ) 
         self.thermique_resultat = [    self.surface_solaire_thermique_retenue ,  self.ratio_conso_totale_proj_thermique , self.taux_ENR_Local_thermique , self.taux_ENR_Local_thermique_max , self.enr_globale_thermique , self.enr_globale_thermique_scenario_max ,  self.total_impact_thermique ,    self.total_cout_thermique
 ]
        # print(f"les resultats sont : {thermique_resultat[2]}")
         
-        self.surface_solaire_hybride_retenue , self.ratio_conso_totale_proj_hybride, self.taux_ENR_Local_hybride ,self.taux_ENR_Local_hybride_scenario_max, self.enr_globale_hybride , self.enr_globale_hybride_scenario_max   , self.conso_carbone_hybride, self.cout_total_hybride = calcul_hybride(self.type_toiture , self.rendement  , conso_elec , self.energis , self.strategie , E_T_principal , E_T_appoint ,  self.surface , self.taux_enr_principal , reseau_principal , reseau_appoint , self.taux_enr_appoint ,  conso_principal_1_convertie , conso_principal_2_convertie , self.calcul_conso_chauffage ,self.zone , self.masque , self.surface_pv , self.prod_solaire_existante, self.pv_saisie , self.thermique_saisie , self.surface_thermique ,  self.rendement_production , self.Consommation_ventilation , self.Conso_specifique, self.Conso_eclairage,self.Consommations_annuelles_totales_initiales, self.typology ,self.besoins_ecs_40 , self.encombrement_toiture, self.temperature_retenue , self.type_prod_ecs , self.jours_ouvrés ,  self.usage_thermique, self.zone_climatique , self.surface_toiture , self.surface_parking , self.typologie, self.Energie_ecs , self.systeme_chauffage ) 
+        self.surface_solaire_hybride_retenue , self.ratio_conso_totale_proj_hybride, self.taux_ENR_Local_hybride ,self.taux_ENR_Local_hybride_scenario_max, self.enr_globale_hybride , self.enr_globale_hybride_scenario_max   , self.conso_carbone_hybride, self.cout_total_hybride = calcul_hybride(self.slug_principal , self.slug_appoint ,self.type_toiture , self.rendement  , conso_elec , self.energis , self.strategie , E_T_principal , E_T_appoint ,  self.surface , self.taux_enr_principal , reseau_principal , reseau_appoint , self.taux_enr_appoint ,  conso_principal_1_convertie , conso_principal_2_convertie , self.calcul_conso_chauffage ,self.zone , self.masque , self.surface_pv , self.prod_solaire_existante, self.pv_saisie , self.thermique_saisie , self.surface_thermique ,  self.rendement_production , self.Consommation_ventilation , self.Conso_specifique, self.Conso_eclairage,self.Consommations_annuelles_totales_initiales, self.typology ,self.besoins_ecs_40 , self.encombrement_toiture, self.temperature_retenue , self.type_prod_ecs , self.jours_ouvrés ,  self.usage_thermique, self.zone_climatique , self.surface_toiture , self.surface_parking , self.typologie, self.Energie_ecs , self.systeme_chauffage ) 
         self.hybride_resultat = [   self.surface_solaire_hybride_retenue , self.ratio_conso_totale_proj_hybride, self.taux_ENR_Local_hybride ,self.taux_ENR_Local_hybride_scenario_max, self.enr_globale_hybride , self.enr_globale_hybride_scenario_max   , self.conso_carbone_hybride, self.cout_total_hybride 
 ]
         self.meilleur , self.details = self.choisir_meilleur_scenario_ENR(self.pv_resultat, self.thermique_resultat, self.hybride_resultat , self.type_toiture, self.situation, self.zone_administrative1)
@@ -320,13 +323,16 @@ class ProjetCalcul:
         enr_globale_scenario_max=self.meilleur["enr_globale_scenario_max"],
         conso_carbone_pv=self.meilleur["conso_carbone_pv"],
         cout_total_pv=self.meilleur["cout_total_pv"],
-        lettre_faisabilite=self.meilleur["lettre_faisabilite"])
+        lettre_faisabilite=self.meilleur["lettre_faisabilite"],
+        taux_ENR_local_initial  = self.taux_enr_initial,
+        Faisabilité_calculée = self.details_impacts)
         #usages_energitiques = usages_energitiques1 ,
         #conso_energitiques = conso_energitiques1)
         #usages_energitiques=json.dumps(usages_energitiques1),
         #conso_energitiques=json.dumps(conso_energitiques1))
 
-        
+        raw_output = result_obj.model_dump(exclude={"Id"})
+
 
         # Stocker dans la base output de sql server !
         with get_session() as session:
@@ -334,7 +340,34 @@ class ProjetCalcul:
           session.commit()
           session.refresh(result_obj)
         # Retourner en JSON pour l'api
-        return result_obj.model_dump(exclude={"Id"})
+        #return result_obj.model_dump(exclude={"Id"})
+        return {
+            "id_projet": self.id_projet,
+            "Bilan de consommation initial": {
+                "conso_annuelles_totales_initiales": raw_output["conso_annuelles_totales_initiales"],
+                "conso_annuelles_totales_initiales_ratio": raw_output["conso_annuelles_totales_initiales_ratio"],
+                "cout_total_initial": raw_output["cout_total_initial"],
+                "taux_ENR_local_initial": raw_output["taux_ENR_local_initial"],
+                "usages_energitiques": raw_output["usages_energitiques"],
+                "conso_energitiques": raw_output["conso_energitiques"],
+                "conso_carbone_initial": raw_output["conso_carbone_initial"]
+            },
+            "ENR&R": {
+                "enr_local": raw_output["enr_local"],
+                "enr_local_max": raw_output["enr_local_max"],
+                "enr_global": raw_output["enr_global"],
+                "enr_globale_scenario_max": raw_output["enr_globale_scenario_max"],
+                "cout_total_pv": raw_output["cout_total_pv"],
+                "enr_retenue": raw_output["enr_retenue"],
+                "puissance_retenue": raw_output["puissance_retenue"],
+                "lettre_faisabilite": raw_output["lettre_faisabilite"],
+                "ratio_conso_totale_projet": raw_output["ratio_conso_totale_projet"],
+                "id_projet": raw_output["id_projet"],
+                "Faisabilité_calculée": raw_output["Faisabilité_calculée"],
+                "conso_carbone_initial": raw_output["conso_carbone_initial"],
+                "conso_carbone_pv": raw_output["conso_carbone_pv"]
+            }
+        }
 
        
 
