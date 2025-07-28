@@ -5,6 +5,7 @@ from app.db.database import get_session
 from app.models.inputs import input
 from app.models.project_model import Projects
 from calcul_enr  import ProjetCalcul
+import traceback  
 
 router = APIRouter()
 
@@ -43,7 +44,8 @@ def create_projet_et_inputs(data: input, session: Session = Depends(get_session)
 
     except Exception as e:
         session.rollback()
-        raise HTTPException(status_code=500, detail=f"Erreur serveur : {str(e)}")
-
-
-        
+        tb = traceback.format_exc()  # 🔍 récupère toute la stacktrace
+        raise HTTPException(
+            status_code=500,
+            detail=f"Erreur serveur : {str(e)}\nTraceback:\n{tb}"
+        )
