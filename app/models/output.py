@@ -31,6 +31,9 @@ class output(SQLModel, table=True):
     conso_carbone_pv: Optional[float] = Field(default=None)
     cout_total_pv: Optional[float] = Field(default=None)
     lettre_faisabilite: Optional[str] = Field(default=None)
+    taux_ENR_local_initial : Optional[float] = Field(default=None)
+    Faisabilité_calculée : Optional[str] = Field(default=None)
+
 
 
 
