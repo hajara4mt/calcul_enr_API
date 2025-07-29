@@ -14,3 +14,4 @@ def get_projets_by_utilisateur(id_utilisateur: str, session: Session = Depends(g
         raise HTTPException(status_code=404, detail="Aucun projet trouvé pour cet utilisateur")
 
     return [projet.model_dump() for projet in projets]
+
