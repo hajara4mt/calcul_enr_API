@@ -6,6 +6,7 @@ from app.models.inputs import input
 from app.models.project_model import Projects
 from calcul_enr  import ProjetCalcul
 import traceback  
+from datetime import datetime
 
 router = APIRouter()
 
@@ -22,6 +23,7 @@ def create_projet_et_inputs(data: input, session: Session = Depends(get_session)
        # 3. Création de l'objet inputs avec ID projet injecté
         input_dict = data.model_dump()
         input_dict["id_projet"] = id_projets
+       
         input_record = input(**input_dict)
 
         print("✅ ID projet injecté dans input_record :", input_record.id_projet)
@@ -34,11 +36,13 @@ def create_projet_et_inputs(data: input, session: Session = Depends(get_session)
 
         calcul = ProjetCalcul(id_projet=id_projets)
         resultats = calcul.run()  # 🧠 Lance les calculs et enregistre dans output
+        date_modelisation = resultats.pop("date_modelisation", None)
 
         # 6. ✅ Retourner les résultats dans la réponse API
         return {
             "message": "Projet enregistré avec succès",
             "id_projet": id_projets,
+            "date_modelisation_première": date_modelisation,
             "calculs": resultats
         }
 

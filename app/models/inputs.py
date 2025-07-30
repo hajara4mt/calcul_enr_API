@@ -1,6 +1,6 @@
 from sqlmodel import SQLModel, Field
 from typing import Optional
-from datetime import datetime
+from datetime import datetime , timezone
 from pydantic import model_validator
 
 class input(SQLModel, table=True):

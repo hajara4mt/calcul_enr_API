@@ -1,5 +1,7 @@
 import pandas as pd 
 from app.db.database import engine
+import json
+
 
 from app.moteur_calcul.hypotheses.conversion import conversion
 from app.moteur_calcul.loader import load_data_co2_cout
@@ -407,20 +409,20 @@ def repartition_usages(slug_principal , slug_appoint , calcul_conso_chauffage , 
     taux = prod_enr_locale_site / denominateur 
     taux_enr_initial = taux * 100
 
-    conso_energitiques = [
-    {"elec": round(float(ratio_elec) * 100, 2)},
-    {slug_principal: round(float(ratio_ET1) * 100, 2)},
-    {slug_appoint: round(float(ratio_ET2) * 100, 2)},
-    {"total_cons_energ": round(float(total_ratio) * 100, 2)}
-]
+    conso_energitiques = { 
+    "elec": round(float(ratio_elec) * 100, 2),
+    slug_principal: round(float(ratio_ET1) * 100, 2),
+    slug_appoint: round(float(ratio_ET2) * 100, 2),
+    "total_cons_energ": round(float(total_ratio) * 100, 2)}
+
     
-    usages_energitiques = [
-    {"chauffage": round(float(ratio_chauffage) , 2)},
-    {"climatisation": round(float(ratio_climatisation) , 2)},
-    {"ecs": round(float(ratio_ecs) , 2)},
-    {"autre_usages": round(float(ratio_autres_usages) , 2)},
-    {"total_usages_energ": round(float(ratio_total_final) , 2)}
-]
+    usages_energitiques = { 
+    "chauffage": round(float(ratio_chauffage) , 2),
+    "climatisation": round(float(ratio_climatisation) , 2),
+    "ecs": round(float(ratio_ecs) , 2),
+    "autre_usages": round(float(ratio_autres_usages) , 2),
+    "total_usages_energ": round(float(ratio_total_final) , 2)
+    }
 
 
    # print(conso_surfacique_clim , total_ECS , besoin_60 , perte_bouclage )
@@ -962,7 +964,7 @@ def faisabilite( type_toiture, situation, zone_administrative1):
 
     score_total = 0
     score_max = 0
-    details_impacts = []
+    details_impacts = {}
 
     for critere, valeur_utilisateur in mapping_valeurs.items():
         match_found = False
@@ -983,12 +985,13 @@ def faisabilite( type_toiture, situation, zone_administrative1):
                 score_total += score_pondere
                 score_max += 5 * ponderation
 
-                details_impacts.append({
-                    impact,
-                  
-                     note
-                    
-                })
+                details_impacts[impact] = note
+                
+
+
+
+
+
 
                 print(f"🟩 Critère : {critere}")
                 print(f"    ➤ Valeur saisie        : {valeur_utilisateur}")
@@ -1029,7 +1032,7 @@ def faisabilite( type_toiture, situation, zone_administrative1):
     print(f"   ➤ Lettre finale    : {lettre}")
     print(details_impacts)
 
-    return lettre , details_impacts
+    return lettre , json.dumps(details_impacts)
 
 
 

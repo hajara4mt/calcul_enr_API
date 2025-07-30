@@ -1,6 +1,8 @@
 from sqlmodel import SQLModel, Field
 from typing import Optional, List, Dict
-from sqlalchemy import Column
+from datetime import datetime
+
+from sqlalchemy import Column , String , Text
 from uuid import UUID
 from sqlalchemy import JSON as SQLAlchemyJSON
 from typing import Any
@@ -32,7 +34,11 @@ class output(SQLModel, table=True):
     cout_total_pv: Optional[float] = Field(default=None)
     lettre_faisabilite: Optional[str] = Field(default=None)
     taux_ENR_local_initial : Optional[float] = Field(default=None)
-    Faisabilité_calculée : Optional[str] = Field(default=None)
+    Faisabilité_calculée : Optional[Any] = Field(default=None, sa_column=Column(SQLAlchemyJSON))
+    data_modelisation_derniere:Optional[datetime] = None
+    #Faisabilité_calculée: Optional[Any] = Field(default=None, sa_column=Column(String))
+    #Faisabilité_calculée: Optional[Dict[str, int]] = Field(default=None, sa_column=Column(SQLAlchemyJSON))
+    
 
 
 

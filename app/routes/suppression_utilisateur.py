@@ -35,7 +35,7 @@ def supprimer_utilisateur_et_projets(id_utilisateur: str, session: Session = Dep
 
         session.commit()
 
-        return {"message": f"Tous les projets et données de l'utilisateur {id_utilisateur} ont été supprimés ✅"}
+        return {"message": f"Tous les projets et données de l'utilisateur {id_utilisateur} ont été supprimés "}
 
     except Exception as e:
         session.rollback()

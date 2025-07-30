@@ -1,4 +1,8 @@
 from app.moteur_calcul.loader  import load_donnees_saisie , load_rendement_ecs , get_puissance_ventilation
+from datetime import datetime, timezone
+from app.models.output_enr_r import output_enr_r
+
+
 from app.moteur_calcul.loader  import load_typologie_data , load_temperature_data , load_coefficients_gv
 from app.moteur_calcul.hypotheses.conversion import conversion
 from app.moteur_calcul.conso_initial import convertir_consommation  , calcul_commun , repartition_usages , calcul_Pv , faisabilite , calcul_thermique , calcul_hybride
@@ -292,16 +296,57 @@ class ProjetCalcul:
 ]
         self.meilleur , self.details = self.choisir_meilleur_scenario_ENR(self.pv_resultat, self.thermique_resultat, self.hybride_resultat , self.type_toiture, self.situation, self.zone_administrative1)
        # print(f"les resultats de meilleur sont : {meilleur}")
-
         
+       ## conso_json = json.dumps(self.conso_energitiques1)
 
+        output_enr = output_enr_r( 
+         id_projet=self.id_projet,
+
+    # Résultats solaire
+         puissance_retenue_solaire=self.Puissance_pv_retenue,
+         ratio_conso_totale_projet_solaire=self.ratio_conso_totale_projet_pv,
+         enr_local_solaire=self.enr_local_pv,
+         enr_local_max_solaire=self.enr_local_max_pv,
+         enr_global_solaire=self.enr_globale,
+         enr_globale_scenario_max_solaire=self.enr_globale_scenario_max,
+         conso_carbone_pv_solaire=self.total_impact_pv,
+         cout_total_pv_solaire=self.total_cout_pv,
+         lettre_faisabilite_solaire=self.meilleur["lettre_faisabilite"],
+         Faisabilité_calculée_solaire=self.details_impacts,
+
+    # Résultats thermique
+        puissance_retenue_thermique=self.surface_solaire_thermique_retenue,
+        ratio_conso_totale_projet_thermique=self.ratio_conso_totale_proj_thermique,
+        enr_local_thermique=self.taux_ENR_Local_thermique,
+        enr_local_max_thermique=self.taux_ENR_Local_thermique_max,
+        enr_global_thermique=self.enr_globale_thermique,
+        enr_globale_scenario_max_thermique=self.enr_globale_thermique_scenario_max,
+        conso_carbone_pv_thermique=self.total_impact_thermique,
+        cout_total_pv_thermique=self.total_cout_thermique,
+        lettre_faisabilite_thermique=self.meilleur["lettre_faisabilite"],
+        Faisabilité_calculée_thermique=self.details_impacts,
+
+    # Résultats hybride
+        puissance_retenue_hybride=self.surface_solaire_hybride_retenue,
+        ratio_conso_totale_projet_hybride=self.ratio_conso_totale_proj_hybride,
+        enr_local_hybride=self.taux_ENR_Local_hybride,
+        enr_local_max_hybride=self.taux_ENR_Local_hybride_scenario_max,
+        enr_global_hybride=self.enr_globale_hybride,
+        enr_globale_scenario_max_hybride=self.enr_globale_hybride_scenario_max,
+        conso_carbone_pv_hybride=self.conso_carbone_hybride,
+        cout_total_pv_hybride=self.cout_total_hybride,
+        lettre_faisabilite_hybride=self.meilleur["lettre_faisabilite"],
+        Faisabilité_calculée_hybride=self.details_impacts
+)
         
-        conso_json = json.dumps(self.conso_energitiques1)
-
+        with get_session() as session:
+           session.add(output_enr)
+           session.commit()
+           session.refresh(output_enr)
     
    
 
-       
+
 
 
         result_obj = output(
@@ -313,6 +358,7 @@ class ProjetCalcul:
         conso_carbone_initial=round(self.total_impact, 2),
        # usages_energitiques=usages_json,
         usages_energitiques=usages_energitiques,
+        
         conso_energitiques= conso_energitiques , 
         enr_retenue=self.meilleur["enr_retenue"],
         puissance_retenue=self.meilleur["puissance_retenue"],
@@ -325,7 +371,8 @@ class ProjetCalcul:
         cout_total_pv=self.meilleur["cout_total_pv"],
         lettre_faisabilite=self.meilleur["lettre_faisabilite"],
         taux_ENR_local_initial  = self.taux_enr_initial,
-        Faisabilité_calculée = self.details_impacts)
+        Faisabilité_calculée = self.details_impacts ,
+        data_modelisation_derniere =datetime.now(timezone.utc) )
         #usages_energitiques = usages_energitiques1 ,
         #conso_energitiques = conso_energitiques1)
         #usages_energitiques=json.dumps(usages_energitiques1),
@@ -342,33 +389,56 @@ class ProjetCalcul:
         # Retourner en JSON pour l'api
         #return result_obj.model_dump(exclude={"Id"})
         return {
-            "id_projet": self.id_projet,
+           
+           "date_modelisation" : result_obj.data_modelisation_derniere.isoformat() ,  
+            
             "Bilan de consommation initial": {
                 "conso_annuelles_totales_initiales": raw_output["conso_annuelles_totales_initiales"],
                 "conso_annuelles_totales_initiales_ratio": raw_output["conso_annuelles_totales_initiales_ratio"],
                 "cout_total_initial": raw_output["cout_total_initial"],
                 "taux_ENR_local_initial": raw_output["taux_ENR_local_initial"],
-                "usages_energitiques": raw_output["usages_energitiques"],
-                "conso_energitiques": raw_output["conso_energitiques"],
+               # "usages_energitiques": raw_output["usages_energitiques"],
+                "usages_energitiques" : json.loads(raw_output["usages_energitiques"]) ,
+                "conso_energitiques": json.loads(raw_output["conso_energitiques"]),
                 "conso_carbone_initial": raw_output["conso_carbone_initial"]
             },
-            "ENR&R": {
+            "Indicateur":{"enr_retenue": "Solaire_PV"},
+            "Solaire_pv": {
                 "enr_local": raw_output["enr_local"],
                 "enr_local_max": raw_output["enr_local_max"],
                 "enr_global": raw_output["enr_global"],
                 "enr_globale_scenario_max": raw_output["enr_globale_scenario_max"],
-                "cout_total_pv": raw_output["cout_total_pv"],
-                "enr_retenue": raw_output["enr_retenue"],
+                "cout_total": raw_output["cout_total_pv"],
+               # "enr_retenue": raw_output["enr_retenue"],
                 "puissance_retenue": raw_output["puissance_retenue"],
                 "lettre_faisabilite": raw_output["lettre_faisabilite"],
                 "ratio_conso_totale_projet": raw_output["ratio_conso_totale_projet"],
-                "id_projet": raw_output["id_projet"],
-                "Faisabilité_calculée": raw_output["Faisabilité_calculée"],
-                "conso_carbone_initial": raw_output["conso_carbone_initial"],
-                "conso_carbone_pv": raw_output["conso_carbone_pv"]
-            }
-        }
+                "Faisabilité_calculée":  json.loads(raw_output["Faisabilité_calculée"]),
+                "conso_carbone": raw_output["conso_carbone_pv"]
+            },
+           
+    "Thermique": {
+        "puissance_retenue": self.surface_solaire_thermique_retenue,
+        "ratio_conso_totale_projet": self.ratio_conso_totale_proj_thermique,
+        "enr_local": self.taux_ENR_Local_thermique,
+        "enr_local_max": self.taux_ENR_Local_thermique_max,
+        "enr_global": self.enr_globale_thermique,
+        "enr_globale_scenario_max": self.enr_globale_thermique_scenario_max,
+        "conso_carbone": self.total_impact_thermique,
+        "cout_total": self.total_cout_thermique,
+    },
 
+    "Hybride": {
+        "puissance_retenue": self.surface_solaire_hybride_retenue,
+        "ratio_conso_totale_projet": self.ratio_conso_totale_proj_hybride,
+        "enr_local": self.taux_ENR_Local_hybride,
+        "enr_local_max": self.taux_ENR_Local_hybride_scenario_max,
+        "enr_global": self.enr_globale_hybride,
+        "enr_globale_scenario_max": self.enr_globale_hybride_scenario_max,
+        "conso_carbone": self.conso_carbone_hybride,
+        "cout_total": self.cout_total_hybride
+    }
+}
        
 
 
