@@ -951,7 +951,7 @@ def faisabilite(type_toiture, situation, zone_administrative1):
         "zone administrative": "zone_administrative",
         "type de toiture": "type_toiture",
         "acoustique": "acoustique",
-        "contribution ilot de chaleur urbain": "contribution_ilot_chaleur"
+        "contribution ilot de chaleur urbain": "cicu"
     }
 
     score_total = 0
