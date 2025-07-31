@@ -42,7 +42,12 @@ def get_output_by_id(id_projet: str, session: Session = Depends(get_session)):
         "message": "Résultat complet récupéré avec succès",
         "id_projet": id_projet,
         "date_modelisation_derniere": result.data_modelisation_derniere.isoformat(),
-        "projets": input_result.model_dump(exclude={"Id", "id_projet"}) , 
+        "date_creation_projet" : input_result.date_creation , 
+        "projets": input_result.model_dump(exclude={"Id", "id_projet" , "date_creation"}) , 
+
+
+
+        
         "resultats" : { 
 
         "bilan_conso_initial": {
@@ -58,41 +63,41 @@ def get_output_by_id(id_projet: str, session: Session = Depends(get_session)):
         "indicateur": {
             "enr_retenue": data["enr_retenue"]
         },
-
-        "solaire_pv": {
-            "puissance_retenue": enr_result.puissance_retenue_solaire,
-            "ratio_conso_totale_projet": enr_result.ratio_conso_totale_projet_solaire,
-            "enr_local": enr_result.enr_local_solaire,
-            "enr_local_max": enr_result.enr_local_max_solaire,
-            "enr_global": enr_result.enr_global_solaire,
-            "enr_globale_scenario_max": enr_result.enr_globale_scenario_max_solaire,
-            "conso_carbone": enr_result.conso_carbone_pv_solaire,
-            "cout_total": enr_result.cout_total_pv_solaire,
+        "enr_r": { 
+          "solaire_pv": {
+            "puissance_retenue": int(enr_result.puissance_retenue_solaire),
+            "ratio_conso_totale_projet": int(enr_result.ratio_conso_totale_projet_solaire),
+            "enr_local": round(enr_result.enr_local_solaire,2),
+            "enr_local_max": round(enr_result.enr_local_max_solaire,2),
+            "enr_global": round(enr_result.enr_global_solaire,2),
+            "enr_globale_scenario_max": round(enr_result.enr_globale_scenario_max_solaire,2),
+            "conso_carbone": int(enr_result.conso_carbone_pv_solaire),
+            "cout_total": int(enr_result.cout_total_pv_solaire),
             "lettre_faisabilite": enr_result.lettre_faisabilite_solaire,
-            "faisabilité_calculée": data["Faisabilité_calculée"],
+            "faisabilité_calculee": data["Faisabilité_calculée"],
         },
 
-        "thermique": {
-            "puissance_retenue": enr_result.puissance_retenue_thermique,
-            "ratio_conso_totale_projet": enr_result.ratio_conso_totale_projet_thermique,
-            "enr_local": enr_result.enr_local_thermique,
-            "enr_local_max": enr_result.enr_local_max_thermique,
-            "enr_global": enr_result.enr_global_thermique,
-            "enr_globale_scenario_max": enr_result.enr_globale_scenario_max_thermique,
-            "conso_carbone": enr_result.conso_carbone_pv_thermique,
-            "cout_total": enr_result.cout_total_pv_thermique,
+          "thermique": {
+            "puissance_retenue": int(enr_result.puissance_retenue_thermique),
+            "ratio_conso_totale_projet": int(enr_result.ratio_conso_totale_projet_thermique),
+            "enr_local": round(enr_result.enr_local_thermique,2),
+            "enr_local_max": round(enr_result.enr_local_max_thermique,2),
+            "enr_global": round(enr_result.enr_global_thermique,2),
+            "enr_globale_scenario_max": round(enr_result.enr_globale_scenario_max_thermique,2),
+            "conso_carbone": int(enr_result.conso_carbone_pv_thermique),
+            "cout_total": int(enr_result.cout_total_pv_thermique),
             "lettre_faisabilite": enr_result.lettre_faisabilite_thermique
         },
 
-        "hybride": {
-            "puissance_retenue": enr_result.puissance_retenue_hybride,
-            "ratio_conso_totale_projet": enr_result.ratio_conso_totale_projet_hybride,
-            "enr_local": enr_result.enr_local_hybride,
-            "enr_local_max": enr_result.enr_local_max_hybride,
-            "enr_global": enr_result.enr_global_hybride,
-            "enr_globale_scenario_max": enr_result.enr_globale_scenario_max_hybride,
-            "conso_carbone": enr_result.conso_carbone_pv_hybride,
-            "cout_total": enr_result.cout_total_pv_hybride,
+          "hybride": {
+            "puissance_retenue": int(enr_result.puissance_retenue_hybride),
+            "ratio_conso_totale_projet": int(enr_result.ratio_conso_totale_projet_hybride),
+            "enr_local": round(enr_result.enr_local_hybride,2),
+            "enr_local_max": round(enr_result.enr_local_max_hybride,2),
+            "enr_global": round(enr_result.enr_global_hybride,2),
+            "enr_globale_scenario_max": round(enr_result.enr_globale_scenario_max_hybride,2),
+            "conso_carbone": int(enr_result.conso_carbone_pv_hybride),
+            "cout_total": int(enr_result.cout_total_pv_hybride),
             "lettre_faisabilite": enr_result.lettre_faisabilite_hybride
         }
-    }}
+    }}}

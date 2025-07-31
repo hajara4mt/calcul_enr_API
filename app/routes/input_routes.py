@@ -46,7 +46,7 @@ def create_projet_et_inputs(data: input, session: Session = Depends(get_session)
        # 3. Création de l'objet inputs avec ID projet injecté
         input_dict = data.model_dump()
         input_dict["id_projet"] = id_projets
-        input_dict["id_utilisateur"] = id_user_primary  # 🔁 on écrase ici
+        input_dict["id_utilisateur"] = id_user_primary  
 
 
        
@@ -57,6 +57,7 @@ def create_projet_et_inputs(data: input, session: Session = Depends(get_session)
         # 4. Insertion des inputs (table inputs)
         session.add(input_record)
         session.commit()
+        session.refresh(input_record)
 
         #        # 5. on lance les calculs 
 
@@ -69,6 +70,7 @@ def create_projet_et_inputs(data: input, session: Session = Depends(get_session)
             "message": "Projet enregistré avec succès",
             "id_projet": id_projets,
             "id_utilisateur": id_user_primary , 
+            "date_creation_projet": input_record.date_creation , 
             "date_modelisation_premiere": date_modelisation,
             "calculs": resultats
         }

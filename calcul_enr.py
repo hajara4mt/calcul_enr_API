@@ -402,18 +402,18 @@ class ProjetCalcul:
                 "conso_energitiques": json.loads(raw_output["conso_energitiques"]),
                 "conso_carbone_initial": int(raw_output["conso_carbone_initial"])
             },
-            "indicateur":{"enr_retenue": "Solaire_PV"},
-            "solaire_pv": {
+            "indicateur":{"enr_retenue": "solaire_pv"},
+            "enr_r":{ 
+              "solaire_pv": {
                 "enr_local": raw_output["enr_local"],
                 "enr_local_max": raw_output["enr_local_max"],
                 "enr_global": raw_output["enr_global"],
                 "enr_globale_scenario_max": raw_output["enr_globale_scenario_max"],
                 "cout_total": int(raw_output["cout_total_pv"]),
-               # "enr_retenue": raw_output["enr_retenue"],
                 "puissance_retenue": int(raw_output["puissance_retenue"]),
                 "lettre_faisabilite": raw_output["lettre_faisabilite"],
                 "ratio_conso_totale_projet": int(raw_output["ratio_conso_totale_projet"]),
-                "faisabilité_calculée":  json.loads(raw_output["Faisabilité_calculée"]),
+                "faisabilite_calculee":  json.loads(raw_output["Faisabilité_calculée"]),
                 "conso_carbone": int(raw_output["conso_carbone_pv"])
             },
            
@@ -438,7 +438,7 @@ class ProjetCalcul:
         "conso_carbone": int(self.conso_carbone_hybride),
         "cout_total": int(self.cout_total_hybride)
     }
-}
+}}
        
 
 

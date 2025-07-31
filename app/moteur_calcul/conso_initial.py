@@ -642,11 +642,6 @@ def calcul_Pv (slug_principal , slug_appoint ,type_toiture ,conso_elec , surface
 
 
 
-
-
-
-
-
 def calcul_thermique (slug_principal , slug_appoint , type_toiture , rendement ,conso_elec , strategie , E_T_principal , E_T_appoint , surface , slugs_energie , taux_enr_principal , taux_enr_appoint , reseau_principal , reseau_appoint ,  conso_principal_1_convertie , conso_principal_2_convertie   , zone , masque , surface_PV , prod_solaire_existante, pv_saisie , thermique_saisie , surface_thermique , calcul_conso_chauffage, rendement_production , Consommation_ventilation , Conso_specifique, Conso_eclairage,Consommations_annuelles_totales_initiales, Energie_ECS , systeme_chauffage , encombrement_toiture ,usage_thermique,zone_climatique , surface_parking ,  surface_toiture , typology ,besoins_ECS , temperature_retenue , typologie ,  type_prod_ecs , jours_ouvrés  ) : 
     hypothese_rendement_st = 550
     hypothèses_volume_ST = 50 
@@ -777,11 +772,6 @@ def calcul_thermique (slug_principal , slug_appoint , type_toiture , rendement ,
     total_impact_thermique, total_cout_thermique = calcul_carbone_et_cout_sql(slugs_energie , conso_thermique ,reseau_principal , reseau_appoint )
 
     return  int(surface_solaire_thermique_retenue) ,  int(ratio_conso_totale_proj_thermique) , round(taux_ENR_Local_thermique, 2) , round(taux_ENR_Local_thermique_max,2) , round(enr_globale_thermique , 2)  , round(enr_globale_thermique_scenario_max ,2) ,   round(total_impact_thermique,2) ,    round(total_cout_thermique, 2)
-
-
-
-
-
 
 ####""----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#######
 
@@ -941,20 +931,27 @@ def calcul_hybride(slug_principal , slug_appoint ,type_toiture , rendement  , co
 
 
 
-def faisabilite( type_toiture, situation, zone_administrative1):
-   
+def faisabilite(type_toiture, situation, zone_administrative1):
     energie = "Solaire"
 
     # Chargement de la table SQL
     with engine.connect() as conn:
         R_faisabilite = pd.read_sql_query("SELECT * FROM dbo.régles_faisabilité", conn)
 
-    # Mapping direct des valeurs
+    # Mapping direct des valeurs utilisateur
     mapping_valeurs = {
         "zone administrative": zone_administrative1.strip().lower(),
         "type de toiture": type_toiture.strip().lower(),
-        "acoustique": situation.strip().lower() if situation else "inconnu" ,
+        "acoustique": situation.strip().lower() if situation else "inconnu",
         "contribution ilot de chaleur urbain": situation.strip().lower()
+    }
+
+    # Correspondance pour adapter les clés de sortie
+    remap_keys = {
+        "zone administrative": "zone_administrative",
+        "type de toiture": "type_toiture",
+        "acoustique": "acoustique",
+        "contribution ilot de chaleur urbain": "contribution_ilot_chaleur"
     }
 
     score_total = 0
@@ -980,13 +977,9 @@ def faisabilite( type_toiture, situation, zone_administrative1):
                 score_total += score_pondere
                 score_max += 5 * ponderation
 
-                details_impacts[impact] = note
-                
-
-
-
-
-
+                # Utilisation des noms renommés
+                clean_key = remap_keys.get(impact, impact)
+                details_impacts[clean_key] = note
 
                 print(f"🟩 Critère : {critere}")
                 print(f"    ➤ Valeur saisie        : {valeur_utilisateur}")
@@ -999,13 +992,9 @@ def faisabilite( type_toiture, situation, zone_administrative1):
                 break
 
         if not match_found:
-            print(f"🟥 Aucune correspondance trouvée pour le critère : {critere} ({valeur_utilisateur})")
-         #   print("-" * 50)
-            
-        if not match_found:
             print(f"⚠️ Aucun match pour le critère : {critere} = '{valeur_utilisateur}'")
 
-    # Pourcentage et notation
+    # Calcul final
     pourcentage = (score_total / score_max) * 100 if score_max else 0
     notation = round(score_total, 1)
 
@@ -1020,17 +1009,10 @@ def faisabilite( type_toiture, situation, zone_administrative1):
     else:
         lettre = "E"
 
-   # print(f"\n✅ Résumé pour l’énergie : {energie}")
-   # print(f"   ➤ Score total      : {notation}")
-   # print(f"   ➤ Score maximum    : {score_max}")
-   # print(f"   ➤ Pourcentage      : {round(pourcentage, 1)} %")
     print(f"   ➤ Lettre finale    : {lettre}")
     print(details_impacts)
 
-    return lettre , json.dumps(details_impacts)
-
-
-
+    return lettre, json.dumps(details_impacts)
 
 
 

@@ -36,7 +36,8 @@ def get_projets_by_utilisateur(id_utilisateur_primaire: str, session: Session = 
         projets_data.append({
             "id_projet": projet.id_projet,
             "nom_projet": dernier_input if dernier_input else None,
-            "date_modelisation_derniere": dernier_output if dernier_output else None
+            "date_modelisation_derniere": dernier_output if dernier_output else None ,
+            "date_creation_projet" : dernier_output if dernier_output else None
 
         })
 

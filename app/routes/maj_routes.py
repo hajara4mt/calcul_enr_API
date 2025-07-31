@@ -44,6 +44,7 @@ def mise_a_jour_projet(id_projet: str, data: input, session: Session = Depends(g
         return {
             "message": "Mise à jour réussie du projet",
             "id_projet": id_projet,
+            "date_creation": ancien_input.date_creation , 
             "date_modelisation_derniere": date_modelisation,
             "calculs": nouveaux_resultats
         }
