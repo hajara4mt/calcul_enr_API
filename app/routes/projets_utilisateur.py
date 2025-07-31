@@ -9,10 +9,10 @@ from datetime import datetime
 
 router = APIRouter()
 
-@router.get("/projets/utilisateur/{id_utilisateur}")
-def get_projets_by_utilisateur(id_utilisateur: str, session: Session = Depends(get_session)):
+@router.get("/projets/utilisateur/{id_utilisateur_primaire}")
+def get_projets_by_utilisateur(id_utilisateur_primaire: str, session: Session = Depends(get_session)):
     projets = session.exec(
-        select(Projects).where(Projects.id_utilisateur == id_utilisateur)
+        select(Projects).where(Projects.id_utilisateur_primaire == id_utilisateur_primaire)
     ).all()
 
     if not projets:
@@ -41,6 +41,6 @@ def get_projets_by_utilisateur(id_utilisateur: str, session: Session = Depends(g
         })
 
     return {
-        "id_utilisateur": id_utilisateur,
+        "id_utilisateur": id_utilisateur_primaire,
         "projets": projets_data
     }

@@ -7,11 +7,11 @@ from app.models.output import output
 
 router = APIRouter()
 
-@router.delete("/utilisateur/suppression/{id_utilisateur}")
-def supprimer_utilisateur_et_projets(id_utilisateur: str, session: Session = Depends(get_session)):
+@router.delete("/utilisateur/suppression/{id_utilisateur_primaire}")
+def supprimer_utilisateur_et_projets(id_utilisateur_primaire: str, session: Session = Depends(get_session)):
     try:
         # Récupérer tous les projets associés à l'utilisateur
-        projets = session.exec(select(Projects).where(Projects.id_utilisateur == id_utilisateur)).all()
+        projets = session.exec(select(Projects).where(Projects.id_utilisateur_primaire == id_utilisateur_primaire)).all()
 
         if not projets:
             raise HTTPException(status_code=404, detail="Aucun projet trouvé pour cet utilisateur.")
@@ -35,7 +35,7 @@ def supprimer_utilisateur_et_projets(id_utilisateur: str, session: Session = Dep
 
         session.commit()
 
-        return {"message": f"Tous les projets et données de l'utilisateur {id_utilisateur} ont été supprimés "}
+        return {"message": f"Tous les projets et données de l'utilisateur {id_utilisateur_primaire} ont été supprimés "}
 
     except Exception as e:
         session.rollback()

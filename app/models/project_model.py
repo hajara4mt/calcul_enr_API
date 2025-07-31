@@ -5,4 +5,5 @@ class Projects(SQLModel, table=True):
     __tablename__ = "projects"
     id_projet: str = Field(primary_key=True)
     id_utilisateur: str
+    id_utilisateur_primaire : str
    

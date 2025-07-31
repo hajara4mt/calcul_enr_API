@@ -7,22 +7,48 @@ from app.models.project_model import Projects
 from calcul_enr  import ProjetCalcul
 import traceback  
 from datetime import datetime
+import random
+from sqlmodel import select
+
 
 router = APIRouter()
+
+def generer_id_utilisateur_primaire():
+    date_str = datetime.now().strftime("%Y%m%d")
+    suffix = random.randint(1000, 9999)
+    return f"USER-{date_str}-{suffix}"
+
+def generer_id_projet():
+    date_str = datetime.now().strftime("%Y%m%d")
+    suffix = random.randint(1000, 9999)
+    return f"PROJET-{date_str}-{suffix}"
 
 @router.post("/calcul")
 def create_projet_et_inputs(data: input, session: Session = Depends(get_session)):
     try:
         # 1. Génération automatique de l'ID projet
-        id_projets = str(uuid4())
+        projet_existant = session.exec( select(Projects).where(Projects.id_utilisateur == data.id_utilisateur)
+        ).first()
+
+        if projet_existant and projet_existant.id_utilisateur_primaire:
+          id_user_primary = projet_existant.id_utilisateur_primaire
+        else:
+           id_user_primary = generer_id_utilisateur_primaire()
+
+        id_projets = generer_id_projet()
+
+
 
         # 2. Création du projet (table projects)
-        projet = Projects(id_projet=id_projets, id_utilisateur=data.id_utilisateur)
+        projet = Projects(id_projet=id_projets, id_utilisateur=data.id_utilisateur , id_utilisateur_primaire=id_user_primary)
         session.add(projet)
 
        # 3. Création de l'objet inputs avec ID projet injecté
         input_dict = data.model_dump()
         input_dict["id_projet"] = id_projets
+        input_dict["id_utilisateur"] = id_user_primary  # 🔁 on écrase ici
+
+
        
         input_record = input(**input_dict)
 
@@ -42,7 +68,8 @@ def create_projet_et_inputs(data: input, session: Session = Depends(get_session)
         return {
             "message": "Projet enregistré avec succès",
             "id_projet": id_projets,
-            "date_modelisation_première": date_modelisation,
+            "id_utilisateur": id_user_primary , 
+            "date_modelisation_premiere": date_modelisation,
             "calculs": resultats
         }
 

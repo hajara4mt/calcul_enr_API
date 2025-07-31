@@ -2,7 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 from app.db.database import get_session
 from app.models.output import output
-from app.models.output_enr_r import output_enr_r  # ⚠️ Assure-toi que ce modèle existe bien
+from app.models.output_enr_r import output_enr_r  
+from app.models.inputs import input
 import json
 
 router = APIRouter()
@@ -20,6 +21,12 @@ def get_output_by_id(id_projet: str, session: Session = Depends(get_session)):
 
     if not enr_result:
         raise HTTPException(status_code=404, detail="Résultat ENR non trouvé pour ce projet")
+    
+    # 🔹 Inputs du projet
+    input_result = session.exec(select(input).where(input.id_projet == id_projet)).first()
+    if not input_result:
+        raise HTTPException(status_code=404, detail="Inputs du projet non trouvés")
+
 
     # 🔹 Parser les données JSON de output
     data = result.model_dump(exclude={"Id"})
@@ -35,8 +42,10 @@ def get_output_by_id(id_projet: str, session: Session = Depends(get_session)):
         "message": "Résultat complet récupéré avec succès",
         "id_projet": id_projet,
         "date_modelisation_derniere": result.data_modelisation_derniere.isoformat(),
+        "projets": input_result.model_dump(exclude={"Id", "id_projet"}) , 
+        "resultats" : { 
 
-        "Bilan de consommation initial": {
+        "bilan_conso_initial": {
             "conso_annuelles_totales_initiales": data["conso_annuelles_totales_initiales"],
             "conso_annuelles_totales_initiales_ratio": data["conso_annuelles_totales_initiales_ratio"],
             "cout_total_initial": data["cout_total_initial"],
@@ -46,11 +55,11 @@ def get_output_by_id(id_projet: str, session: Session = Depends(get_session)):
             "conso_carbone_initial": data["conso_carbone_initial"]
         },
 
-        "Indicateur": {
+        "indicateur": {
             "enr_retenue": data["enr_retenue"]
         },
 
-        "Solaire": {
+        "solaire_pv": {
             "puissance_retenue": enr_result.puissance_retenue_solaire,
             "ratio_conso_totale_projet": enr_result.ratio_conso_totale_projet_solaire,
             "enr_local": enr_result.enr_local_solaire,
@@ -60,10 +69,10 @@ def get_output_by_id(id_projet: str, session: Session = Depends(get_session)):
             "conso_carbone": enr_result.conso_carbone_pv_solaire,
             "cout_total": enr_result.cout_total_pv_solaire,
             "lettre_faisabilite": enr_result.lettre_faisabilite_solaire,
-            "Faisabilité_calculée": data["Faisabilité_calculée"],
+            "faisabilité_calculée": data["Faisabilité_calculée"],
         },
 
-        "Thermique": {
+        "thermique": {
             "puissance_retenue": enr_result.puissance_retenue_thermique,
             "ratio_conso_totale_projet": enr_result.ratio_conso_totale_projet_thermique,
             "enr_local": enr_result.enr_local_thermique,
@@ -75,7 +84,7 @@ def get_output_by_id(id_projet: str, session: Session = Depends(get_session)):
             "lettre_faisabilite": enr_result.lettre_faisabilite_thermique
         },
 
-        "Hybride": {
+        "hybride": {
             "puissance_retenue": enr_result.puissance_retenue_hybride,
             "ratio_conso_totale_projet": enr_result.ratio_conso_totale_projet_hybride,
             "enr_local": enr_result.enr_local_hybride,
@@ -86,4 +95,4 @@ def get_output_by_id(id_projet: str, session: Session = Depends(get_session)):
             "cout_total": enr_result.cout_total_pv_hybride,
             "lettre_faisabilite": enr_result.lettre_faisabilite_hybride
         }
-    }
+    }}

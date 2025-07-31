@@ -351,11 +351,11 @@ class ProjetCalcul:
 
         result_obj = output(
         id_projet=self.id_projet,
-        conso_annuelles_totales_initiales=round(self.Consommations_annuelles_totales_initiales, 2),
-        conso_annuelles_totales_initiales_ratio=self.Consommations_annuelles_totales_initiales_ratio,
-        cout_total_initial=round(self.total_cout, 2),
+        conso_annuelles_totales_initiales= round(self.Consommations_annuelles_totales_initiales, 0),
+        conso_annuelles_totales_initiales_ratio= round (self.Consommations_annuelles_totales_initiales_ratio, 0) ,
+        cout_total_initial= round(self.total_cout, 0),
         
-        conso_carbone_initial=round(self.total_impact, 2),
+        conso_carbone_initial=round(self.total_impact, 0),
        # usages_energitiques=usages_json,
         usages_energitiques=usages_energitiques,
         
@@ -392,51 +392,51 @@ class ProjetCalcul:
            
            "date_modelisation" : result_obj.data_modelisation_derniere.isoformat() ,  
             
-            "Bilan de consommation initial": {
-                "conso_annuelles_totales_initiales": raw_output["conso_annuelles_totales_initiales"],
-                "conso_annuelles_totales_initiales_ratio": raw_output["conso_annuelles_totales_initiales_ratio"],
-                "cout_total_initial": raw_output["cout_total_initial"],
+            "bilan_conso_initial": {
+                "conso_annuelles_totales_initiales": int(raw_output["conso_annuelles_totales_initiales"]),
+                "conso_annuelles_totales_initiales_ratio": int(raw_output["conso_annuelles_totales_initiales_ratio"]),
+                "cout_total_initial": int(raw_output["cout_total_initial"]),
                 "taux_ENR_local_initial": raw_output["taux_ENR_local_initial"],
                # "usages_energitiques": raw_output["usages_energitiques"],
                 "usages_energitiques" : json.loads(raw_output["usages_energitiques"]) ,
                 "conso_energitiques": json.loads(raw_output["conso_energitiques"]),
-                "conso_carbone_initial": raw_output["conso_carbone_initial"]
+                "conso_carbone_initial": int(raw_output["conso_carbone_initial"])
             },
-            "Indicateur":{"enr_retenue": "Solaire_PV"},
-            "Solaire_pv": {
+            "indicateur":{"enr_retenue": "Solaire_PV"},
+            "solaire_pv": {
                 "enr_local": raw_output["enr_local"],
                 "enr_local_max": raw_output["enr_local_max"],
                 "enr_global": raw_output["enr_global"],
                 "enr_globale_scenario_max": raw_output["enr_globale_scenario_max"],
-                "cout_total": raw_output["cout_total_pv"],
+                "cout_total": int(raw_output["cout_total_pv"]),
                # "enr_retenue": raw_output["enr_retenue"],
-                "puissance_retenue": raw_output["puissance_retenue"],
+                "puissance_retenue": int(raw_output["puissance_retenue"]),
                 "lettre_faisabilite": raw_output["lettre_faisabilite"],
-                "ratio_conso_totale_projet": raw_output["ratio_conso_totale_projet"],
-                "Faisabilité_calculée":  json.loads(raw_output["Faisabilité_calculée"]),
-                "conso_carbone": raw_output["conso_carbone_pv"]
+                "ratio_conso_totale_projet": int(raw_output["ratio_conso_totale_projet"]),
+                "faisabilité_calculée":  json.loads(raw_output["Faisabilité_calculée"]),
+                "conso_carbone": int(raw_output["conso_carbone_pv"])
             },
            
-    "Thermique": {
+    "thermique": {
         "puissance_retenue": self.surface_solaire_thermique_retenue,
         "ratio_conso_totale_projet": self.ratio_conso_totale_proj_thermique,
         "enr_local": self.taux_ENR_Local_thermique,
         "enr_local_max": self.taux_ENR_Local_thermique_max,
         "enr_global": self.enr_globale_thermique,
         "enr_globale_scenario_max": self.enr_globale_thermique_scenario_max,
-        "conso_carbone": self.total_impact_thermique,
-        "cout_total": self.total_cout_thermique,
+        "conso_carbone": int(self.total_impact_thermique),
+        "cout_total": int(self.total_cout_thermique),
     },
 
-    "Hybride": {
-        "puissance_retenue": self.surface_solaire_hybride_retenue,
-        "ratio_conso_totale_projet": self.ratio_conso_totale_proj_hybride,
+    "hybride": {
+        "puissance_retenue": int(self.surface_solaire_hybride_retenue),
+        "ratio_conso_totale_projet":int(  self.ratio_conso_totale_proj_hybride),
         "enr_local": self.taux_ENR_Local_hybride,
         "enr_local_max": self.taux_ENR_Local_hybride_scenario_max,
         "enr_global": self.enr_globale_hybride,
         "enr_globale_scenario_max": self.enr_globale_hybride_scenario_max,
-        "conso_carbone": self.conso_carbone_hybride,
-        "cout_total": self.cout_total_hybride
+        "conso_carbone": int(self.conso_carbone_hybride),
+        "cout_total": int(self.cout_total_hybride)
     }
 }
        
