@@ -9,6 +9,8 @@ import traceback
 from datetime import datetime
 import random
 from sqlmodel import select
+from app.models.response_modele_calcul import GetcalculByIdResponse
+
 
 
 router = APIRouter()
@@ -23,7 +25,7 @@ def generer_id_projet():
     suffix = random.randint(1000, 9999)
     return f"PROJET-{date_str}-{suffix}"
 
-@router.post("/calcul")
+@router.post("/calcul" ,  response_model=GetcalculByIdResponse)
 def create_projet_et_inputs(data: input, session: Session = Depends(get_session)):
     try:
         # 1. Génération automatique de l'ID projet

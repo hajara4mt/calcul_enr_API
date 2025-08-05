@@ -5,11 +5,12 @@ from app.models.inputs import input
 from app.models.project_model import Projects
 from app.models.output import output
 from calcul_enr import ProjetCalcul
+from app.models.response_modele_maj import Getcalculaftermaj
 import traceback
 
 router = APIRouter()
 
-@router.put("/resultats/maj/{id_projet}")
+@router.put("/resultats/maj/{id_projet}" , response_model= Getcalculaftermaj)
 def mise_a_jour_projet(id_projet: str, data: input, session: Session = Depends(get_session)):
     try:
         # 1. Vérifier que le projet existe

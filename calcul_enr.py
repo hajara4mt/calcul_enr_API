@@ -396,13 +396,13 @@ class ProjetCalcul:
                 "conso_annuelles_totales_initiales": int(raw_output["conso_annuelles_totales_initiales"]),
                 "conso_annuelles_totales_initiales_ratio": int(raw_output["conso_annuelles_totales_initiales_ratio"]),
                 "cout_total_initial": int(raw_output["cout_total_initial"]),
-                "taux_ENR_local_initial": raw_output["taux_ENR_local_initial"],
+                "taux_enr_local_initial": raw_output["taux_ENR_local_initial"],
                # "usages_energitiques": raw_output["usages_energitiques"],
                 "usages_energitiques" : json.loads(raw_output["usages_energitiques"]) ,
                 "conso_energitiques": json.loads(raw_output["conso_energitiques"]),
                 "conso_carbone_initial": int(raw_output["conso_carbone_initial"])
             },
-            "indicateur":{"enr_retenue": "solaire_pv"},
+            "indicateur":{"enr_retenue":raw_output["enr_retenue"] },
             "enr_r":{ 
               "solaire_pv": {
                   "puissance_retenue" : int(self.Puissance_pv_retenue ), 
@@ -461,16 +461,16 @@ class ProjetCalcul:
      taux_enr_hybride = hybride_resultat[4]      # 5ème élément
 
      scenarios = [
-        ("PV", pv_resultat[2], pv_resultat),             # enr_local_pv
-        ("Thermique", thermique_resultat[2], thermique_resultat),  # taux_ENR_Local_thermique
-        ("Hybride", hybride_resultat[2], hybride_resultat)         # taux_ENR_Local_hybride
+        ("pv", pv_resultat[2], pv_resultat),             # enr_local_pv
+        ("thermique", thermique_resultat[2], thermique_resultat),  # taux_ENR_Local_thermique
+        ("hybride", hybride_resultat[2], hybride_resultat)         # taux_ENR_Local_hybride
     ]
 
      meilleur = max(scenarios, key=lambda x: x[1])  # x[1] = taux ENR
      nom, taux, result = meilleur
 
     # 3. Mapper dynamiquement le résultat
-     if nom == "PV":
+     if nom == "pv":
         data = {
             "puissance_retenue": result[0],
             "ratio_conso_totale_projet": result[1],
@@ -482,7 +482,7 @@ class ProjetCalcul:
             "cout_total_pv": result[7],
             "lettre_faisabilite": lettre,
         }
-     elif nom == "Thermique":
+     elif nom == "thermique":
         data = {
             "puissance_retenue": result[0],
             "ratio_conso_totale_projet": result[1],

@@ -4,11 +4,12 @@ from app.db.database import get_session
 from app.models.output import output
 from app.models.output_enr_r import output_enr_r  
 from app.models.inputs import input
+from app.models.response_modele_output import GetOutputByIdResponse
 import json
 
 router = APIRouter()
 
-@router.get("/resultats/{id_projet}")
+@router.get("/resultats/{id_projet}" , response_model=GetOutputByIdResponse)
 def get_output_by_id(id_projet: str, session: Session = Depends(get_session)):
     # 🔹 Requête dans la table principale
     result = session.exec(select(output).where(output.id_projet == id_projet)).first()
@@ -54,7 +55,7 @@ def get_output_by_id(id_projet: str, session: Session = Depends(get_session)):
             "conso_annuelles_totales_initiales": data["conso_annuelles_totales_initiales"],
             "conso_annuelles_totales_initiales_ratio": data["conso_annuelles_totales_initiales_ratio"],
             "cout_total_initial": data["cout_total_initial"],
-            "taux_ENR_local_initial": data["taux_ENR_local_initial"],
+            "taux_enr_local_initial": data["taux_ENR_local_initial"],
             "usages_energitiques": data["usages_energitiques"],
             "conso_energitiques": data["conso_energitiques"],
             "conso_carbone_initial": data["conso_carbone_initial"]
@@ -73,7 +74,7 @@ def get_output_by_id(id_projet: str, session: Session = Depends(get_session)):
             "enr_globale_scenario_max": round(enr_result.enr_globale_scenario_max_solaire,2),
             "conso_carbone": int(enr_result.conso_carbone_pv_solaire),
             "cout_total": int(enr_result.cout_total_pv_solaire),
-            "lettre_faisabilite": enr_result.lettre_faisabilite_solaire,
+            "lettre_faisabilite": enr_result.lettre_faisabilite_solaire.strip(),
             "faisabilité_calculee": data["Faisabilité_calculée"],
         },
 
@@ -86,7 +87,7 @@ def get_output_by_id(id_projet: str, session: Session = Depends(get_session)):
             "enr_globale_scenario_max": round(enr_result.enr_globale_scenario_max_thermique,2),
             "conso_carbone": int(enr_result.conso_carbone_pv_thermique),
             "cout_total": int(enr_result.cout_total_pv_thermique),
-            "lettre_faisabilite": enr_result.lettre_faisabilite_thermique
+            "lettre_faisabilite": enr_result.lettre_faisabilite_thermique.strip()
         },
 
           "hybride": {
@@ -98,6 +99,6 @@ def get_output_by_id(id_projet: str, session: Session = Depends(get_session)):
             "enr_globale_scenario_max": round(enr_result.enr_globale_scenario_max_hybride,2),
             "conso_carbone": int(enr_result.conso_carbone_pv_hybride),
             "cout_total": int(enr_result.cout_total_pv_hybride),
-            "lettre_faisabilite": enr_result.lettre_faisabilite_hybride
+            "lettre_faisabilite": enr_result.lettre_faisabilite_hybride.strip()
         }
     }}}

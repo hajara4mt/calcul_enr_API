@@ -615,7 +615,8 @@ def calcul_Pv (slug_principal , slug_appoint ,type_toiture ,conso_elec , surface
     ratio_conso_totale_projet_pv = conso_totale_proj_PV / surface
 
     total_impact_pv, total_cout_pv = calcul_carbone_et_cout_sql(slugs_energie , consos ,reseau_principal , reseau_appoint )
-    
+    total_cout_pv = total_cout_pv / surface
+    total_impact_pv = total_impact_pv / surface
    # print(pmoy_mensuelle)
    # print(f"puissance_talon_elec : {puissance_talon_elec}")
 #    print(f"puissance retenue est : {Puissance_pv_retenue}")
@@ -770,7 +771,8 @@ def calcul_thermique (slug_principal , slug_appoint , type_toiture , rendement ,
 
     conso_thermique = [ conso_thermique_principale_proj_thermique , conso_thermique_appoint_proj  , conso_elec_proj_thermique]
     total_impact_thermique, total_cout_thermique = calcul_carbone_et_cout_sql(slugs_energie , conso_thermique ,reseau_principal , reseau_appoint )
-
+    total_impact_thermique = (total_impact_thermique / surface)
+    total_cout_thermique = (  total_cout_thermique / surface)
     return  int(surface_solaire_thermique_retenue) ,  int(ratio_conso_totale_proj_thermique) , round(taux_ENR_Local_thermique, 2) , round(taux_ENR_Local_thermique_max,2) , round(enr_globale_thermique , 2)  , round(enr_globale_thermique_scenario_max ,2) ,   round(total_impact_thermique,2) ,    round(total_cout_thermique, 2)
 
 ####""----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#######
@@ -926,7 +928,8 @@ def calcul_hybride(slug_principal , slug_appoint ,type_toiture , rendement  , co
     conso_hybride = [ conso_thermique_principale_proj_hybride , conso_thermique_appoint_proj_hybride  , conso_elec_proj_hybride]
   
     conso_carbone_hybride, cout_total_hybride = calcul_carbone_et_cout_sql(slugs_energie , conso_hybride ,reseau_principal , reseau_appoint )
-    
+    conso_carbone_hybride = (conso_carbone_hybride / surface)
+    cout_total_hybride = (cout_total_hybride / surface)
     return round(surface_solaire_hybride_retenue,1) , round(ratio_conso_totale_proj_hybride,1), round(taux_ENR_Local_hybride,2) ,round(taux_ENR_Local_hybride_scenario_max,2) , round(enr_globale_hybride,2) , round(enr_globale_hybride_scenario_max ,2)  , round(conso_carbone_hybride,1) , round(  cout_total_hybride ,1)
 
 
@@ -1012,7 +1015,7 @@ def faisabilite(type_toiture, situation, zone_administrative1):
     print(f"   ➤ Lettre finale    : {lettre}")
     print(details_impacts)
 
-    return lettre, json.dumps(details_impacts)
+    return lettre.strip(), json.dumps(details_impacts)
 
 
 
