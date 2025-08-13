@@ -226,9 +226,10 @@ def load_rendement_ecs(energie_ecs_slug: str):
     type_ecs_label = SLUG_TO_TYPE_ECS.get(energie_ecs_slug)
     if not type_ecs_label:
         raise ValueError(f"Slug ECS inconnu : {energie_ecs_slug}")
+   
 
     # Requête SQL sécurisée (liaison de paramètre)
-    query = text("SELECT * FROM dbo.rendements_systems_ecs WHERE Type_ecs = :type")
+    query = text("SELECT rendement  FROM dbo.rendements_systems_ecs WHERE Type_ecs = :type ")
     with engine.connect() as conn:
         result = conn.execute(query, {"type": type_ecs_label})
         row = result.fetchone()
@@ -237,8 +238,30 @@ def load_rendement_ecs(energie_ecs_slug: str):
         
         return dict(row._mapping)
 
+def load_efficacite_chauffage( systeme_chauffage_slug:str):
+    SLUG_TO_TYPE_ECS = {
+      "inco": "Inconnu",
+      "elec": "Electrique",
+      "fioul": "Fioul",
+      "gaz": "Gaz",
+      "bois": "Bois",
+      "pac": "PAC",
+      "geo": "Géothermie",
+      "rcu": "rcu"}
 
 
+    type_chauffage = SLUG_TO_TYPE_ECS.get(systeme_chauffage_slug)
+    if not type_chauffage:
+        raise ValueError(f"Slug chauffage  inconnu : {systeme_chauffage_slug}")
+    
+    query = text("SELECT efficacite_chauffage  , Rendement_global , Rendement_production FROM dbo.rendements_systems_ecs WHERE Type_ecs = :type ")
+    with engine.connect() as conn:
+        result = conn.execute(query, {"type": type_chauffage})
+        row = result.fetchone()
+        if not row:
+            raise ValueError(f"Aucune correspondance trouvée pour Type_ecs = {type_chauffage}")
+        
+        return dict(row._mapping)
 
 
 ###le cout et l'impact carbone

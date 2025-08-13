@@ -20,26 +20,26 @@ class output_enr_r(SQLModel, table=True):
     lettre_faisabilite_solaire: Optional[str] = Field(default=None, max_length=10)
     Faisabilité_calculée_solaire: Optional[str] = None
 
-    # Thermique
-    puissance_retenue_thermique: Optional[float] = None
-    ratio_conso_totale_projet_thermique: Optional[float] = None
-    enr_local_thermique: Optional[float] = None
-    enr_local_max_thermique: Optional[float] = None
-    enr_global_thermique: Optional[float] = None
-    enr_globale_scenario_max_thermique: Optional[float] = None
-    conso_carbone_pv_thermique: Optional[float] = None
-    cout_total_pv_thermique: Optional[float] = None
-    lettre_faisabilite_thermique: Optional[str] = Field(default=None, max_length=10)
-    Faisabilité_calculée_thermique: Optional[str] = None
+    # géothermie
+    puissance_retenue_géothermie: Optional[float] = None
+    ratio_conso_totale_projet_géothermie: Optional[float] = None
+    enr_local_géothermie: Optional[float] = None
+    enr_local_max_géothermie: Optional[float] = None
+    enr_global_géothermie: Optional[float] = None
+    enr_globale_scenario_max_géothermie: Optional[float] = None
+    conso_carbone_géothermie: Optional[float] = None
+    cout_total_géothermie: Optional[float] = None
+    lettre_faisabilite_géothermie: Optional[str] = Field(default=None, max_length=10)
+    Faisabilité_calculée_géothermie: Optional[str] = None
 
-    # Hybride
-    puissance_retenue_hybride: Optional[float] = None
-    ratio_conso_totale_projet_hybride: Optional[float] = None
-    enr_local_hybride: Optional[float] = None
-    enr_local_max_hybride: Optional[float] = None
-    enr_global_hybride: Optional[float] = None
-    enr_globale_scenario_max_hybride: Optional[float] = None
-    conso_carbone_pv_hybride: Optional[float] = None
-    cout_total_pv_hybride: Optional[float] = None
-    lettre_faisabilite_hybride: Optional[str] = Field(default=None, max_length=10)
-    Faisabilité_calculée_hybride: Optional[str] = None
+    # biomasse
+    puissance_retenue_biomasse: Optional[float] = None
+    ratio_conso_totale_projet_biomasse: Optional[float] = None
+    enr_local_biomasse: Optional[float] = None
+    enr_local_max_biomasse: Optional[float] = None
+    enr_global_biomasse: Optional[float] = None
+    enr_globale_scenario_max_biomasse: Optional[float] = None
+    conso_carbone_biomasse: Optional[float] = None
+    cout_total_biomasse: Optional[float] = None
+    lettre_faisabilite_biomasse: Optional[str] = Field(default=None, max_length=10)
+    Faisabilité_calculée_biomasse: Optional[str] = None

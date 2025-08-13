@@ -142,7 +142,7 @@ class input(SQLModel, table=True):
     taux_enr_principal: Optional[float]  = Field(default = None , description= "Taux Enr du réseau principal %")
     conso_principal: Optional[float] = Field(default = None , description = "la consommation annuelle du réseau d'energie therique principale en (kWheu)")
     e_t_appoint: Energie = Field(default = None , description= "l'énergie thermique d'appoint")
-    reseau_appoint:  Optional[str] = Field(default = None , description= "le nom du réseau de cette energie thermique SI :l'énergie thermique d'appoint == RCU ou RFU ")
+    reseau_appoint:  Optional[str] = Field(default = None , description= "le numéro du réseau de cette energie thermique SI :l'énergie thermique d'appoint == RCU ou RFU ")
     taux_enr_appoint: Optional[float] = Field(default = None , description= "Taux Enr du réseau d'appoint %")
     conso_appoint: Optional[float] =Field(default = None , description = "la consommation annuelle du réseau d'energie therique d'appoint en (kWheu)")
     prod_solaire_existante: Optional[bool]  = Field(default = None , description= "la production solaire est existante ?")
