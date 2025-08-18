@@ -8,6 +8,18 @@ from app.models.response_modele_output import GetOutputByIdResponse
 import json
 
 router = APIRouter()
+def _safe_json_load(val):
+    if val is None:
+        return None
+    if isinstance(val, (dict, list)):
+        return val
+    if isinstance(val, str):
+        try:
+            return json.loads(val)
+        except json.JSONDecodeError:
+            return val  # renvoie la chaîne brute si ce n'est pas du JSON
+    return val
+
 
 @router.get("/resultats/{id_projet}" , response_model=GetOutputByIdResponse)
 def get_output_by_id(id_projet: str, session: Session = Depends(get_session)):
@@ -38,6 +50,8 @@ def get_output_by_id(id_projet: str, session: Session = Depends(get_session)):
             except json.JSONDecodeError:
                 pass
 
+    nom_solaire = getattr(enr_result, "nom_solaire", None) or "solaire"
+
     # 🔹 Structure de réponse complète
     return {
         "message": "Résultat complet récupéré avec succès",
@@ -62,10 +76,11 @@ def get_output_by_id(id_projet: str, session: Session = Depends(get_session)):
         },
 
         "indicateur": {
-            "enr_retenue": data["enr_retenue"]
+            "enr_retenue": data["enr_retenue"] , 
+            "enr_local_initial": data["taux_ENR_local_initial"]
         },
         "enr_r": { 
-          "solaire_pv": {
+          nom_solaire : {
             "puissance_retenue": int(enr_result.puissance_retenue_solaire),
             "ratio_conso_totale_projet": int(enr_result.ratio_conso_totale_projet_solaire),
             "enr_local": round(enr_result.enr_local_solaire,2),
@@ -77,28 +92,62 @@ def get_output_by_id(id_projet: str, session: Session = Depends(get_session)):
             "lettre_faisabilite": enr_result.lettre_faisabilite_solaire.strip(),
             "faisabilité_calculee": data["Faisabilité_calculée"],
         },
+        # --- géothermie ---
+        "géothermie": {
+                    "puissance_retenue": int(enr_result.puissance_retenue_géothermie),
+                    "ratio_conso_totale_projet": int(enr_result.ratio_conso_totale_projet_géothermie),
+                    "enr_local": enr_result.enr_local_géothermie,
+                    "enr_local_max": enr_result.enr_local_max_géothermie,
+                    "enr_global": enr_result.enr_global_géothermie,
+                    "enr_global_max": enr_result.enr_globale_scenario_max_géothermie,
+                    "conso_carbone": int(enr_result.conso_carbone_géothermie),
+                    "cout_total": int(enr_result.cout_total_géothermie),
+                    "lettre_faisabilite": enr_result.lettre_faisabilite_géothermie.strip(),
+                    "faisabilite_calculee": _safe_json_load(getattr(enr_result, "Faisabilité_calculée_géothermie", None)),
 
-          "thermique": {
-            "puissance_retenue": int(enr_result.puissance_retenue_thermique),
-            "ratio_conso_totale_projet": int(enr_result.ratio_conso_totale_projet_thermique),
-            "enr_local": round(enr_result.enr_local_thermique,2),
-            "enr_local_max": round(enr_result.enr_local_max_thermique,2),
-            "enr_global": round(enr_result.enr_global_thermique,2),
-            "enr_globale_scenario_max": round(enr_result.enr_globale_scenario_max_thermique,2),
-            "conso_carbone": int(enr_result.conso_carbone_pv_thermique),
-            "cout_total": int(enr_result.cout_total_pv_thermique),
-            "lettre_faisabilite": enr_result.lettre_faisabilite_thermique.strip()
-        },
+                },
+         # --- biomasse ---
+        "biomasse": {
+                    "puissance_retenue": int(enr_result.puissance_retenue_biomasse),
+                    "ratio_conso_totale_projet": int(enr_result.ratio_conso_totale_projet_biomasse),
+                    "enr_local": enr_result.enr_local_biomasse,
+                    "enr_local_max": enr_result.enr_local_max_biomasse,
+                    "enr_global": enr_result.enr_global_biomasse,
+                    "enr_global_max": enr_result.enr_globale_scenario_max_biomasse,
+                    "conso_carbone": int(enr_result.conso_carbone_biomasse),
+                    "cout_total": int(enr_result.cout_total_biomasse),
+                    "lettre_faisabilite": enr_result.lettre_faisabilite_biomasse.strip(),
+                    "faisabilite_calculee": _safe_json_load(getattr(enr_result, "Faisabilité_calculée_biomasse", None)),
+                },
+         # --- récupération de chaleur ---
+                "récupération de chaleur": {
+                    "puissance_retenue": int(enr_result.puissance_retenue_chaleur),
+                    "ratio_conso_totale_projet": int(enr_result.ratio_conso_totale_projet_chaleur),
+                    "enr_local": enr_result.enr_local_chaleur,
+                    "enr_local_max": enr_result.enr_local_max_chaleur,
+                    "enr_global": enr_result.enr_global_chaleur,
+                    "enr_global_max": enr_result.enr_global_scenario_max_chaleur,
+                    "conso_carbone": int(enr_result.conso_carbone_chaleur),
+                    "cout_total": int(enr_result.cout_total_chaleur),
+                    "lettre_faisabilite": enr_result.lettre_faisabilite_chaleur.strip(),
+                    "faisabilite_calculee": _safe_json_load(getattr(enr_result, "Faisabilité_calculée_chaleur", None)),
+                },
+        
 
-          "hybride": {
-            "puissance_retenue": int(enr_result.puissance_retenue_hybride),
-            "ratio_conso_totale_projet": int(enr_result.ratio_conso_totale_projet_hybride),
-            "enr_local": round(enr_result.enr_local_hybride,2),
-            "enr_local_max": round(enr_result.enr_local_max_hybride,2),
-            "enr_global": round(enr_result.enr_global_hybride,2),
-            "enr_globale_scenario_max": round(enr_result.enr_globale_scenario_max_hybride,2),
-            "conso_carbone": int(enr_result.conso_carbone_pv_hybride),
-            "cout_total": int(enr_result.cout_total_pv_hybride),
-            "lettre_faisabilite": enr_result.lettre_faisabilite_hybride.strip()
-        }
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }}}

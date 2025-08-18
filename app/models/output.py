@@ -13,7 +13,7 @@ class output(SQLModel, table=True):
     __tablename__ = "output_conso_initiales"
 
     Id: Optional[int] = Field(default=None, primary_key=True)
-    id_projet: Optional[int] = Field(default=None)
+    id_projet: Optional[str] = Field(default=None)
     conso_annuelles_totales_initiales: Optional[int] = Field(default=None)
     conso_annuelles_totales_initiales_ratio: Optional[int] = Field(default=None)
     cout_total_initial: Optional[int] = Field(default=None)

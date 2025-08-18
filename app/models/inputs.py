@@ -35,7 +35,7 @@ class strategy(str , Enum) :
 class zonegmi (str , Enum):
     rouge = "rouge"
     verte = "verte"
-    jaune = "jaune"
+    orange = "orange"
 
 class typesurface (str , Enum):
     su = "su"

@@ -7,6 +7,7 @@ class output_enr_r(SQLModel, table=True):
 
     Id: Optional[int] = Field(default=None, primary_key=True)
     id_projet: Optional[str] = Field(default=None)
+    nom_solaire: Optional[str] = Field(default=None) 
 
     # Solaire
     puissance_retenue_solaire: Optional[float] = None
@@ -43,3 +44,15 @@ class output_enr_r(SQLModel, table=True):
     cout_total_biomasse: Optional[float] = None
     lettre_faisabilite_biomasse: Optional[str] = Field(default=None, max_length=10)
     Faisabilité_calculée_biomasse: Optional[str] = None
+
+    ## Récup EU/EG :
+    puissance_retenue_chaleur : Optional[float] = None
+    ratio_conso_totale_projet_chaleur: Optional[float] = None
+    enr_local_chaleur : Optional[float] = None
+    enr_local_max_chaleur: Optional[float] = None
+    enr_global_chaleur : Optional[float] = None
+    enr_global_scenario_max_chaleur : Optional[float] = None
+    conso_carbone_chaleur: Optional[float] = None
+    cout_total_chaleur : Optional[float] = None
+    lettre_faisabilite_chaleur : Optional[str] = Field(default=None, max_length=10)
+    Faisabilité_calculée_chaleur : Optional[str] = None
