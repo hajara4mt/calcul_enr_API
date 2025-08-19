@@ -52,13 +52,21 @@ def get_output_by_id(id_projet: str, session: Session = Depends(get_session)):
 
     nom_solaire = getattr(enr_result, "nom_solaire", None) or "solaire"
 
+# 🔹 Transformation des inputs
+    projets_data = input_result.model_dump(exclude={"Id", "id_projet", "date_creation"})
+
+# Renommer la clé Id_utilisateur -> id_utilisateur_primaire
+    if "Id_utilisateur" in projets_data:
+      projets_data["id_utilisateur_primaire"] = projets_data.pop("Id_utilisateur")
+
+
     # 🔹 Structure de réponse complète
     return {
         "message": "Résultat complet récupéré avec succès",
         "id_projet": id_projet,
         "date_modelisation_derniere": result.data_modelisation_derniere.isoformat(),
         "date_creation_projet" : input_result.date_creation , 
-        "projets": input_result.model_dump(exclude={"Id", "id_projet" , "date_creation"}) , 
+        "projets": projets_data , 
 
 
 
@@ -93,7 +101,7 @@ def get_output_by_id(id_projet: str, session: Session = Depends(get_session)):
             "faisabilité_calculee": data["Faisabilité_calculée"],
         },
         # --- géothermie ---
-        "géothermie": {
+        "geothermie": {
                     "puissance_retenue": int(enr_result.puissance_retenue_géothermie),
                     "ratio_conso_totale_projet": int(enr_result.ratio_conso_totale_projet_géothermie),
                     "enr_local": enr_result.enr_local_géothermie,
@@ -120,7 +128,7 @@ def get_output_by_id(id_projet: str, session: Session = Depends(get_session)):
                     "faisabilite_calculee": _safe_json_load(getattr(enr_result, "Faisabilité_calculée_biomasse", None)),
                 },
          # --- récupération de chaleur ---
-                "récupération de chaleur": {
+                "recuperation_de_chaleur": {
                     "puissance_retenue": int(enr_result.puissance_retenue_chaleur),
                     "ratio_conso_totale_projet": int(enr_result.ratio_conso_totale_projet_chaleur),
                     "enr_local": enr_result.enr_local_chaleur,

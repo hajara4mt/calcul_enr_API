@@ -75,8 +75,13 @@ class input(SQLModel, table=True):
       
     id: Optional[int] = Field(default=None ,description="id sur la table Input " ,primary_key=True)
     id_projet: str = Field(description = "Id du projet envoyé dans le JSON ")
-    id_utilisateur : str = Field(description="le id de l'utilisateur envoyé dans le JSON ")
+    #id_utilisateur_primaire : str = Field(description="le id de l'utilisateur envoyé dans le JSON "")
    # id_projet: str 
+   # ✅ Alias ici
+    id_utilisateur_primaire: str = Field(
+        description="ID utilisateur interne (primaire)",
+        alias="id_utilisateur"
+    )
 
     typologie_projet: str = Field(description = "Typologie de projet ")
     nom_projet: str = Field(description="Nom du projet")
@@ -156,6 +161,7 @@ class input(SQLModel, table=True):
     surface_thermique: Optional[float] = Field(default = None , description="Surface de capteurs solaires thermiques installée en m²")
     date_creation: datetime = Field(default_factory=datetime.utcnow , description = "date de création de projet ")
 
+    
     @model_validator(mode="after")
     def check_dependencies(self):
         # Champs obligatoires si saisie_conso est True
@@ -197,3 +203,5 @@ class input(SQLModel, table=True):
 
         
         return self
+
+

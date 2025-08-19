@@ -29,7 +29,7 @@ def generer_id_projet():
 def create_projet_et_inputs(data: input, session: Session = Depends(get_session)):
     try:
         # 1. Génération automatique de l'ID projet
-        projet_existant = session.exec( select(Projects).where(Projects.id_utilisateur == data.id_utilisateur)
+        projet_existant = session.exec( select(Projects).where(Projects.id_utilisateur == data.id_utilisateur_primaire)
         ).first()
 
         if projet_existant and projet_existant.id_utilisateur_primaire:
@@ -42,7 +42,7 @@ def create_projet_et_inputs(data: input, session: Session = Depends(get_session)
 
 
         # 2. Création du projet (table projects)
-        projet = Projects(id_projet=id_projets, id_utilisateur=data.id_utilisateur , id_utilisateur_primaire=id_user_primary)
+        projet = Projects(id_projet=id_projets, id_utilisateur=data.id_utilisateur_primaire , id_utilisateur_primaire=id_user_primary)
         session.add(projet)
 
        # 3. Création de l'objet inputs avec ID projet injecté
@@ -71,7 +71,7 @@ def create_projet_et_inputs(data: input, session: Session = Depends(get_session)
         return {
             "message": "Projet enregistré avec succès",
             "id_projet": id_projets,
-            "id_utilisateur": id_user_primary , 
+            "id_utilisateur_primaire": id_user_primary , 
             "date_creation_projet": input_record.date_creation , 
             "date_modelisation_premiere": date_modelisation,
             "calculs": resultats
