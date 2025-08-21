@@ -1,0 +1,7 @@
+self.resultat_biomasse = [self.puissance_biomasse_retenue , self.ratio_conso_totale_proj_biomasse , self.enr_local_biomasse ,self.enr_local_biomasse_scenario_max, self.enr_globale_biomasse ,self.enr_globale_biomasse_scenario_max, self.total_impact_biomasse , self.total_cout_biomasse , self.Prod_enr_locale_totale_biomasse,  self.conso_elec_proj_biomasse  , self.conso_totale_proj_biomasse ,  self.prod_enr_globale_biomasse , self.lettre_biomasse , self.besoin_chaud_biomasse  ]
+
+self.resultat_geothermie = [self.puissance_pac_chaud_retenue , self.ratio_conso_totale_proj_geothermie , self.enr_local_geothermie , self.enr_local_geothermie_scenario_max , self.enr_globale_geothermie , self.enr_globale_geothermie_scenario_max , self.total_impact_geothermie , self.total_cout_geothermie , self.Prod_enr_locale_totale_geothermie ,  self.conso_elec_proj_geothermie  , self.conso_totale_proj_geothermie , self.prod_enr_globale_geothermie ,self.lettre_geothermie,  self.besoins_chauds_geothermie , self.besoins_thermiques_geothermie]
+
+self.resultat_eu_eg = [self.energie_eu_eg  , self.ratio_conso_total_chaleur  , self.enr_local_chaleur , self.enr_local_max_chaleur,  self.enr_global_chaleur , self.enr_global_scenario_max_chaleur,  self.total_impact_chaleur , self.total_cout_chaleur , self.Prod_enr_locale_totale_recuperation , self.conso_elec_proj_recuperation_chaleur , self.conso_totale_proj_chaleur , self.prod_enr_globale_chaleur , self.lettre_chaleur]
+
+

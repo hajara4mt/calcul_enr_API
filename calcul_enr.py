@@ -162,7 +162,7 @@ class ProjetCalcul:
         self.cons_ann_kwh = self.donnees_saisie["conso_elec_initial"]
         self.slug_strategie = self.donnees_saisie["strategie"]
         self.strategie = SLUG_TO_STRATEGIE.get(self.slug_strategie)
-        print(f"on voir c'est quoi la strategie : {self.slug_strategie}")
+      #  print(f"on voir c'est quoi la strategie : {self.slug_strategie}")
 
      #### Vérification et récupération du taux ENR principal
         # Taux ENR principal
@@ -302,10 +302,11 @@ class ProjetCalcul:
         #print("surface_thermique =", self.surface_thermique)
         #print("encombrement_toiture =", self.encombrement_toiture)
         #print("typologie =", self.typologie)
+       # print(f"chaud et froid : {self.prod_ch_f}")
 
-        self.Puissance_pv_retenue  ,self.ratio_conso_totale_projet_pv ,  self.enr_local_pv , self.enr_local_max_pv , self.enr_globale , self.enr_globale_scenario_max  ,   self.total_impact_pv, self.total_cout_pv , self.conso_thermique_appoint_proj , self.surface_pv_toiture_max , self.Production_EnR_locale_PV_autoconsommée = calcul_Pv (self.Rendement_globale , self.slug_principal , self.slug_appoint , self.type_toiture ,self.conso_elec , self.surface , self.energis,  self.strategie , E_T_principal , E_T_appoint , reseau_principal , reseau_appoint , self.taux_enr_principal , self.taux_enr_appoint , self.encombrement_toiture , conso_principal_1_convertie,conso_principal_2_convertie , self.surface_toiture , self.surface_parking , self.zone , self.masque ,self.systeme_chauffage , self.typologie ,  self.surface_pv , self.prod_solaire_existante, self.pv_saisie , self.thermique_saisie , self.surface_thermique , self.calcul_conso_chauffage , self.rendement_production , self.Consommation_ventilation , self.Conso_specifique, self.Conso_eclairage ,self.Consommations_annuelles_totales_initiales , self.Energie_ecs ,  self.rendement , self.jours_ouvrés ,self.besoins_ecs_40 , self.temperature_retenue , self.type_prod_ecs , self.usage_thermique, self.zone_climatique , self.typology  )  
+        self.Puissance_pv_retenue  ,self.ratio_conso_totale_projet_pv ,  self.enr_local_pv , self.enr_local_max_pv , self.enr_globale , self.enr_globale_scenario_max  ,   self.total_impact_pv, self.total_cout_pv , self.conso_thermique_appoint_proj , self.surface_pv_toiture_max , self.Production_EnR_locale_PV_autoconsommée , self.production_globale , self.Prod_enr_locale_totale = calcul_Pv (self.Rendement_globale , self.slug_principal , self.slug_appoint , self.type_toiture ,self.conso_elec , self.surface , self.energis,  self.strategie , E_T_principal , E_T_appoint , reseau_principal , reseau_appoint , self.taux_enr_principal , self.taux_enr_appoint , self.encombrement_toiture , conso_principal_1_convertie,conso_principal_2_convertie , self.surface_toiture , self.surface_parking , self.zone , self.masque ,self.systeme_chauffage , self.typologie ,  self.surface_pv , self.prod_solaire_existante, self.pv_saisie , self.thermique_saisie , self.surface_thermique , self.calcul_conso_chauffage , self.rendement_production , self.Consommation_ventilation , self.Conso_specifique, self.Conso_eclairage ,self.Consommations_annuelles_totales_initiales , self.Energie_ecs ,  self.rendement , self.jours_ouvrés ,self.besoins_ecs_40 , self.temperature_retenue , self.type_prod_ecs , self.usage_thermique, self.zone_climatique , self.typology  )  
         self.pv_resultat = [ self.Puissance_pv_retenue  ,self.ratio_conso_totale_projet_pv ,  self.enr_local_pv , self.enr_local_max_pv , self.enr_globale , self.enr_globale_scenario_max  ,   self.total_impact_pv,self.total_cout_pv , self.conso_thermique_appoint_proj , self.surface_pv_toiture_max , self.Production_EnR_locale_PV_autoconsommée]
-        lettre , self.details_impacts =faisabilite( self.type_toiture, self.situation, self.zone_administrative1)
+        self.lettre_pv , self.details_impacts = faisabilite ( self.type_toiture, self.situation, self.zone_administrative1)
         self.details_impacts = str(self.details_impacts)
        # print(f"details impaaaacts , {self.details_impacts}")
         
@@ -336,30 +337,33 @@ class ProjetCalcul:
        # self.calcul_conso_chauffage = self.coef_GV_amorti * self.Volume  / 1000 * 24 * self.dju_amorti * (1-(self.coef_reduction)) / (self.efficacite_chauffage) / self.surface
 
       #  print("les résultats de la géothermie sont : ")
-        print("iciii c'est laaa Biomasse  :")
-      #  print(f"la productio nn chaud f est : {prod_ch_f_slug}")
-       # print(f"la typologi comme ca est : {self.typology}")
+      ##  print("iciii c'est laaa Biomasse  :")
 
 
-
-        self.puissance_biomasse_retenue , self.ratio_conso_totale_proj_biomasse , self.enr_local_biomasse ,self.enr_local_biomasse_scenario_max, self.enr_globale_biomasse , self.enr_globale_biomasse_scenario_max, self.total_impact_biomasse , self.total_cout_biomasse , self.conso_elec_proj_biomasse , self.Prod_enr_locale_totale_biomasse , self.besoins_thermiques= calcul_biomase(self.deperdition_max , self.slug_strategie , self.strategie , self.typology, self.energis , reseau_principal , reseau_appoint  ,self.Rendement_globale , self.slug_principal , self.taux_enr_principal ,self.taux_enr_appoint , self.slug_appoint , self.calcul_conso_chauffage , conso_elec , self.rendement_production , self.Consommation_ventilation , self.Conso_specifique, self.Conso_eclairage, self.Consommations_annuelles_totales_initiales,  self.usage_thermique, self.zone_climatique , surface  ,self.besoins_ecs_40 , self.temperature_retenue , self.type_prod_ecs , self.jours_ouvrés , rendement , E_T_principal , E_T_appoint , conso_principal_1_convertie , conso_principal_2_convertie  , self.Energie_ecs ,  self.systeme_chauffage , self.zone , self.masque , self.surface_pv , self.prod_solaire_existante, self.pv_saisie , self.thermique_saisie , self.surface_thermique )
-        self.resultat_biomasse = [self.puissance_biomasse_retenue , self.ratio_conso_totale_proj_biomasse , self.enr_local_biomasse ,self.enr_local_biomasse_scenario_max, self.enr_globale_biomasse ,self.enr_globale_biomasse_scenario_max, self.total_impact_biomasse , self.total_cout_biomasse , self.conso_elec_proj_biomasse , self.Prod_enr_locale_totale_biomasse  , self.besoins_thermiques]
-        print(f"la faisabilite de la biomasse est ::::")
+##la biomasse 
+        self.puissance_biomasse_retenue , self.ratio_conso_totale_proj_biomasse , self.enr_local_biomasse ,self.enr_local_biomasse_scenario_max, self.enr_globale_biomasse , self.enr_globale_biomasse_scenario_max, self.total_impact_biomasse , self.total_cout_biomasse , self.conso_elec_proj_biomasse , self.Prod_enr_locale_totale_biomasse , self.conso_totale_proj_biomasse ,self.prod_enr_globale_biomasse,  self.besoin_chaud_biomasse= calcul_biomase(self.deperdition_max , self.slug_strategie , self.strategie , self.typology, self.energis , reseau_principal , reseau_appoint  ,self.Rendement_globale , self.slug_principal , self.taux_enr_principal ,self.taux_enr_appoint , self.slug_appoint , self.calcul_conso_chauffage , conso_elec , self.rendement_production , self.Consommation_ventilation , self.Conso_specifique, self.Conso_eclairage, self.Consommations_annuelles_totales_initiales,  self.usage_thermique, self.zone_climatique , surface  ,self.besoins_ecs_40 , self.temperature_retenue , self.type_prod_ecs , self.jours_ouvrés , rendement , E_T_principal , E_T_appoint , conso_principal_1_convertie , conso_principal_2_convertie  , self.Energie_ecs ,  self.systeme_chauffage , self.zone , self.masque , self.surface_pv , self.prod_solaire_existante, self.pv_saisie , self.thermique_saisie , self.surface_thermique )
+       # print(f"la faisabilite de la biomasse est ::::")
         self.lettre_biomasse , self.details_impacts_biomasse =  calcul_faisabilite_biomasse(self.zone_administrative1 ,self.situation ,   self.slug_temperature_emetteurs , self.slug_strategie  , self.slug_usage , self.prod_ch_f)
-        #print(f"la faisabilite de la biomasse est ::::{lettre_biomasse} et le total est : {total_note_biomasse}")
+        self.resultat_biomasse = [self.puissance_biomasse_retenue , self.ratio_conso_totale_proj_biomasse , self.enr_local_biomasse ,self.enr_local_biomasse_scenario_max, self.enr_globale_biomasse ,self.enr_globale_biomasse_scenario_max, self.total_impact_biomasse , self.total_cout_biomasse , self.Prod_enr_locale_totale_biomasse,  self.conso_elec_proj_biomasse  , self.conso_totale_proj_biomasse ,  self.prod_enr_globale_biomasse , self.lettre_biomasse , self.besoin_chaud_biomasse  ]
 
+
+####la geothermie 
+        self.puissance_pac_chaud_retenue , self.ratio_conso_totale_proj_geothermie , self.enr_local_geothermie , self.enr_local_geothermie_scenario_max , self.enr_globale_geothermie , self.enr_globale_geothermie_scenario_max , self.total_impact_geothermie , self.total_cout_geothermie , self.conso_elec_proj_geothermie , self.Prod_enr_locale_totale_geothermie , self.conso_totale_proj_geothermie , self.prod_enr_globale_geothermie ,  self.besoins_chauds_geothermie , self.besoins_thermiques_geothermie = calcul_geothermie (self.deperdition_max , self.strategie , self.slug_strategie ,self.energis , reseau_principal , reseau_appoint , self.taux_enr_principal ,self.taux_enr_appoint ,  self.slug_temperature_emetteurs , self.usage_thermique ,  self.surface_hors_emprise , self.Rendement_globale ,self.surface_parcelle , E_T_principal  , self.zone , self.masque , self.surface_pv , self.prod_solaire_existante, self.pv_saisie , self.thermique_saisie , self.surface_thermique , self.slug_principal , self.slug_appoint , self.calcul_conso_chauffage , conso_elec , self.rendement_production , self.Consommation_ventilation , self.Conso_specifique, self.Conso_eclairage, self.Consommations_annuelles_totales_initiales , self.zone_climatique , surface ,  self.typology ,self.besoins_ecs_40 , self.temperature_retenue , self.type_prod_ecs , self.jours_ouvrés , self.rendement ,  E_T_appoint , conso_principal_1_convertie , conso_principal_2_convertie , self.Energie_ecs , self.systeme_chauffage )
         self.lettre_geothermie , self.details_impacts_geothermie =  calcul_faisabilite_geothermie(self.zone_gmi ,self.situation ,   self.slug_temperature_emetteurs , self.slug_strategie  , self.slug_usage , self.prod_ch_f)
-
-        self.puissance_pac_chaud_retenue , self.ratio_conso_totale_proj_geothermie , self.enr_local_geothermie , self.enr_local_geothermie_scenario_max , self.enr_globale_geothermie , self.enr_globale_geothermie_scenario_max , self.total_impact_geothermie , self.total_cout_geothermie , self.conso_elec_proj_geothermie , self.Prod_enr_locale_totale_geothermie , self.besoins_thermiques= calcul_geothermie (self.deperdition_max , self.strategie , self.slug_strategie ,self.energis , reseau_principal , reseau_appoint , self.taux_enr_principal ,self.taux_enr_appoint ,  self.slug_temperature_emetteurs , self.usage_thermique ,  self.surface_hors_emprise , self.Rendement_globale ,self.surface_parcelle , E_T_principal  , self.zone , self.masque , self.surface_pv , self.prod_solaire_existante, self.pv_saisie , self.thermique_saisie , self.surface_thermique , self.slug_principal , self.slug_appoint , self.calcul_conso_chauffage , conso_elec , self.rendement_production , self.Consommation_ventilation , self.Conso_specifique, self.Conso_eclairage, self.Consommations_annuelles_totales_initiales , self.zone_climatique , surface ,  self.typology ,self.besoins_ecs_40 , self.temperature_retenue , self.type_prod_ecs , self.jours_ouvrés , self.rendement ,  E_T_appoint , conso_principal_1_convertie , conso_principal_2_convertie , self.Energie_ecs , self.systeme_chauffage )
-        self.Resultat_geothermie = [self.puissance_pac_chaud_retenue , self.ratio_conso_totale_proj_geothermie , self.enr_local_geothermie , self.enr_local_geothermie_scenario_max , self.enr_globale_geothermie , self.enr_globale_geothermie_scenario_max , self.total_impact_geothermie , self.total_cout_geothermie , self.conso_elec_proj_geothermie , self.Prod_enr_locale_totale_geothermie , self.besoins_thermiques]
+        self.resultat_geothermie = [self.puissance_pac_chaud_retenue , self.ratio_conso_totale_proj_geothermie , self.enr_local_geothermie , self.enr_local_geothermie_scenario_max , self.enr_globale_geothermie , self.enr_globale_geothermie_scenario_max , self.total_impact_geothermie , self.total_cout_geothermie , self.Prod_enr_locale_totale_geothermie ,  self.conso_elec_proj_geothermie  , self.conso_totale_proj_geothermie , self.prod_enr_globale_geothermie ,self.lettre_geothermie,  self.besoins_chauds_geothermie , self.besoins_thermiques_geothermie]
       
       
        # print("les résultats de la recuperation de chaleur  sont : ")
-        self.energie_eu_eg  , self.ratio_conso_total_chaleur  , self.enr_local_chaleur , self.enr_local_max_chaleur,  self.enr_global_chaleur , self.enr_global_scenario_max_chaleur,  self.total_impact_chaleur , self.total_cout_chaleur , self.Prod_enr_locale_totale_recuperation = recuperation_chaleur( self.energis  ,reseau_principal , reseau_appoint , self.taux_enr_principal , self.taux_enr_appoint ,  self.strategie , self.prod_ecs_slug , self.slug_strategie , self.slug_principal , self.slug_appoint , self.calcul_conso_chauffage , conso_elec , self.rendement_production , self.Rendement_globale ,self.Consommation_ventilation , self.Conso_specifique, self.Conso_eclairage,self.Consommations_annuelles_totales_initiales, self.usage_thermique, self.zone_climatique , surface ,  self.typology ,self.besoins_ecs_40 , self.temperature_retenue , self.type_prod_ecs , self.jours_ouvrés , self.rendement , E_T_principal , E_T_appoint , conso_principal_1_convertie , conso_principal_2_convertie , self.Energie_ecs , self.systeme_chauffage , self.zone , self.masque , self.surface_pv , self.prod_solaire_existante, self.pv_saisie , self.thermique_saisie , self.surface_thermique )  
-        print("la faisabilite RCU ")
+        self.energie_eu_eg  , self.ratio_conso_total_chaleur  , self.enr_local_chaleur , self.enr_local_max_chaleur,  self.enr_global_chaleur , self.enr_global_scenario_max_chaleur,  self.total_impact_chaleur , self.total_cout_chaleur , self.Prod_enr_locale_totale_recuperation , self.conso_elec_proj_recuperation_chaleur , self.conso_totale_proj_chaleur , self.prod_enr_globale_chaleur= recuperation_chaleur( self.energis  ,reseau_principal , reseau_appoint , self.taux_enr_principal , self.taux_enr_appoint ,  self.strategie , self.prod_ecs_slug , self.slug_strategie , self.slug_principal , self.slug_appoint , self.calcul_conso_chauffage , conso_elec , self.rendement_production , self.Rendement_globale ,self.Consommation_ventilation , self.Conso_specifique, self.Conso_eclairage,self.Consommations_annuelles_totales_initiales, self.usage_thermique, self.zone_climatique , surface ,  self.typology ,self.besoins_ecs_40 , self.temperature_retenue , self.type_prod_ecs , self.jours_ouvrés , self.rendement , E_T_principal , E_T_appoint , conso_principal_1_convertie , conso_principal_2_convertie , self.Energie_ecs , self.systeme_chauffage , self.zone , self.masque , self.surface_pv , self.prod_solaire_existante, self.pv_saisie , self.thermique_saisie , self.surface_thermique )  
         self.lettre_chaleur , self.details_chaleur = faisabilite_recup_chaleur(self.zone_administrative1 ,self.situation  )
+        self.resultat_eu_eg = [self.energie_eu_eg  , self.ratio_conso_total_chaleur  , self.enr_local_chaleur , self.enr_local_max_chaleur,  self.enr_global_chaleur , self.enr_global_scenario_max_chaleur,  self.total_impact_chaleur , self.total_cout_chaleur , self.Prod_enr_locale_totale_recuperation , self.conso_elec_proj_recuperation_chaleur , self.conso_totale_proj_chaleur , self.prod_enr_globale_chaleur , self.lettre_chaleur]
+
         self.enr_retenue_finale = self.choisir_meilleure_enr_nom()
-        print(f"le resultat de choix de meilleur est : {self.enr_retenue_finale}")
+        self.enraaa = self.choisir_meilleure_enr_exceptSOLAIRE()
+       ## print(f"le resultat de choix de meilleur est : {self.enr_retenue_finale} , spart le solare : {self.enraaa}")
+       ## print("les resultats de la combinaison est : ")
+        (self.enr_combinaison , self.ratio_conso_total_combinaison , self.enr_local_combinaison , self.enr_global_combinaison , self.total_impact_combinaison, self.total_cout_combinaison, self.lettre_combinaison) =self.combinaison_enr()
+
        ## conso_json = json.dumps(self.conso_energitiques1)
 
         output_enr = output_enr_r( 
@@ -462,7 +466,15 @@ class ProjetCalcul:
         lettre_faisabilite=self.meilleur["lettre_faisabilite"],
         taux_ENR_local_initial  = self.taux_enr_initial,
         Faisabilité_calculée = self.details_impacts ,
-        data_modelisation_derniere =datetime.now(timezone.utc) )
+        data_modelisation_derniere =datetime.now(timezone.utc) ,
+        enr_combinaison = self.enr_combinaison , 
+        enr_local_combinaison = self.enr_local_combinaison , 
+        lettre_faisabilite_combinaison = self.lettre_combinaison , 
+        enr_global_combinaison = self.enr_global_combinaison , 
+        ratio_conso_total_combinaison = self.ratio_conso_total_combinaison , 
+        total_impact_combinaison = self.total_impact_combinaison , 
+        total_cout_combinaison = self.total_cout_combinaison
+        )
         #usages_energitiques = usages_energitiques1 ,
         #conso_energitiques = conso_energitiques1)
         #usages_energitiques=json.dumps(usages_energitiques1),
@@ -526,8 +538,19 @@ class ProjetCalcul:
                 "conso_carbone_initial": int(raw_output["conso_carbone_initial"])
             },
             "indicateur":{"enr_retenue":self.enr_retenue_finale,
+                          "enr_combinaison" : self.enr_combinaison , 
                            "enr_local_initial" : raw_output["taux_ENR_local_initial"]                           
                            },
+            "combinaison" : {
+               "ratio_conso_totale_projet" : self.ratio_conso_total_combinaison , 
+               "enr_local" : self.enr_local_combinaison , 
+               "enr_global" : self.enr_global_combinaison , 
+               "lettre_faisabilite" : self.lettre_combinaison , 
+               "conso_carbone" : self.total_impact_combinaison , 
+               "cout_total" : self.total_cout_combinaison
+
+            } , 
+
             "enr_r":{ 
                
 
@@ -656,25 +679,38 @@ class ProjetCalcul:
         "enr_retenue": nom,
         })
 
-     print(f"✅ Meilleur scénario : {nom} avec {round(taux, 2)}% EnR locaux")
+    # print(f"✅ Meilleur scénario : {nom} avec {round(taux, 2)}% EnR locaux")
      return data , details_impacts , nom
 
 
 
     def choisir_meilleure_enr_nom(self) -> str:
-    
-    # petite normalisation pour comparer 0–1 et 0–100
-     def _norm_rate(x):
-        if x is None:
-            return float("-inf")
-        x = float(x)
-        return x * 100 if 0 <= x <= 1 else x
+     ##bareme des taux enr 
+     enr_barème = [
+        (0, 5, 1), (5, 10, 2), (10, 15, 3), (15, 20, 4),
+        (20, 25, 5), (25, 30, 6), (30, 35, 7), (35, 40, 8),
+        (40, 45, 9), (45, 50, 10), (50, 55, 11), (55, 60, 12),
+        (60, 65, 13), (65, 70, 14), (70, 75, 15), (75, 80, 16),
+        (80, 85, 17), (85, 90, 18), (90, 95, 19), (95, 101, 20),  # 101 pour inclure 100
+    ]
+     def note_enr(taux: float) -> int:
+        """Associe un taux ENR (%) à une note selon le barème"""
+        if taux is None:
+            return 0
+        for bas, haut, note in enr_barème:
+            if bas <= taux < haut:
+                return note
+        return 0
+     
+     note_lettre = {"A": 5, "B": 4, "C": 3, "D": 2, "E": 1}
 
-     _rank = {"A": 4, "B": 3, "C": 2, "D": 1, "E": 0}
+     def score_final(taux, lettre):
+        """Retourne la moyenne entre la note ENR et la note faisabilité"""
+        if not lettre or lettre.upper() == "E":
+            return -1  # exclure les E
+        return (note_enr(taux) + note_lettre.get(lettre.upper(), 0)) / 2
 
-    # suppose que self.meilleur est déjà rempli par choisir_meilleur_solaire(...)
-    # self.meilleur['enr_local'] = taux solaire du meilleur scénario
-    # self.meilleur['lettre_faisabilite'] = lettre commune solaire
+
      cand_solaire = {
         "name": "solaire",
         "taux": self.meilleur.get("enr_local") if hasattr(self, "meilleur") and self.meilleur else None,
@@ -696,28 +732,50 @@ class ProjetCalcul:
          "lettre" : (self.lettre_chaleur or "").upper() , 
       }
 
-    # 1) filtrer: faisabilité ≠ E et taux existant
-     candidats = [c for c in (cand_solaire, cand_geo, cand_bio , cand_rcu) if c["taux"] is not None and c["lettre"] != "E"]
-     if not candidats:
+     candidats = [cand_solaire, cand_geo, cand_bio, cand_rcu]
+
+    # Calculer les scores
+     for c in candidats:
+        c["score"] = score_final(c["taux"], c["lettre"])
+
+    # Filtrer ceux avec un score valide (>0)
+     valides = [c for c in candidats if c["score"] > 0]
+     if not valides:
         return "aucune"
 
-    # 2) choisir: max par taux ENR local, puis meilleure lettre en tie-break
-     gagnant = max(candidats, key=lambda c: (_norm_rate(c["taux"]), _rank.get(c["lettre"], -1)))
+    # Choisir le meilleur
+     gagnant = max(valides, key=lambda c: c["score"])
      return gagnant["name"]
     
 ###le meilleur des enr a part le solaire pour la combinaison 
 
     def choisir_meilleure_enr_exceptSOLAIRE(self) -> str:
    
-     def _norm_rate(x):
-        if x is None:
-            return float("-inf")
-        x = float(x)
-        return x * 100 if 0 <= x <= 1 else x
+     ##bareme des taux enr 
+     enr_barème = [
+        (0, 5, 1), (5, 10, 2), (10, 15, 3), (15, 20, 4),
+        (20, 25, 5), (25, 30, 6), (30, 35, 7), (35, 40, 8),
+        (40, 45, 9), (45, 50, 10), (50, 55, 11), (55, 60, 12),
+        (60, 65, 13), (65, 70, 14), (70, 75, 15), (75, 80, 16),
+        (80, 85, 17), (85, 90, 18), (90, 95, 19), (95, 101, 20),  # 101 pour inclure 100
+    ]
+     def note_enr(taux: float) -> int:
+        """Associe un taux ENR (%) à une note selon le barème"""
+        if taux is None:
+            return 0
+        for bas, haut, note in enr_barème:
+            if bas <= taux < haut:
+                return note
+        return 0
+     
+     note_lettre = {"A": 5, "B": 4, "C": 3, "D": 2, "E": 1}
 
-     _rank = {"A": 4, "B": 3, "C": 2, "D": 1, "E": 0}
+     def score_final(taux, lettre):
+        """Retourne la moyenne entre la note ENR et la note faisabilité"""
+        if not lettre or lettre.upper() == "E":
+            return -1  # exclure les E
+        return (note_enr(taux) + note_lettre.get(lettre.upper(), 0)) / 2
 
-   
      cand_geo = {
         "name": "geothermie",
         "taux": self.enr_local_geothermie,
@@ -734,13 +792,84 @@ class ProjetCalcul:
          "lettre" : (self.lettre_chaleur or "").upper() , 
       }
 
-    # 1) filtrer: faisabilité ≠ E et taux existant
-     candidats = [c for c in ( cand_geo, cand_bio , cand_rcu) if c["taux"] is not None and c["lettre"] != "E"]
-     if not candidats:
+     candidats = [ cand_geo, cand_bio, cand_rcu]
+
+    # Calculer les scores
+     for c in candidats:
+        c["score"] = score_final(c["taux"], c["lettre"])
+
+    # Filtrer ceux avec un score valide (>0)
+     valides = [c for c in candidats if c["score"] > 0]
+     if not valides:
         return "aucune"
 
-    # 2) choisir: max par taux ENR local, puis meilleure lettre en tie-break
-     gagnant = max(candidats, key=lambda c: (_norm_rate(c["taux"]), _rank.get(c["lettre"], -1)))
+    # Choisir le meilleur
+     gagnant = max(valides, key=lambda c: c["score"])
      return gagnant["name"]
+    
+    
+##### les combinaisons 
+    def combinaison_enr(self):
+       # print(f"conso_total_proj_combinaison : {conso_total_proj_combinaison }")
+        meilleure_hors_solaire = self.choisir_meilleure_enr_exceptSOLAIRE()
+        solaire = "solaire"
 
-      
+        enr_combinaison = meilleure_hors_solaire +  " + " + solaire 
+
+        if meilleure_hors_solaire == "geothermie":
+            autre_resultat = self.resultat_geothermie
+            type_enr = "geothermie"
+        elif meilleure_hors_solaire == "biomasse":
+            autre_resultat = self.resultat_biomasse
+            type_enr = "biomasse"
+        elif meilleure_hors_solaire == "recuperation_de_chaleur":
+            autre_resultat = self.resultat_eu_eg
+            type_enr = "recuperation_de_chaleur"
+        else:
+            return None
+        
+        solaire = self.pv_resultat
+
+       
+    ##les resultats calculés !
+        besoins_thermiques_combinaison = self.besoins_thermiques_geothermie
+        prod_enr_r_total_combinaison = self.Prod_enr_locale_totale + autre_resultat[8] - self.prod_enr_locale_site
+        conso_elec_projete_combinaison =  autre_resultat[9] - self.Production_EnR_locale_PV_autoconsommée
+        conso_total_proj_combinaison = autre_resultat[10] - self.Production_EnR_locale_PV_autoconsommée
+        ratio_conso_total_combinaison = conso_total_proj_combinaison / self.surface
+        print(f"conso_total_proj_combinaison : {conso_total_proj_combinaison }  ")
+
+
+        if type_enr in ["geothermie", "aerothermie"]:
+          denominateur = besoins_thermiques_combinaison + conso_elec_projete_combinaison
+          energie_PAC_delivre_combinaison = autre_resultat[13]
+        else:
+          denominateur = conso_elec_projete_combinaison
+          energie_PAC_delivre_combinaison = 0 
+        print(f"conso_total_proj_combinaison : {energie_PAC_delivre_combinaison}  ")
+
+        enr_local_combinaison = round(((prod_enr_r_total_combinaison / denominateur if denominateur else 0)*100),2)
+
+        ##Production EnR&R globale_ combinaison 
+
+        prod_global_combinaison = round((autre_resultat[11] +self.Production_EnR_locale_PV_autoconsommée  - (self.Production_EnR_locale_PV_autoconsommée * 0.26)),1)
+        enr_global_combinaison = round(((prod_global_combinaison / (conso_total_proj_combinaison + self.energie_PAC_delivre + energie_PAC_delivre_combinaison))*100),2)
+
+        ## emission carbone et cout 
+        total_impact_combinaison = round((autre_resultat[6] - (self.Production_EnR_locale_PV_autoconsommée * 0.064 / self.surface)),1)
+        total_cout_combinaison = round((autre_resultat[7] - (self.Production_EnR_locale_PV_autoconsommée * 0.25 / self.surface)),1)
+
+        ##La faisabilité : 
+        lettre_pv = self.lettre_pv                # ⚠️ doit être défini quelque part
+        lettre_autre = autre_resultat[12]         # faisabilité autre ENR
+
+        ordre = {"A": 1, "B": 2, "C": 3, "D": 4}  # plus petit chiffre = meilleure faisabilité
+
+    # On choisit la moins bonne (le max des deux)
+        lettre_combinaison = lettre_pv if ordre[lettre_pv] > ordre[lettre_autre] else lettre_autre
+       # print(f"la combinaison mise en place est : {enr_combinaison}")
+
+
+        return    enr_combinaison , int(ratio_conso_total_combinaison) , enr_local_combinaison , enr_global_combinaison , int(total_impact_combinaison), int(total_cout_combinaison), lettre_combinaison.strip()
+
+        

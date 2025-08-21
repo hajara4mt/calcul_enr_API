@@ -74,8 +74,8 @@ def calcul_carbone_et_cout_sql(slugs_energie: list, consos: list, reseau_princip
     total_cout = 0
 
    #  print("\n=== Début calcul carbone et coût ===")
-    print("Slugs énergie :", slugs_energie)
-    print("Consommations :", consos)
+   # print("Slugs énergie :", slugs_energie)
+   # print("Consommations :", consos)
    # print("Réseau principal :", reseau_principal, " | Réseau appoint :", reseau_appoint)
 
     for i in range(len(slugs_energie)):
@@ -90,16 +90,16 @@ def calcul_carbone_et_cout_sql(slugs_energie: list, consos: list, reseau_princip
             print(f"\n🔁 Energie non réseau : {slug}")
 
         data = load_data_co2_cout(slug, id_reseau)
-        print("📦 Données chargées :", data)
+      #  print("📦 Données chargées :", data)
 
         facteur_co2 = float(data["grammage_co2_kgco2_kwhef"])
         facteur_cout = float(data["cout_unitaire_euro_par_kwh"])
-        print(f"🌍 Facteur CO2 : {facteur_co2} kgCO2/kWh")
-        print(f"💶 Facteur Coût : {facteur_cout} €/kWh")
+     #   print(f"🌍 Facteur CO2 : {facteur_co2} kgCO2/kWh")
+       # print(f"💶 Facteur Coût : {facteur_cout} €/kWh")
 
         impact = conso_i * facteur_co2
         cout = conso_i * facteur_cout
-        print(f"📈 Consommation : {conso_i} kWh → Impact : {impact} kgCO2 | Coût : {cout} €")
+      #  print(f"📈 Consommation : {conso_i} kWh → Impact : {impact} kgCO2 | Coût : {cout} €")
 
         total_impact += impact
         total_cout += cout
@@ -448,7 +448,7 @@ def repartition_usages(slug_principal , slug_appoint , calcul_conso_chauffage , 
    # print(conso_E_ECS , round(float(taux_enr_initial) * 100, 3) , Prod_enr_bois , conso_elec_PAC )
 
 
-    print ("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    #print ("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
 
   #  print(f"conso ecs : {total_ECS}")
 
@@ -468,7 +468,7 @@ def calcul_Pv (Rendement_globale , slug_principal , slug_appoint ,type_toiture ,
     prod_enr_locale_site , calibration_ET1_ECS , calibration_ET1_clim , total_chauffage , total_thermique2 , total_thermique1, conso_surfacique_clim , total_ECS , besoin_60 , perte_bouclage , conso_E_ECS , taux_enr_initial , Prod_enr_bois , conso_elec_PAC , usages_energitiques , conso_energitiques , energie_PAC_delivre = repartition_usages(slug_principal , slug_appoint , calcul_conso_chauffage , conso_elec , rendement_production , Rendement_globale ,Consommation_ventilation , Conso_specifique, Conso_eclairage,Consommations_annuelles_totales_initiales, usage_thermique,zone_climatique , surface ,  typology ,besoins_ECS , temperature_retenue , type_prod_ecs , jours_ouvrés , rendement , E_T_principal , E_T_appoint , conso_principal_1_convertie , conso_principal_2_convertie , Energie_ECS , systeme_chauffage , zone , masque , surface_PV , prod_solaire_existante, pv_saisie , thermique_saisie , surface_thermique)
   #  print("productible photovo")
   #  print(productible_PV)
-
+   ## print(f"type de toiture est : {type_toiture}")
     with engine.connect() as conn:
         df_charges = pd.read_sql_query("SELECT * FROM dbo.courbes_charge_electrique", conn)
         df_occup = pd.read_sql_query("SELECT * FROM [dbo].[dimensionnement PV1]", conn)
@@ -485,6 +485,7 @@ def calcul_Pv (Rendement_globale , slug_principal , slug_appoint ,type_toiture ,
 
 
     # 1 - Calcul Surface PV toiture max
+
     coef_surface_pv = HYPOTHESE_SURFACE_PV[(type_toiture, encombrement_toiture)]
     surface_pv_toiture_max = surface_toiture * coef_surface_pv
 
@@ -655,7 +656,7 @@ def calcul_Pv (Rendement_globale , slug_principal , slug_appoint ,type_toiture ,
    # print(f"projection carbone total  : {total_impact_pv}")
 
 
-    return round(Puissance_pv_retenue , 0 ) ,round(ratio_conso_totale_projet_pv , 0) ,  enr_local_pv , enr_local_max_pv , enr_globale , enr_globale_scenario_max  ,  round( total_impact_pv,0) , round(total_cout_pv , 0) , conso_thermique_appoint_proj , surface_pv_toiture_max , int(Production_EnR_locale_PV_autoconsommée)
+    return round(Puissance_pv_retenue , 0 ) ,round(ratio_conso_totale_projet_pv , 0) ,  enr_local_pv , enr_local_max_pv , enr_globale , enr_globale_scenario_max  ,  round( total_impact_pv,0) , round(total_cout_pv , 0) , conso_thermique_appoint_proj , surface_pv_toiture_max , int(Production_EnR_locale_PV_autoconsommée) , production_globale , Prod_enr_locale_totale
 
 
 
@@ -670,7 +671,7 @@ def calcul_thermique (Rendement_globale , slug_principal , slug_appoint , type_t
     prod_enr_locale_site , calibration_ET1_ECS , calibration_ET1_clim , total_chauffage , total_thermique2 , total_thermique1 , conso_surfacique_clim , total_ECS , besoin_60 , perte_bouclage , conso_E_ECS , taux_enr_initial , Prod_enr_bois , conso_elec_PAC , usages_energitiques , conso_energitiques , energie_PAC_delivre = repartition_usages(slug_principal , slug_appoint , calcul_conso_chauffage , conso_elec , rendement_production , Rendement_globale, Consommation_ventilation , Conso_specifique, Conso_eclairage,Consommations_annuelles_totales_initiales, usage_thermique,zone_climatique , surface ,  typology ,besoins_ECS , temperature_retenue , type_prod_ecs , jours_ouvrés , rendement , E_T_principal , E_T_appoint , conso_principal_1_convertie , conso_principal_2_convertie , Energie_ECS , systeme_chauffage , zone , masque , surface_PV , prod_solaire_existante, pv_saisie , thermique_saisie , surface_thermique)
 
     P_EnR_locale_solaire_existante  , productible_solaire_thermique , productible_PV  = calcul_commun(zone , masque , surface_PV , prod_solaire_existante, pv_saisie , thermique_saisie , surface_thermique)
-    Puissance_pv_retenue  ,ratio_conso_totale_projet_pv ,  enr_local_pv , enr_local_max_pv , enr_globale , enr_globale_scenario_max  ,   total_impact_pv, total_cout_pv , conso_thermique_appoint_proj , surface_pv_toiture_max , Production_EnR_locale_PV_autoconsommée =  calcul_Pv (Rendement_globale , slug_principal , slug_appoint ,type_toiture ,conso_elec , surface , slugs_energie,  strategie , E_T_principal , E_T_appoint , reseau_principal , reseau_appoint , taux_enr_principal , taux_enr_appoint , encombrement_toiture , conso_principal_1_convertie,conso_principal_2_convertie , surface_toiture , surface_parking , zone , masque ,systeme_chauffage , typologie ,  surface_PV , prod_solaire_existante, pv_saisie , thermique_saisie , surface_thermique , calcul_conso_chauffage , rendement_production , Consommation_ventilation , Conso_specifique, Conso_eclairage ,Consommations_annuelles_totales_initiales , Energie_ECS ,  rendement , jours_ouvrés ,besoins_ECS , temperature_retenue , type_prod_ecs , usage_thermique,zone_climatique  ,  typology  ) 
+    Puissance_pv_retenue  ,ratio_conso_totale_projet_pv ,  enr_local_pv , enr_local_max_pv , enr_globale , enr_globale_scenario_max  ,   total_impact_pv, total_cout_pv , conso_thermique_appoint_proj , surface_pv_toiture_max , Production_EnR_locale_PV_autoconsommée , production_globale , Prod_enr_locale_totale =  calcul_Pv (Rendement_globale , slug_principal , slug_appoint ,type_toiture ,conso_elec , surface , slugs_energie,  strategie , E_T_principal , E_T_appoint , reseau_principal , reseau_appoint , taux_enr_principal , taux_enr_appoint , encombrement_toiture , conso_principal_1_convertie,conso_principal_2_convertie , surface_toiture , surface_parking , zone , masque ,systeme_chauffage , typologie ,  surface_PV , prod_solaire_existante, pv_saisie , thermique_saisie , surface_thermique , calcul_conso_chauffage , rendement_production , Consommation_ventilation , Conso_specifique, Conso_eclairage ,Consommations_annuelles_totales_initiales , Energie_ECS ,  rendement , jours_ouvrés ,besoins_ECS , temperature_retenue , type_prod_ecs , usage_thermique,zone_climatique  ,  typology  ) 
 
 
 ##surface solaire thermique max
@@ -795,6 +796,7 @@ def calcul_thermique (Rendement_globale , slug_principal , slug_appoint , type_t
 ####""----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#######
 
 def calcul_hybride(Rendement_globale , slug_principal , slug_appoint ,type_toiture , rendement  , conso_elec , slugs_energie , strategie , E_T_principal , E_T_appoint ,  surface , taux_enr_principal , reseau_principal , reseau_appoint , taux_enr_appoint ,  conso_principal_1_convertie , conso_principal_2_convertie , calcul_conso_chauffage ,zone , masque , surface_PV , prod_solaire_existante, pv_saisie , thermique_saisie , surface_thermique ,  rendement_production , Consommation_ventilation , Conso_specifique, Conso_eclairage,Consommations_annuelles_totales_initiales, typology ,besoins_ECS , encombrement_toiture, temperature_retenue , type_prod_ecs , jours_ouvrés ,  usage_thermique,zone_climatique , surface_toiture , surface_parking , typologie, Energie_ECS , systeme_chauffage ) :
+    surface_solaire_thermique_max_hybride = 0 
     #P_EnR_locale_solaire_existante  , productible_solaire_thermique , productible_PV = calcul_commun
     P_EnR_locale_solaire_existante  , productible_solaire_thermique , productible_PV  = calcul_commun(zone , masque , surface_PV , prod_solaire_existante, pv_saisie , thermique_saisie , surface_thermique)
 
@@ -803,7 +805,7 @@ def calcul_hybride(Rendement_globale , slug_principal , slug_appoint ,type_toitu
     taux_baisse = Baisse_conso_besoins.get(strategie, 0)  
 
 
-    Puissance_pv_retenue  ,ratio_conso_totale_projet_pv ,  enr_local_pv , enr_local_max_pv , enr_globale , enr_globale_scenario_max  ,   total_impact_pv, total_cout_pv , conso_thermique_appoint_proj , surface_pv_toiture_max , Production_EnR_locale_PV_autoconsommée =  calcul_Pv (Rendement_globale , slug_principal , slug_appoint , type_toiture ,conso_elec , surface , slugs_energie,  strategie , E_T_principal , E_T_appoint , reseau_principal , reseau_appoint , taux_enr_principal , taux_enr_appoint , encombrement_toiture , conso_principal_1_convertie,conso_principal_2_convertie , surface_toiture , surface_parking , zone , masque ,systeme_chauffage , typologie ,  surface_PV , prod_solaire_existante, pv_saisie , thermique_saisie , surface_thermique , calcul_conso_chauffage , rendement_production , Consommation_ventilation , Conso_specifique, Conso_eclairage ,Consommations_annuelles_totales_initiales , Energie_ECS ,  rendement , jours_ouvrés ,besoins_ECS , temperature_retenue , type_prod_ecs , usage_thermique,zone_climatique  ,  typology  ) 
+    Puissance_pv_retenue  ,ratio_conso_totale_projet_pv ,  enr_local_pv , enr_local_max_pv , enr_globale , enr_globale_scenario_max  ,   total_impact_pv, total_cout_pv , conso_thermique_appoint_proj , surface_pv_toiture_max , Production_EnR_locale_PV_autoconsommée , production_globale , Prod_enr_locale_totale =  calcul_Pv (Rendement_globale , slug_principal , slug_appoint , type_toiture ,conso_elec , surface , slugs_energie,  strategie , E_T_principal , E_T_appoint , reseau_principal , reseau_appoint , taux_enr_principal , taux_enr_appoint , encombrement_toiture , conso_principal_1_convertie,conso_principal_2_convertie , surface_toiture , surface_parking , zone , masque ,systeme_chauffage , typologie ,  surface_PV , prod_solaire_existante, pv_saisie , thermique_saisie , surface_thermique , calcul_conso_chauffage , rendement_production , Consommation_ventilation , Conso_specifique, Conso_eclairage ,Consommations_annuelles_totales_initiales , Energie_ECS ,  rendement , jours_ouvrés ,besoins_ECS , temperature_retenue , type_prod_ecs , usage_thermique,zone_climatique  ,  typology  ) 
 
 
     Hypotheses_puissance_PV_hybride = 425/(1.899 * 1.096)
@@ -815,7 +817,7 @@ def calcul_hybride(Rendement_globale , slug_principal , slug_appoint ,type_toitu
     hypothese_COP_PAC_ST =3.5
 ##Surface  solaire Hybride max
     if type_toiture == "Inclinée bac acier ou autres":
-       surface_solaire_hybride_max_hybride = 0
+       surface_solaire_thermique_max_hybride = 0
     else : 
         surface_solaire_thermique_max_hybride = surface_pv_toiture_max
     
@@ -1042,7 +1044,8 @@ def calcul_geothermie (deperdition_max , strategie , slug_strategie ,slugs_energ
     P_EnR_locale_solaire_existante  , productible_solaire_thermique , productible_PV  = calcul_commun(zone , masque , surface_PV , prod_solaire_existante, pv_saisie , thermique_saisie , surface_thermique)
    # Puissance_pv_retenue  ,ratio_conso_totale_projet_pv ,  enr_local_pv , enr_local_max_pv , enr_globale , enr_globale_scenario_max  ,   total_impact_pv, total_cout_pv , conso_thermique_appoint_proj , surface_pv_toiture_max , Production_EnR_locale_PV_autoconsommée =  calcul_Pv (Rendement_globale , slug_principal , slug_appoint ,type_toiture ,conso_elec , surface , slugs_energie,  strategie , E_T_principal , E_T_appoint , reseau_principal , reseau_appoint , taux_enr_principal , taux_enr_appoint , encombrement_toiture , conso_principal_1_convertie,conso_principal_2_convertie , surface_toiture , surface_parking , zone , masque ,systeme_chauffage , typologie ,  surface_PV , prod_solaire_existante, pv_saisie , thermique_saisie , surface_thermique , calcul_conso_chauffage , rendement_production , Consommation_ventilation , Conso_specifique, Conso_eclairage ,Consommations_annuelles_totales_initiales , Energie_ECS ,  rendement , jours_ouvrés ,besoins_ECS , temperature_retenue , type_prod_ecs , usage_thermique,zone_climatique  ,  typology  ) 
 
-    besoin_chaud = deperdition_max
+    besoin_chaud = deperdition_max 
+    print(f"deperdition max est : {besoin_chaud}")
     taux_baisse = Baisse_conso_besoins.get(strategie, 0)  
 
     ##print(f"le besoin chaud est : {besoin_chaud}")
@@ -1286,7 +1289,7 @@ def calcul_geothermie (deperdition_max , strategie , slug_strategie ,slugs_energ
     total_cout_geothermie = (  total_cout_geothermie / surface)
  #   print(f"les couts sont : {total_cout_geothermie*surface} et les impacts sont : {total_impact_geothermie*surface}")
 
-    return round(puissance_pac_chaud_retenue,1) ,round(ratio_conso_totale_proj_geothermie,1)  , enr_local_geothermie , enr_local_geothermie_scenario_max ,  enr_globale_geothermie , enr_globale_geothermie_scenario_max , round(total_impact_geothermie,1) , round(total_cout_geothermie,1) , round(conso_elec_proj_geothermie , 2) , round(Prod_enr_locale_totale_geothermie , 2) , besoins_thermiques
+    return round(puissance_pac_chaud_retenue,1) ,round(ratio_conso_totale_proj_geothermie,1)  , enr_local_geothermie , enr_local_geothermie_scenario_max ,  enr_globale_geothermie , enr_globale_geothermie_scenario_max , round(total_impact_geothermie,1) , round(total_cout_geothermie,1) , round(conso_elec_proj_geothermie , 2) , round(Prod_enr_locale_totale_geothermie , 2) , conso_totale_proj_geothermie , prod_enr_globale_geothermie,  round(besoins_chauds_geothermie , 2) , besoins_thermiques
 
 
 
@@ -1683,7 +1686,7 @@ def calcul_biomase(deperdition_max , slug_strategie , strategie , typology, slug
     total_cout_biomasse = ( total_cout_biomasse / surface)
   #  print(f"les couts sont : {total_cout_biomasse} et les impacts sont : {total_impact_biomasse} , et le maximum est : {total_cout_biomasse_max} et le carbone : {total_impact_biomasse_max}")
 
-    return round(puissance_biomasse_retenue , 2) , round(ratio_conso_totale_proj_biomasse, 1)  , enr_local_biomasse , enr_local_biomasse_scenario_max,  enr_globale_biomasse , enr_globale_biomasse_scenario_max,  round(total_impact_biomasse,2) , round(total_cout_biomasse,2) ,conso_elec_proj_biomasse ,  round(Prod_enr_locale_totale_biomasse,2) , besoins_thermiques
+    return round(puissance_biomasse_retenue , 2) , round(ratio_conso_totale_proj_biomasse, 1)  , enr_local_biomasse , enr_local_biomasse_scenario_max,  enr_globale_biomasse , enr_globale_biomasse_scenario_max,  round(total_impact_biomasse,2) , round(total_cout_biomasse,2) ,conso_elec_proj_biomasse ,  round(Prod_enr_locale_totale_biomasse,2) ,conso_totale_proj_biomasse  ,round(prod_enr_globale_biomasse , 2) ,  besoin_chaud_biomasse
 
 def calcul_faisabilite_biomasse (zone_administrative1 ,situation , slug_temperature_emetteurs ,  slug_strategie , slug_usage , prod_ch_f  ):
     total_note = 0
@@ -1720,9 +1723,10 @@ def calcul_faisabilite_biomasse (zone_administrative1 ,situation , slug_temperat
     
     usage_clim = "Sans clim" if inputs["usage_thermique"] in USAGES_SANS_CLIM else "Avec Clim"
     strategie_humaine = "Sans réno ou réno légère" if inputs["strategie"] in STRATEGIES_SANS_RENO else "Réno lourde"
+    print(f"la situation est : {situation}")
 
      ##Cas particulier 3 : situation urbain 
-    if situation == "urbain":
+    if situation.lower().strip()  == "urbain":
         print("⚠️ Cas particulier : la situation est urbaine ! ")
         lettre_forcee = "D"
 ##Cas particulier 1 
@@ -1815,11 +1819,11 @@ def calcul_faisabilite_biomasse (zone_administrative1 ,situation , slug_temperat
         details_impacts[clean_key] = note
 
 
-        print(f"🟩 Critère : {crit}")
+      #  print(f"🟩 Critère : {crit}")
         # print(f"    ➤ Valeur saisie        : {valeur_utilisateur}")
-        print(f"    ➤ Note trouvée         : {note}")
-        print(f"    ➤ Pondération          : {ponderation}")
-        print(f"    ➤ Score pondéré        : {total_note}")
+       # print(f"    ➤ Note trouvée         : {note}")
+       # print(f"    ➤ Pondération          : {ponderation}")
+        #print(f"    ➤ Score pondéré        : {total_note}")
 
 
 
@@ -1843,7 +1847,7 @@ def calcul_faisabilite_biomasse (zone_administrative1 ,situation , slug_temperat
 }
 
 # Affichage lisible
-    print("le details impacts est :", json.dumps(details_impacts_clean, ensure_ascii=False, indent=2))
+    ##print("le details impacts est :", json.dumps(details_impacts_clean, ensure_ascii=False, indent=2))
 
    
 
@@ -1856,7 +1860,7 @@ def recuperation_chaleur( slugs_energie  ,reseau_principal , reseau_appoint , ta
     taux_baisse = Baisse_conso_besoins.get(strategie, 0) 
 
     besoins_ecs_annuels = total_ECS * rendement
-    print(f"le besoin ecs annuels est : {besoins_ecs_annuels} ,slug_strategie: {slug_strategie} , prod_ecs_slug : {prod_ecs_slug} ")
+   ## print(f"le besoin ecs annuels est : {besoins_ecs_annuels} ,slug_strategie: {slug_strategie} , prod_ecs_slug : {prod_ecs_slug} ")
     if slug_strategie == "bn": 
         if prod_ecs_slug== "pc" : 
             solution = "pac sur eg"
@@ -1864,7 +1868,7 @@ def recuperation_chaleur( slugs_energie  ,reseau_principal , reseau_appoint , ta
             solution = "_"
     else:
         solution = "recuperateur douche"
-    print(f"solution technique retenue : {solution}")
+ #   print(f"solution technique retenue : {solution}")
     
 #% besoins traités 
     if solution =="recuperateur douche" : 
@@ -1873,14 +1877,14 @@ def recuperation_chaleur( slugs_energie  ,reseau_principal , reseau_appoint , ta
         besoins_traites_pourcentage = 1
     else : 
         besoins_traites_pourcentage = 0
-    print(f"%besoins traités est : {besoins_traites_pourcentage}")
+    #print(f"%besoins traités est : {besoins_traites_pourcentage}")
     
 #COP système moyen annuel
     if solution == "pac sur eg":
         cop_moyen_annuel = 3.5
     else : 
         cop_moyen_annuel = 0 
-    print(f"cop sustème moyen annuel : {cop_moyen_annuel}")
+   # print(f"cop sustème moyen annuel : {cop_moyen_annuel}")
 #Surface LT necessaire
     surface_lt = max(40 , (surface*0.01)) 
 #energie Recup EU/EG
@@ -1890,26 +1894,26 @@ def recuperation_chaleur( slugs_energie  ,reseau_principal , reseau_appoint , ta
         energie_eu_eg = besoins_ecs_annuels /cop_moyen_annuel * (cop_moyen_annuel - 1)
     else : 
         energie_eu_eg = 0 
-    print(f"lenergie recup eu.eg : {energie_eu_eg} et la surface lt necessaire est : {surface_lt}")
+    #print(f"lenergie recup eu.eg : {energie_eu_eg} et la surface lt necessaire est : {surface_lt}")
     
 #conso elec pac sur eg 
     if solution == 'pac sur eg' :
        conso_elec_pac_eg = besoins_ecs_annuels / cop_moyen_annuel
     else : 
         conso_elec_pac_eg = 0 
-    print(f"conso ele PAC sur EG est : {conso_elec_pac_eg}")
+   # print(f"conso ele PAC sur EG est : {conso_elec_pac_eg}")
 #Production EnR locale totale (existante + récup EU/EG)
     Prod_enr_locale_totale_recuperation =  energie_eu_eg - conso_elec_pac_eg +P_EnR_locale_solaire_existante + energie_PAC_delivre - conso_elec_PAC + Prod_enr_bois
 # Consommation elec projetée
     conso_elec_proj_recuperation_chaleur = conso_elec * (1-taux_baisse )
-    print(f"total_thermique1 est : {total_thermique1} , P_EnR_locale_solaire_existante : {P_EnR_locale_solaire_existante} et Prod_enr_locale_totale_recuperation : {Prod_enr_locale_totale_recuperation} , et conso_elec_proj_recuperation_chaleur : {conso_elec_proj_recuperation_chaleur}")
+   # print(f"total_thermique1 est : {total_thermique1} , P_EnR_locale_solaire_existante : {P_EnR_locale_solaire_existante} et Prod_enr_locale_totale_recuperation : {Prod_enr_locale_totale_recuperation} , et conso_elec_proj_recuperation_chaleur : {conso_elec_proj_recuperation_chaleur}")
 
 
 #Consommation thermique principale projetée (combustible ou RCU)
     
 
     if E_T_principal in [ "Aucune" , "Réseau de froid"] :
-        print(f"E_T_Prin : {E_T_principal}")
+        #print(f"E_T_Prin : {E_T_principal}")
         conso_thermique_principale_proj_chaleur = total_thermique1 * (1-taux_baisse)
     else :
        conso_thermique_principale_proj_chaleur = (total_thermique1 * (1-taux_baisse)) - energie_eu_eg
@@ -1917,7 +1921,7 @@ def recuperation_chaleur( slugs_energie  ,reseau_principal , reseau_appoint , ta
     conso_thermique_appoint_proj_chaleur = total_thermique2 * (1-taux_baisse)
 ## consommation totale projetee 
     conso_totale_proj_chaleur = conso_elec_proj_recuperation_chaleur + conso_thermique_appoint_proj_chaleur + conso_thermique_principale_proj_chaleur
-    print(f"les conso on y trouve : conso_elec_proj_recuperation_chaleur : {conso_elec_proj_recuperation_chaleur} , conso_thermique_principale_proj_chaleur : {conso_thermique_principale_proj_chaleur} ,conso_thermique_appoint_proj_chaleur : {conso_thermique_appoint_proj_chaleur} ")
+   # print(f"les conso on y trouve : conso_elec_proj_recuperation_chaleur : {conso_elec_proj_recuperation_chaleur} , conso_thermique_principale_proj_chaleur : {conso_thermique_principale_proj_chaleur} ,conso_thermique_appoint_proj_chaleur : {conso_thermique_appoint_proj_chaleur} ")
     ratio_conso_total_chaleur = round((conso_totale_proj_chaleur / surface),1)
 ##Taux EnR&R local
     enr_local_chaleur = round(((Prod_enr_locale_totale_recuperation / (conso_totale_proj_chaleur + energie_PAC_delivre))*100),1)
@@ -1930,7 +1934,7 @@ def recuperation_chaleur( slugs_energie  ,reseau_principal , reseau_appoint , ta
 
     prod_enr_rcu_chaleur = round(((part_reseau1 + part_reseau2)*100),0)
 
-    print(f"Production EnR RCU rcu : {prod_enr_rcu_chaleur}")
+   # print(f"Production EnR RCU rcu : {prod_enr_rcu_chaleur}")
 
 ##Production EnR mix élec et gaz
     prod_enr_mix_chaleur=  conso_elec_proj_recuperation_chaleur * Taux_EnR_mix_E_national_Elec
@@ -1945,30 +1949,30 @@ def recuperation_chaleur( slugs_energie  ,reseau_principal , reseau_appoint , ta
       #prod_enr_mix_geothermie_max += conso_thermique_appoint_proj_geothermie * Taux_EnR_mix_E_national_Gaz
 
     
-    print(f"Production EnR mix élec et gaz -chaleur-: {conso_thermique_appoint_proj_chaleur}")
+   # print(f"Production EnR mix élec et gaz -chaleur-: {conso_thermique_appoint_proj_chaleur}")
 
 ##production enr globale chaleur  
-    prod_enr_globale_chaleur = ( Prod_enr_locale_totale_recuperation + prod_enr_rcu_chaleur + prod_enr_mix_chaleur)
+    prod_enr_globale_chaleur = round(( Prod_enr_locale_totale_recuperation + prod_enr_rcu_chaleur + prod_enr_mix_chaleur),2)
 
    
-    print(f"production enr&r globale-chaleur- : {prod_enr_globale_chaleur} ")
+  #  print(f"production enr&r globale-chaleur- : {prod_enr_globale_chaleur} ")
 ##Taux enR&R global 
 ####### à corriger 
     enr_globale_chaleur = round((  (prod_enr_globale_chaleur / (energie_PAC_delivre + conso_totale_proj_chaleur))*100),2)
     enr_globale_chaleur_scenario_max = enr_globale_chaleur
 
-    print(f"le taux enr&r global-chaleur- est : {enr_globale_chaleur} et local est : {enr_local_chaleur}")
+  #  print(f"le taux enr&r global-chaleur- est : {enr_globale_chaleur} et local est : {enr_local_chaleur}")
 ##cout et impact carbone 
     conso_thermique = [ conso_thermique_principale_proj_chaleur , conso_thermique_appoint_proj_chaleur  , conso_elec_proj_recuperation_chaleur]
 
     total_impact_chaleur, total_cout_chaleur = calcul_carbone_et_cout_sql(slugs_energie , conso_thermique ,reseau_principal , reseau_appoint )
 
-   # total_impact_chaleur = (total_impact_chaleur / surface)
+    total_impact_chaleur = (total_impact_chaleur / surface)
 
-   # total_cout_chaleur = ( total_cout_chaleur / surface)
-    print(f"les couts sont : {total_cout_chaleur} et les impacts sont : {total_impact_chaleur} ")
+    total_cout_chaleur = ( total_cout_chaleur / surface)
+  #  print(f"les couts sont : {total_cout_chaleur} et les impacts sont : {total_impact_chaleur} ")
 
-    return round(energie_eu_eg , 2) , round(ratio_conso_total_chaleur, 1)  , enr_local_chaleur , enr_local_chaleur_scenario_max,  enr_globale_chaleur , enr_globale_chaleur_scenario_max,  round(total_impact_chaleur,2) , round(total_cout_chaleur,2) , round(Prod_enr_locale_totale_recuperation,2)
+    return round(energie_eu_eg , 2) , round(ratio_conso_total_chaleur, 1)  , enr_local_chaleur , enr_local_chaleur_scenario_max,  enr_globale_chaleur , enr_globale_chaleur_scenario_max,  round(total_impact_chaleur,2) , round(total_cout_chaleur,2) , round(Prod_enr_locale_totale_recuperation,2) , round(conso_elec_proj_recuperation_chaleur , 2 ) , round(conso_totale_proj_chaleur , 2) , prod_enr_globale_chaleur
 
 
 def faisabilite_recup_chaleur(zone_administrative1 ,situation   ):
@@ -2051,7 +2055,7 @@ def faisabilite_recup_chaleur(zone_administrative1 ,situation   ):
     else:
         lettre = "E"
 
-    print("details_impacts (cf):", json.dumps(details_impacts, ensure_ascii=False), "| total=", total_note, "| lettre=", lettre)
+  #  print("details_impacts (cf):", json.dumps(details_impacts, ensure_ascii=False), "| total=", total_note, "| lettre=", lettre)
     return lettre, json.dumps(details_impacts, ensure_ascii=False)
     
 

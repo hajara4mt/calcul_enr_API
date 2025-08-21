@@ -36,6 +36,21 @@ class output(SQLModel, table=True):
     taux_ENR_local_initial : Optional[float] = Field(default=None)
     Faisabilité_calculée : Optional[Any] = Field(default=None, sa_column=Column(SQLAlchemyJSON))
     data_modelisation_derniere:Optional[datetime] = None
+    enr_combinaison : Optional[str]=  Field(default=None)
+    enr_local_combinaison : Optional[float] = Field(default=None)
+    lettre_faisabilite_combinaison : Optional[str] = Field(default=None)
+    enr_global_combinaison : Optional[float] = Field(default=None)
+    ratio_conso_total_combinaison : Optional[float] = Field(default=None)
+    total_impact_combinaison : Optional[float] = Field(default=None)
+    total_cout_combinaison : Optional[float] = Field(default=None)
+
+
+
+
+
+    
+
+
     #Faisabilité_calculée: Optional[Any] = Field(default=None, sa_column=Column(String))
     #Faisabilité_calculée: Optional[Dict[str, int]] = Field(default=None, sa_column=Column(SQLAlchemyJSON))
     

@@ -53,7 +53,7 @@ def get_output_by_id(id_projet: str, session: Session = Depends(get_session)):
     nom_solaire = getattr(enr_result, "nom_solaire", None) or "solaire"
 
 # 🔹 Transformation des inputs
-    projets_data = input_result.model_dump(exclude={"Id", "id_projet", "date_creation"})
+    projets_data = input_result.model_dump(exclude={"Id", "id" ,"id_projet", "date_creation"})
 
 # Renommer la clé Id_utilisateur -> id_utilisateur_primaire
     if "Id_utilisateur" in projets_data:
@@ -85,8 +85,19 @@ def get_output_by_id(id_projet: str, session: Session = Depends(get_session)):
 
         "indicateur": {
             "enr_retenue": data["enr_retenue"] , 
+            "enr_combinaison" : data["enr_combinaison"] , 
             "enr_local_initial": data["taux_ENR_local_initial"]
+            
         },
+         "combinaison" : {
+               "ratio_conso_totale_projet" : data["ratio_conso_total_combinaison"] , 
+               "enr_local" : data["enr_local_combinaison"] , 
+               "enr_global" : data["enr_global_combinaison"] , 
+               "lettre_faisabilite" : data["lettre_faisabilite_combinaison"].strip() , 
+               "conso_carbone" : data["total_impact_combinaison"] , 
+               "cout_total" : data["total_cout_combinaison"]
+
+            } , 
         "enr_r": { 
           nom_solaire : {
             "puissance_retenue": int(enr_result.puissance_retenue_solaire),

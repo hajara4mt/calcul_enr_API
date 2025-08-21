@@ -46,7 +46,7 @@ class typesurface (str , Enum):
 class typetoiture ( str , Enum):
     te ="te"
     it = "it"
-    ibq ="iba"
+    iba ="iba"
     iza = "iza"
 
 class Energie(str, Enum):
@@ -164,6 +164,7 @@ class input(SQLModel, table=True):
     
     @model_validator(mode="after")
     def check_dependencies(self):
+    
         # Champs obligatoires si saisie_conso est True
         if self.saisie_conso:
             champs = [
@@ -200,6 +201,18 @@ class input(SQLModel, table=True):
             raise ValueError("thermique_saisie est requis si donnees_dispo_thermique = 'prod_a'")
         if self.donnees_dispo_thermique == "surface" and self.surface_thermique is None:
             raise ValueError("surface_thermique est requis si donnees_dispo_thermique = 'Surface'")
+        
+        #zone rcu 
+        if self.proximite_rcu is False:
+            if self.zone_rcu_prioritaire:
+                raise ValueError("zone_rcu_prioritaire ne doit pas être renseigné si proximite_rcu = False")
+            if self.rcu_proximite:
+                raise ValueError("rcu_proximite ne doit pas être renseigné si proximite_rcu = False")
+            if self.taux_enr_rcu not in (None, 0):
+                raise ValueError("taux_enr_rcu ne doit pas être renseigné si proximite_rcu = False")
+
+    
+    
 
         
         return self

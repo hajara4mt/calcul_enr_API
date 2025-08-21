@@ -29,26 +29,50 @@ def generer_id_projet():
 def create_projet_et_inputs(data: input, session: Session = Depends(get_session)):
     try:
         # 1. Génération automatique de l'ID projet
-        projet_existant = session.exec( select(Projects).where(Projects.id_utilisateur == data.id_utilisateur_primaire)
+
+        # ID reçu depuis l'API
+        id_utilisateur_recu = data.id_utilisateur_primaire
+
+        # 🔹 1. Vérifier si correspond à un id_utilisateur_primaire
+        projet_existant = session.exec(
+            select(Projects).where(Projects.id_utilisateur_primaire == id_utilisateur_recu)
         ).first()
 
-        if projet_existant and projet_existant.id_utilisateur_primaire:
-          id_user_primary = projet_existant.id_utilisateur_primaire
-        else:
-           id_user_primary = generer_id_utilisateur_primaire()
+        if projet_existant:
+            # Cas 1️⃣ : déjà primaire → on garde l'ancien id_utilisateur associé
+            id_user_primary = projet_existant.id_utilisateur_primaire
+            id_user = projet_existant.id_utilisateur
 
+        else:
+            # 🔹 2. Vérifier si correspond à un id_utilisateur
+            projet_existant = session.exec(
+                select(Projects).where(Projects.id_utilisateur == id_utilisateur_recu)
+            ).first()
+
+            if projet_existant:
+                # Cas 2️⃣ : déjà utilisateur → on garde le primaire déjà associé
+                id_user_primary = projet_existant.id_utilisateur_primaire
+                id_user = projet_existant.id_utilisateur
+            else:
+                # Cas 3️⃣ : nouveau → on crée un primaire et on stocke l’utilisateur reçu
+                id_user_primary = generer_id_utilisateur_primaire()
+                id_user = id_utilisateur_recu
+
+        # 🔹 3. Générer un nouvel ID projet
         id_projets = generer_id_projet()
 
-
-
-        # 2. Création du projet (table projects)
-        projet = Projects(id_projet=id_projets, id_utilisateur=data.id_utilisateur_primaire , id_utilisateur_primaire=id_user_primary)
+        # 🔹 4. Créer et insérer le projet
+        projet = Projects(
+            id_projet=id_projets,
+            id_utilisateur=id_user,
+            id_utilisateur_primaire=id_user_primary
+        )
         session.add(projet)
 
        # 3. Création de l'objet inputs avec ID projet injecté
         input_dict = data.model_dump()
         input_dict["id_projet"] = id_projets
-        input_dict["id_utilisateur"] = id_user_primary  
+        input_dict["id_utilisateur"] = id_user_primary 
 
 
        
