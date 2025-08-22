@@ -1,5 +1,18 @@
-def repartition_usages2(energis , slug_principal , slug_appoint , calcul_conso_chauffage  , rendement_production ,Rendement_globale,  Consommation_ventilation , Conso_specifique, Conso_eclairage, usage_thermique,zone_climatique , surface ,  typology ,besoins_ECS , temperature_retenue , type_prod_ecs , jours_ouvrés , rendement , E_T_principal , E_T_appoint ,    Energie_ECS , systeme_chauffage , zone , masque , surface_PV , prod_solaire_existante, pv_saisie , thermique_saisie , surface_thermique , reseau_principal , reseau_appoint ): 
+def repartition_usages1(energis , slug_principal , slug_appoint , calcul_conso_chauffage , conso_elec , rendement_production ,Rendement_globale, conso_principal , conso_appoint ,   Consommation_ventilation , Conso_specifique, Conso_eclairage, usage_thermique,zone_climatique , surface ,  typology ,besoins_ECS , temperature_retenue , type_prod_ecs , jours_ouvrés , rendement , E_T_principal , E_T_appoint , Energie_ECS , systeme_chauffage , zone , masque , surface_PV , prod_solaire_existante, pv_saisie , thermique_saisie , surface_thermique , reseau_principal , reseau_appoint): 
+
+    
     P_EnR_locale_solaire_existante  , productible_thermique , productible_PV = calcul_commun (zone , masque , surface_PV , prod_solaire_existante, pv_saisie , thermique_saisie , surface_thermique)
+##on definit les conso : 
+    conso_principal_1_convertie = convertir_consommation(E_T_principal, conso_principal)
+    conso_principal_2_convertie = convertir_consommation(E_T_appoint, conso_appoint)
+
+    Consommations_annuelles_totales_initiales = conso_elec + conso_principal_1_convertie + conso_principal_2_convertie 
+    Consommations_annuelles_totales_initiales_ratio = Consommations_annuelles_totales_initiales / surface
+    consos = [conso_principal_1_convertie ,conso_principal_2_convertie , conso_elec ]
+    
+    total_impact, total_cout = calcul_carbone_et_cout_sql(energis , consos ,reseau_principal , reseau_appoint )
+    
+
 ##conso_surfacique_clim
     if usage_thermique in ["chauffage + clim + ecs", "chauffage + clim"]:
         conso_surfacique_clim = conso_clim[typology][zone_climatique]
@@ -35,7 +48,7 @@ def repartition_usages2(energis , slug_principal , slug_appoint , calcul_conso_c
     
 
 
-##la repartition d'usages (kWh/m²)) : 
+##la repartition d'usages : 
     chauffage = calcul_conso_chauffage
    # print(f"on comence par le chauffage on voit la repartirion par usage /m : {calcul_conso_chauffage}")
     climatisation = conso_surfacique_clim
@@ -43,7 +56,6 @@ def repartition_usages2(energis , slug_principal , slug_appoint , calcul_conso_c
     autres_usages = Consommation_ventilation + Conso_eclairage + Conso_specifique 
    # print(f"on decortique la conso autre usage : {autres_usages} , ventillation : {Consommation_ventilation} , eclairage : {Conso_eclairage} , specifique : {Conso_specifique}")
     total = calcul_conso_chauffage + conso_surfacique_clim + conso_E_ECS + autres_usages
-
 #Répartition par usage (kWh/)
     chauffage_kwh = chauffage * surface
     climatisation_kwh = climatisation * surface
@@ -61,32 +73,12 @@ def repartition_usages2(energis , slug_principal , slug_appoint , calcul_conso_c
 
     repartition_conso_hors_clim = ECS_kwh /(ECS_kwh + chauffage_kwh )
 
-##Hypothèse % énergie principale]
-    if E_T_principal == "Aucune" : 
-        hypothese_E_T_principal = 0 
-    elif E_T_principal == "Réseau de froid" : 
-        hypothese_E_T_principal == 1
-    elif E_T_appoint in [ "Fioul" , "Charbon" , "Bois plaquettes", "Bois granulés" , "Réseau de chaleur" , "Gaz butane/propane" , "Gaz naturel" ] : 
-        hypothese_E_T_principal == 0.7
-    else :
-        hypothese_E_T_principal == 1
-
-##Hypothèse % énergie appoint : 
-    if E_T_appoint == "Aucune" : 
-        hypothese_E_T_appoint = 0 
-    elif E_T_appoint == "Réseau de froid" : 
-        hypothese_E_T_appoint == 1
-    else :
-        hypothese_E_T_appoint == 1 - hypothese_E_T_principal
-
-    
-
  
 ###Energie thermique 1 
 #### Climatisation 
 
     if E_T_principal== "Réseau de froid":
-        calibration_ET1_clim = chauffage_kwh
+        calibration_ET1_clim = conso_principal_1_convertie
     elif E_T_principal in  ["Aucune" , "Fioul" , "Charbon" , "Bois plaquettes", "Bois granulés" , "Réseau de chaleur" , "Gaz butane/propane" , "Gaz naturel" ]:
         calibration_ET1_clim = 0 
     else : 
@@ -95,40 +87,45 @@ def repartition_usages2(energis , slug_principal , slug_appoint , calcul_conso_c
 ##Energie_ECS
     if Energie_ECS in [ "Electrique" , "PAC" , "Géothermie" , "Inconnu"] or E_T_principal in ["Réseau de froid" , "Aucune"] :
         calibration_ET1_ECS = 0
+    elif Energie_ECS == systeme_chauffage :
+        calibration_ET1_ECS = repartition_conso_hors_clim *conso_principal_1_convertie
     else : 
-        calibration_ET1_ECS = ECS_kwh  * hypothese_E_T_principal
+        calibration_ET1_ECS = conso_principal_1_convertie
    
     #print(f"🔋 Valeur  ECS : {calibration_ET1_ECS} kWh")
 ##chuffage
 
     if systeme_chauffage in [ "Electrique" , "PAC" , "Géothermie" , "Inconnu"] or  E_T_principal in ["Réseau de froid" , "Aucune"] :
         calibration_ET1_chauffage = 0
-    elif  E_T_appoint in ["Aucune" , "Réseau de froid"] : 
-        calibration_ET1_chauffage = chauffage_kwh - calibration_ET1_ECS
+    elif Energie_ECS == systeme_chauffage :
+        calibration_ET1_chauffage = conso_principal_1_convertie - calibration_ET1_ECS
     else : 
-        calibration_ET1_chauffage = chauffage_kwh * hypothese_E_T_principal - calibration_ET1_ECS
+        calibration_ET1_chauffage = conso_principal_1_convertie
 
     ##total energie thermique 1 :
     total_thermique1 = calibration_ET1_chauffage + calibration_ET1_ECS  + calibration_ET1_clim
    # print(f"total thermique 1  : {total_thermique1} , celle de clim est : {calibration_ET1_ECS}")
 
 
-###Energie thermique 2
+    ###Energie thermique 2
 #climatisation 
 
     if E_T_appoint== "Réseau de froid":
-        calibration_ET2_clim = climatisation_kwh
-    else : 
+        calibration_ET2_clim = conso_principal_2_convertie
+    elif E_T_appoint in  ["Aucune" , "Fioul" , "Charbon" , "Bois plaquettes", "Bois granulés" , "Réseau de chaleur" , "Gaz butane/propane" , "Gaz naturel" ]:
         calibration_ET2_clim = 0 
+    else : 
+        raise ValueError(f"Type d'energie principal termique inconnu : {E_T_appoint}")
     
    # print(f"🔁 la consommation énergitique de climatisation 2 est  : { calibration_ET2_clim} kWh/m²/an")
 
 ##Energie_ECS
     if Energie_ECS in [ "Electrique" , "PAC" , "Géothermie" , "Inconnu"] or E_T_appoint in ["Réseau de froid" , "Aucune"] :
         calibration_ET2_ECS = 0
-
+    elif systeme_chauffage == Energie_ECS :
+        calibration_ET2_ECS = repartition_conso_hors_clim *conso_principal_2_convertie
     else : 
-        calibration_ET2_ECS = ECS_kwh * hypothese_E_T_appoint
+        calibration_ET2_ECS = conso_principal_2_convertie
    
     #print(f"🔋 Valeur  ECS 2: {calibration_ET2_ECS} kWh")
 
@@ -136,8 +133,10 @@ def repartition_usages2(energis , slug_principal , slug_appoint , calcul_conso_c
 
     if systeme_chauffage in [ "Electrique" , "PAC" , "Géothermie" , "Inconnu"] or  E_T_appoint in ["Réseau de froid" , "Aucune"] :
         calibration_ET2_chauffage = 0
+    elif Energie_ECS == systeme_chauffage :
+        calibration_ET2_chauffage = conso_principal_2_convertie - calibration_ET2_ECS
     else : 
-        calibration_ET2_chauffage = chauffage_kwh * hypothese_E_T_appoint
+        calibration_ET2_chauffage = conso_principal_2_convertie
 
    # print(f"calibration chuffage 2: {calibration_ET2_chauffage}")
    
@@ -148,19 +147,32 @@ def repartition_usages2(energis , slug_principal , slug_appoint , calcul_conso_c
 ###elec
  
  ### chauffage 
-    calibration_elec_chauffage = chauffage_kwh - calibration_ET1_chauffage - calibration_ET2_chauffage
+    if (calibration_ET1_chauffage + calibration_ET2_chauffage ) == 0:
+        calibration_elec_chauffage = Consommations_annuelles_totales_initiales * chauffage_kwh_P
+       #calibration_elec_chauffage = Consommations_annuelles_totales_initiales 
+
+    else :
+        calibration_elec_chauffage = 0 
+
    # print(f"calibration chuffage_elec: {calibration_elec_chauffage} , et la conso annuelle est : {Consommations_annuelles_totales_initiales} , et le chauffage kwh pourcentage est : {chauffage_kwh_P}")   
 
 
  ##Climatisation 
-    calibration_elec_clim = climatisation_kwh - calibration_ET1_clim - calibration_ET2_clim
+    if (calibration_ET1_clim + calibration_ET2_clim) == 0 :
+        calibration_elec_clim = Consommations_annuelles_totales_initiales * climatisation_kwh_P
+    else : 
+        calibration_elec_clim = 0 
     #print(f"calibration_elec_clim: {calibration_elec_clim}")   
     
 ## ECS
-    calibration_elec_ECS = ECS_kwh - calibration_ET1_ECS - calibration_ET2_ECS
+    if (calibration_ET1_ECS + calibration_ET2_ECS)== 0 :
+        calibration_elec_ECS = Consommations_annuelles_totales_initiales * ECS_kwh_P
+    else : 
+        calibration_elec_ECS =  0
     #print(f"calibration_elec_ECS : {calibration_elec_ECS}")
 ##Autres usages 
-    calibration_elec_autres_usages = autres_usages_kwh
+    calibration_elec_autres_usages = conso_elec - (calibration_elec_chauffage + calibration_elec_clim + calibration_elec_ECS)
+    #print( "on detecte le probleme !")
     #print(f"le total ele chauffage dis moi: {calibration_elec_chauffage} ; conso_elec : {conso_elec}  ")
 
 
@@ -189,25 +201,11 @@ def repartition_usages2(energis , slug_principal , slug_appoint , calcul_conso_c
     ratio_total_final = total_final / surface
 
 
-###ratio_consommation par usaaage calibré
+###ratio_consommation par usaaage 
     ratio_ET1 = total_thermique1 / total_final
     ratio_ET2 = total_thermique2 / total_final
-    ratio_elec= total_elec / total_final
+    ratio_elec= conso_elec / total_final
     total_ratio = ratio_ET1 + ratio_ET2 + ratio_elec
-
-##les conso retenues si conso non connu ! 
-    conso_elec  = total_elec
-    conso_principal_1_convertie= total_thermique1
-    conso_principal_2_convertie = total_thermique2
-    Consommations_annuelles_totales_initiales = conso_elec + conso_principal_1_convertie + conso_principal_2_convertie
-
-    Consommations_annuelles_totales_initiales_ratio = Consommations_annuelles_totales_initiales / surface
-    consos = [conso_principal_1_convertie ,conso_principal_2_convertie , conso_elec ]
-    
-    total_impact, total_cout = calcul_carbone_et_cout_sql(energis , consos ,reseau_principal , reseau_appoint )
-    
-
-
  
 
 ## energie_PAC_delivre_existante
@@ -302,20 +300,5 @@ def repartition_usages2(energis , slug_principal , slug_appoint , calcul_conso_c
     "total": int(round(float(ratio_total_final) , 0))
     }
 
-
-   # print(conso_surfacique_clim , total_ECS , besoin_60 , perte_bouclage )
-
-   # print ("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-
-   # print(conso_E_ECS , round(float(taux_enr_initial) * 100, 3) , Prod_enr_bois , conso_elec_PAC )
-
-
-    #print ("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-
-  #  print(f"conso ecs : {total_ECS}")
-
-   # print ("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-   # print(f"total autre usages est : {total_autres_usages}")
-
-   # print(conso_energitiques)
+    return conso_principal_2_convertie, conso_principal_1_convertie , Consommations_annuelles_totales_initiales , Consommations_annuelles_totales_initiales_ratio,  total_impact, total_cout, prod_enr_locale_site , calibration_ET1_ECS , calibration_ET1_clim , total_chauffage , total_thermique2 ,total_thermique1 ,  conso_surfacique_clim , total_ECS , besoin_60 , perte_bouclage , conso_E_ECS , round(taux_enr_initial , 2) , Prod_enr_bois , conso_elec_PAC , usages_energitiques , conso_energitiques , energie_PAC_delivre
     return conso_principal_2_convertie, conso_principal_1_convertie , Consommations_annuelles_totales_initiales , Consommations_annuelles_totales_initiales_ratio,  total_impact, total_cout,  prod_enr_locale_site , calibration_ET1_ECS , calibration_ET1_clim , total_chauffage , total_thermique2 ,total_thermique1 ,  conso_surfacique_clim , total_ECS , besoin_60 , perte_bouclage , conso_E_ECS , round(taux_enr_initial , 2) , Prod_enr_bois , conso_elec_PAC , usages_energitiques , conso_energitiques , energie_PAC_delivre

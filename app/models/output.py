@@ -5,6 +5,8 @@ from datetime import datetime
 from sqlalchemy import Column , String , Text
 from uuid import UUID
 from sqlalchemy import JSON as SQLAlchemyJSON
+from sqlmodel import Field, JSON
+
 from typing import Any
 
 
@@ -36,7 +38,9 @@ class output(SQLModel, table=True):
     taux_ENR_local_initial : Optional[float] = Field(default=None)
     Faisabilité_calculée : Optional[Any] = Field(default=None, sa_column=Column(SQLAlchemyJSON))
     data_modelisation_derniere:Optional[datetime] = None
-    enr_combinaison : Optional[str]=  Field(default=None)
+ #   enr_combinaison : Optional[str]=  Field(default=None)
+    enr_combinaison: Optional[List[str]] = Field(default=None, sa_column=Column(JSON))
+
     enr_local_combinaison : Optional[float] = Field(default=None)
     lettre_faisabilite_combinaison : Optional[str] = Field(default=None)
     enr_global_combinaison : Optional[float] = Field(default=None)

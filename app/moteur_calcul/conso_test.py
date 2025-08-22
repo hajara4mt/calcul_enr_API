@@ -1689,7 +1689,7 @@ def calcul_geothermie (deperdition_max , strategie , slug_strategie ,energis , r
    # Puissance_pv_retenue  ,ratio_conso_totale_projet_pv ,  enr_local_pv , enr_local_max_pv , enr_globale , enr_globale_scenario_max  ,   total_impact_pv, total_cout_pv , conso_thermique_appoint_proj , surface_pv_toiture_max , Production_EnR_locale_PV_autoconsommée =  calcul_Pv (Rendement_globale , slug_principal , slug_appoint ,type_toiture ,conso_elec , surface , slugs_energie,  strategie , E_T_principal , E_T_appoint , reseau_principal , reseau_appoint , taux_enr_principal , taux_enr_appoint , encombrement_toiture , conso_principal_1_convertie,conso_principal_2_convertie , surface_toiture , surface_parking , zone , masque ,systeme_chauffage , typologie ,  surface_PV , prod_solaire_existante, pv_saisie , thermique_saisie , surface_thermique , calcul_conso_chauffage , rendement_production , Consommation_ventilation , Conso_specifique, Conso_eclairage ,Consommations_annuelles_totales_initiales , Energie_ECS ,  rendement , jours_ouvrés ,besoins_ECS , temperature_retenue , type_prod_ecs , usage_thermique,zone_climatique  ,  typology  ) 
 
     besoin_chaud = deperdition_max 
-  #  print(f"deperdition max est : {besoin_chaud}")
+    print(f"deperdition max est : {besoin_chaud}")
     taux_baisse = Baisse_conso_besoins.get(strategie, 0)  
 
     ##print(f"le besoin chaud est : {besoin_chaud}")
@@ -1730,13 +1730,13 @@ def calcul_geothermie (deperdition_max , strategie , slug_strategie ,energis , r
    # print(f" le nombre de sonde est : {nb_sondes}")
 ##Puissance Sous Sol max
     puissance_sous_sol_max = nb_sondes * 100 * 50 / 1000
-  #  print(f"la puissance sous sol max est : {puissance_sous_sol_max}")
+    print(f"la puissance sous sol max est : {puissance_sous_sol_max}")
 ##Puissance PAC calo max (chaud)
     puissance_pac_chaud = puissance_sous_sol_max / (cop_nominal-1) * cop_nominal
-  #  print(f"la puissance PAC calo Max -chaud- est : {puissance_pac_chaud}")
+    print(f"la puissance PAC calo Max -chaud- est : {puissance_pac_chaud}")
 ##puissance PAC COLO Max frigo 
     puissance_pac_frigo = puissance_sous_sol_max / (cop_nominal) * (cop_nominal -1) 
-   # print(f"la puissance PAC calo Max -frigo- est : {puissance_pac_frigo}")
+    print(f"la puissance PAC calo Max -frigo- est : {puissance_pac_frigo}")
 
 
 #Puissance PAC chaud retenue  
@@ -1754,12 +1754,12 @@ def calcul_geothermie (deperdition_max , strategie , slug_strategie ,energis , r
 
     puissance_pac_chaud_retenue_scenario_max = puissance_pac_chaud
 
-  #  print(f"la puissance PAC chaud retenue est : {puissance_pac_chaud_retenue}")
+    print(f"la puissance PAC chaud retenue est : {puissance_pac_chaud_retenue}")
 
 ## % besoin chaud 
     besoin_chaud_pourcentage = round(((puissance_pac_chaud_retenue  / besoin_chaud)*100),2)
     besoin_chaud_pourcentage_scenario_max = round(((puissance_pac_chaud_retenue_scenario_max  / besoin_chaud)*100),2)
-  #  print(f"le % besoin chaud est : {besoin_chaud_pourcentage} , besoin_chaud : {besoin_chaud} , puissance_pac_chaud : {puissance_pac_chaud}  ")
+    print(f"le % besoin chaud est : {besoin_chaud_pourcentage} , besoin_chaud : {besoin_chaud} , puissance_pac_chaud : {puissance_pac_chaud}  ")
 
 #puissance pac froid correspondante 
     puissance_pac_froid_correspondante = puissance_pac_chaud_retenue / cop_nominal * (cop_nominal-1)
@@ -1768,7 +1768,7 @@ def calcul_geothermie (deperdition_max , strategie , slug_strategie ,energis , r
 #Nb de sondes retenu
     nbre_sonde_retenue = puissance_pac_froid_correspondante * 1000 / (50*100)
     nbre_sonde_retenue_scenario_max = puissance_pac_froid_correspondante_scenario_max* 1000 / (50*100)
-  #  print(f"le nombre de sonde retenue est : {nbre_sonde_retenue}")
+    print(f"le nombre de sonde retenue est : {nbre_sonde_retenue}")
 #Surface max SGV scénario optimisé 
     surface_max_sgv_optimise = nbre_sonde_retenue / 0.03
     surface_max_sgv_maximum= nbre_sonde_retenue_scenario_max/ 0.03
@@ -1810,7 +1810,7 @@ def calcul_geothermie (deperdition_max , strategie , slug_strategie ,energis , r
         raise ValueError(f"Typologie inconnue : {typology}")
 
     taux_couverture_scenario_max =  int(ligne[typology].values[0])
-   # print(f"le Taux couverture des besoins chaud par la PAC en scenario max est : {taux_couverture} , {besoin_chaud} , besoin_chaud_pourcentage : {besoin_chaud_pourcentage}")
+    print(f"le Taux couverture des besoins chaud par la PAC en scenario max est : {taux_couverture} , {besoin_chaud} , besoin_chaud_pourcentage : {besoin_chaud_pourcentage}")
 
 
 ##besoins thermiques 
@@ -1840,7 +1840,7 @@ def calcul_geothermie (deperdition_max , strategie , slug_strategie ,energis , r
     Prod_enr_locale_totale_geothermie =  part_enr_geo +P_EnR_locale_solaire_existante + energie_PAC_delivre - conso_elec_PAC + Prod_enr_bois
     Prod_enr_locale_totale_geothermie_scenario_max =  part_enr_geo_max +P_EnR_locale_solaire_existante + energie_PAC_delivre - conso_elec_PAC + Prod_enr_bois
 
-  #  print(f"production enr locale totale : {Prod_enr_locale_totale_geothermie} ,part_enr_geo: {part_enr_geo} ,P_EnR_locale_solaire_existante : {P_EnR_locale_solaire_existante} , energie_PAC_delivre : {energie_PAC_delivre} , conso_elec_PAC : {conso_elec_PAC} , Prod_enr_bois: {Prod_enr_bois}   ")
+    print(f"production enr locale totale : {Prod_enr_locale_totale_geothermie} ,part_enr_geo: {part_enr_geo} ,P_EnR_locale_solaire_existante : {P_EnR_locale_solaire_existante} , energie_PAC_delivre : {energie_PAC_delivre} , conso_elec_PAC : {conso_elec_PAC} , Prod_enr_bois: {Prod_enr_bois}   ")
 # conso elec totale projetée 
     conso_elec_proj_geothermie = conso_elec * (1- taux_baisse) + conso_ele_pac_geothermie
     conso_elec_proj_geothermie_max = conso_elec * (1- taux_baisse) + conso_ele_pac_geothermie_scenario_max
@@ -1853,7 +1853,7 @@ def calcul_geothermie (deperdition_max , strategie , slug_strategie ,energis , r
         conso_elec_proj_geothermie = conso_elec_proj_geothermie
         conso_elec_proj_geothermie_max = conso_elec_proj_geothermie_max
 
- #   print(f"La consommation elec projetée pour la geothermie est : {conso_elec_proj_geothermie}")
+    print(f"La consommation elec projetée pour la geothermie est : {conso_elec_proj_geothermie}")
 ##Consommation thermique principale projetée (combustible ou RCU)
 
     if E_T_principal == "Aucune" :
@@ -1866,7 +1866,7 @@ def calcul_geothermie (deperdition_max , strategie , slug_strategie ,energis , r
         conso_thermique_principale_proj_geothermie = besoins_chauds_appoint / Rendement_globale + calibration_ET1_ECS
         conso_thermique_principale_proj_geothermie_max = besoins_chauds_appoint_scenario_max / Rendement_globale + calibration_ET1_ECS
 
- #   print(f"Consommation thermique principale projetée : {conso_thermique_principale_proj_geothermie}")
+    print(f"Consommation thermique principale projetée : {conso_thermique_principale_proj_geothermie}")
 
 #consommation thermique appoint projetée 
    # conso_thermique_appoint_proj_geothermie = conso_principal_2_convertie * (1 - taux_baisse) * Rendement_globale
@@ -1945,7 +1945,7 @@ def calcul_faisabilite_geothermie(zone_gmi , situation , slug_temperature_emette
 
 
     TABLE_FAISABILITE = "dbo.régles_faisabilité" 
-  #  print(f"la strategie est : {slug_strategie}")
+    print(f"la strategie est : {slug_strategie}")
 
     inputs = {
         "zone_gmi": zone_gmi.lower(), # rouge 
@@ -2088,7 +2088,7 @@ def calcul_faisabilite_geothermie(zone_gmi , situation , slug_temperature_emette
      # --- Lettre finale: forcée si défini, sinon barème ---
     final_letter = lettre_forcee or lettre
 
-  #  print(f"le details impacts est : {json.dumps(details_impacts_geothermie)} , lettre choisie est : {final_letter}" )
+    print(f"le details impacts est : {json.dumps(details_impacts_geothermie)} , lettre choisie est : {final_letter}" )
 
     return final_letter , json.dumps(details_impacts_geothermie, ensure_ascii=False)
 
@@ -2359,7 +2359,7 @@ def calcul_faisabilite_biomasse (zone_administrative1 ,situation , slug_temperat
     
     usage_clim = "Sans clim" if inputs["usage_thermique"] in USAGES_SANS_CLIM else "Avec Clim"
     strategie_humaine = "Sans réno ou réno légère" if inputs["strategie"] in STRATEGIES_SANS_RENO else "Réno lourde"
-  #  print(f"la situation est : {situation}")
+    print(f"la situation est : {situation}")
 
      ##Cas particulier 3 : situation urbain 
     if situation.lower().strip()  == "urbain":
@@ -2423,7 +2423,7 @@ def calcul_faisabilite_biomasse (zone_administrative1 ,situation , slug_temperat
 
 
     for crit in critères:
-      #  print(crit)
+        print(crit)
         filtres = (df_geo["Impacts"].str.lower() == crit["Impacts"].lower()) & (df_geo["Caractéristiques"].str.lower() == crit["Caractéristiques"].lower())
 
         if "Usage_climatisation" in crit:

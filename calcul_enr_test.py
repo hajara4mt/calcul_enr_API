@@ -834,7 +834,7 @@ class ProjetCalcul:
         conso_elec_projete_combinaison =  autre_resultat[9] - self.Production_EnR_locale_PV_autoconsommée
         conso_total_proj_combinaison = autre_resultat[10] - self.Production_EnR_locale_PV_autoconsommée
         ratio_conso_total_combinaison = conso_total_proj_combinaison / self.surface
-     #   print(f"conso_total_proj_combinaison : {conso_total_proj_combinaison }  ")
+        print(f"conso_total_proj_combinaison : {conso_total_proj_combinaison }  ")
 
 
         if type_enr in ["geothermie", "aerothermie"]:

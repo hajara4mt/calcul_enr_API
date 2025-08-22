@@ -105,7 +105,7 @@ def get_output_by_id(id_projet: str, session: Session = Depends(get_session)):
             "enr_local": round(enr_result.enr_local_solaire,2),
             "enr_local_max": round(enr_result.enr_local_max_solaire,2),
             "enr_global": round(enr_result.enr_global_solaire,2),
-            "enr_globale_scenario_max": round(enr_result.enr_globale_scenario_max_solaire,2),
+            "enr_global_max": round(enr_result.enr_globale_scenario_max_solaire,2),
             "conso_carbone": int(enr_result.conso_carbone_pv_solaire),
             "cout_total": int(enr_result.cout_total_pv_solaire),
             "lettre_faisabilite": enr_result.lettre_faisabilite_solaire.strip(),

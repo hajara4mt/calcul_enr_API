@@ -1,6 +1,7 @@
 from sqlmodel import SQLModel, Field
 from typing import Optional , Literal
-from datetime import datetime , timezone
+from datetime import datetime 
+from zoneinfo import ZoneInfo
 from pydantic import model_validator
 from pydantic import BaseModel, conint, confloat, constr
 
@@ -159,7 +160,7 @@ class input(SQLModel, table=True):
     Valeurs possibles : 'thermique_saisie' (production annuelle), 'surface_thermique' (surface installée).")
     thermique_saisie: Optional[float] = Field(default = None , description="Production solaire thermique saisie en kWhEF. Requis si 'donnees_dispo_thermique' = 'prod_a'.")
     surface_thermique: Optional[float] = Field(default = None , description="Surface de capteurs solaires thermiques installée en m²")
-    date_creation: datetime = Field(default_factory=datetime.utcnow , description = "date de création de projet ")
+    date_creation: datetime = Field( default_factory=lambda: datetime.now(ZoneInfo("Europe/Paris")),description="date de création de projet")
 
     
     @model_validator(mode="after")
