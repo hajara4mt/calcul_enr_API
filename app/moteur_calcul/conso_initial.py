@@ -8,9 +8,13 @@ from app.moteur_calcul.loader import load_data_co2_cout
 from app.moteur_calcul.hypotheses.conso_clim import conso_clim
 from  app.moteur_calcul.hypotheses.mapping import mapping 
 from  app.moteur_calcul.hypotheses.cop_table import cop_table 
+from  app.moteur_calcul.hypotheses.cop_table_aerothermie import cop_table_aerothermie 
+
 from  app.moteur_calcul.hypotheses.scop_annuel import scop_annuel 
+from  app.moteur_calcul.hypotheses.scop_annuel_aerothermie import scop_annuel_aerothermie 
 
 from app.moteur_calcul.hypotheses.Hypothèse_Prod import ZONES
+from app.moteur_calcul.hypotheses.Hypothèse_Prod import Hypothese_revision_perf
 from app.moteur_calcul.hypotheses.COEF_PERTE_RENDEMENT import COEF_PERTE_RENDEMENT
 from app.moteur_calcul.hypotheses.Hypothèse_Surface_PV import HYPOTHESE_SURFACE_PV
 from app.moteur_calcul.hypotheses.Bdd_conso_carbone import Baisse_conso_besoins
@@ -1774,8 +1778,8 @@ def calcul_geothermie (deperdition_max , strategie , slug_strategie ,energis , r
     surface_max_sgv_maximum= nbre_sonde_retenue_scenario_max/ 0.03
     #print(f"la surface max SGv est : {surface_max_sgv_optimise}")
 #Surface local technique nécessaire
-    surface_locale_te = max(50 , (puissance_pac_chaud_retenue* 0.150 ))  
-    #print(f"surface locale technique nécessaire est : {surface_locale_te}")  
+    surface_locale_te_geo = round((max(50 , (puissance_pac_chaud_retenue* 0.150 ))  ),2)
+    #print(f"surface locale technique nécessaire est : {surface_locale_te_geo}")  
 #taux couverture _optimisé : 
 ## On va arrondir au plus proche possible ( le plus grand proche ) 
 # On arrondit au multiple de 5 le plus proche
@@ -1934,7 +1938,7 @@ def calcul_geothermie (deperdition_max , strategie , slug_strategie ,energis , r
     total_cout_geothermie = (  total_cout_geothermie / surface)
  #   print(f"les couts sont : {total_cout_geothermie*surface} et les impacts sont : {total_impact_geothermie*surface}")
 
-    return round(puissance_pac_chaud_retenue,1) ,round(ratio_conso_totale_proj_geothermie,1)  , enr_local_geothermie , enr_local_geothermie_scenario_max ,  enr_globale_geothermie , enr_globale_geothermie_scenario_max , round(total_impact_geothermie,1) , round(total_cout_geothermie,1) , round(conso_elec_proj_geothermie , 2) , round(Prod_enr_locale_totale_geothermie , 2) , conso_totale_proj_geothermie , prod_enr_globale_geothermie,  round(besoins_chauds_geothermie , 2) , besoins_thermiques
+    return round(puissance_pac_chaud_retenue,1) ,round(ratio_conso_totale_proj_geothermie,1)  , enr_local_geothermie , enr_local_geothermie_scenario_max ,  enr_globale_geothermie , enr_globale_geothermie_scenario_max , round(total_impact_geothermie,1) , round(total_cout_geothermie,1) , round(conso_elec_proj_geothermie , 2) , round(Prod_enr_locale_totale_geothermie , 2) , conso_totale_proj_geothermie , prod_enr_globale_geothermie,  round(besoins_chauds_geothermie , 2) , besoins_thermiques , surface_locale_te_geo
 
 
 def calcul_faisabilite_geothermie(zone_gmi , situation , slug_temperature_emetteurs , slug_strategie  , slug_usage , prod_ch_f  ):
@@ -2123,9 +2127,9 @@ def calcul_biomase(deperdition_max , slug_strategie , strategie , typology, ener
     besoin_chaud_pourcentage_scenario_max = round(((puissance_biomasse_retenue_scenario_max / besoin_chaud)*100),2)
  #   print(f"le % besoin chaud est : {besoin_chaud_pourcentage} , le scenario max est : {besoin_chaud_pourcentage_scenario_max}")
     ## surface locale technique nécessaire 
-    surface_locale_biomasse = max(puissance_biomasse_retenue * 0.3 , 100 )
-    surface_locale_biomasse_scenario_max = max(besoin_chaud *0.3 , 100)
-  #  print(f"la surface locale technique est : {surface_locale_biomasse} , celle de scenario max est : {surface_locale_biomasse_scenario_max}")
+    surface_locale_biomasse = round((max(puissance_biomasse_retenue * 0.3 , 100 )),2)
+    #surface_locale_biomasse_scenario_max = max(besoin_chaud *0.3 , 100)
+    print(f"la surface locale technique est : {surface_locale_biomasse} , celle de scenario max est :")
 
     #taux couverture _optimisé : 
 ## On va arrondir au plus proche possible ( le plus grand proche ) 
@@ -2179,7 +2183,7 @@ def calcul_biomase(deperdition_max , slug_strategie , strategie , typology, ener
     #Besoins chauds couverts par la biomasse
     besoin_chaud_biomasse = besoins_thermiques * (taux_couverture_besoins_chauds/100)
     besoin_chaud_biomasse_scenario_max = besoins_thermiques *(taux_couverture_scenario_max/100)
- #   print(f"Besoins chauds couverts par la biomasse : {besoin_chaud_biomasse} , et le scenario maximum : {besoin_chaud_biomasse_scenario_max}")
+    print(f"Besoins chauds couverts par la biomasse : {besoin_chaud_biomasse} , et le scenario maximum : {besoin_chaud_biomasse_scenario_max}")
     #besoins chauds couverts par l'appoint 
     besoin_chaud_appoint = besoins_thermiques - besoin_chaud_biomasse
     besoin_chaud_appoint_scenario_max = besoins_thermiques - besoin_chaud_biomasse_scenario_max
@@ -2323,6 +2327,8 @@ def calcul_biomase(deperdition_max , slug_strategie , strategie , typology, ener
   #  print(f"les couts sont : {total_cout_biomasse} et les impacts sont : {total_impact_biomasse} , et le maximum est : {total_cout_biomasse_max} et le carbone : {total_impact_biomasse_max}")
 
     return round(puissance_biomasse_retenue , 2) , round(ratio_conso_totale_proj_biomasse, 1)  , enr_local_biomasse , enr_local_biomasse_scenario_max,  enr_globale_biomasse , enr_globale_biomasse_scenario_max,  round(total_impact_biomasse,2) , round(total_cout_biomasse,2) ,conso_elec_proj_biomasse ,  round(Prod_enr_locale_totale_biomasse,2) ,conso_totale_proj_biomasse  ,round(prod_enr_globale_biomasse , 2) ,  besoin_chaud_biomasse
+
+
 
 def calcul_faisabilite_biomasse (zone_administrative1 ,situation , slug_temperature_emetteurs ,  slug_strategie , slug_usage , prod_ch_f  ):
     total_note = 0
@@ -2614,6 +2620,9 @@ def recuperation_chaleur( energis  ,reseau_principal , reseau_appoint , taux_enr
 
 
 def faisabilite_recup_chaleur(zone_administrative1 ,situation   ):
+
+
+
     total_note = 0
     lettre_forcee = None 
     details_impacts = {}
@@ -2697,7 +2706,32 @@ def faisabilite_recup_chaleur(zone_administrative1 ,situation   ):
     return lettre, json.dumps(details_impacts, ensure_ascii=False)
     
 
+#def calcul_aerohermie (deperdition_max ,slug_strategie , slug_temperature_emetteurs , usage_thermique , zone ,  ):
+    besoin_froid = 1
+    
+    besoin_chaud = deperdition_max  
+#COP nominal PAC 
 
+    if slug_strategie == "ra" and slug_temperature_emetteurs == "ht" : 
+        cop_nominal =  cop_table_aerothermie["bt"][usage_thermique]
+    else : 
+        cop_nominal = cop_table_aerothermie[slug_temperature_emetteurs][usage_thermique]
+    
+    #print(f"la valeur de cop nominal est : {cop_nominal}")
+
+ #SCOP annuel PAC 
+    if slug_strategie == "ra" and slug_temperature_emetteurs == "ht" :
+        scop_annuel_pac1 = scop_annuel_aerothermie["bt"][usage_thermique]
+    else : 
+        scop_annuel_pac1 = scop_annuel_aerothermie[slug_temperature_emetteurs][usage_thermique]
+    
+    Hypothese_revision = Hypothese_revision_perf[zone]  
+    SCOP_annuel_pac = Hypothese_revision * scop_annuel_pac1
+
+    #Rapport Chaudfroid 
+    chaud_froid = besoin_chaud / (besoin_froid/(cop_nominal-1)*(cop_nominal))
+
+    
     
 
 

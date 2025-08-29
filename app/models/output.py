@@ -24,6 +24,8 @@ class output(SQLModel, table=True):
    
     usages_energitiques: Optional[Any] = Field(default=None, sa_column=Column(SQLAlchemyJSON))
     conso_energitiques: Optional[Any] = Field(default=None, sa_column=Column(SQLAlchemyJSON))
+    conso_energitiques1: Optional[Any] = Field(default=None, sa_column=Column(SQLAlchemyJSON))
+
 
     enr_retenue: Optional[str] = Field(default=None)
     puissance_retenue: Optional[float] = Field(default=None)

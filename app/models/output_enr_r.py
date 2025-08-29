@@ -32,6 +32,8 @@ class output_enr_r(SQLModel, table=True):
     cout_total_géothermie: Optional[float] = None
     lettre_faisabilite_géothermie: Optional[str] = Field(default=None, max_length=10)
     Faisabilité_calculée_géothermie: Optional[str] = None
+    surface_locale_geothermie: Optional[str] = None
+
 
     # biomasse
     puissance_retenue_biomasse: Optional[float] = None
@@ -44,6 +46,7 @@ class output_enr_r(SQLModel, table=True):
     cout_total_biomasse: Optional[float] = None
     lettre_faisabilite_biomasse: Optional[str] = Field(default=None, max_length=10)
     Faisabilité_calculée_biomasse: Optional[str] = None
+    surface_locale_biomasse : Optional[float] = None
 
     ## Récup EU/EG :
     puissance_retenue_chaleur : Optional[float] = None

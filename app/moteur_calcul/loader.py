@@ -163,7 +163,7 @@ def load_coefficients_gv(annee_construction , ventilation_slug):
             coef_augmentation = 1  # Pas de majoration
 
         coef_GV_amorti = coef_g * coef_augmentation
-
+       
         return coef_GV_amorti, coef_g
 
     except Exception as e:

@@ -171,7 +171,7 @@ class input(SQLModel, table=True):
             champs = [
                 "conso_elec_initial", "e_t_principal",
                 "conso_principal", "e_t_appoint", 
-                "conso_appoint", "prod_solaire_existante", "donnees_dispo_pv", "donnees_dispo_thermique", 
+                "conso_appoint", "prod_solaire_existante" 
             ]
             for champ in champs:
                 if getattr(self, champ) is None:
