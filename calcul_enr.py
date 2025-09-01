@@ -297,6 +297,7 @@ class ProjetCalcul:
         #print("encombrement_toiture =", self.encombrement_toiture)
         #print("typologie =", self.typologie)
        # print(f"chaud et froid : {self.prod_ch_f}")
+        #print("on execute le solaire pv")
 
         self.Puissance_pv_retenue  ,self.ratio_conso_totale_projet_pv ,  self.enr_local_pv , self.enr_local_max_pv , self.enr_globale , self.enr_globale_scenario_max  ,   self.total_impact_pv, self.total_cout_pv , self.conso_thermique_appoint_proj , self.surface_pv_toiture_max , self.Production_EnR_locale_PV_autoconsommée , self.production_globale , self.Prod_enr_locale_totale = calcul_Pv (self.Rendement_globale , self.slug_principal , self.slug_appoint , self.type_toiture ,self.conso_elec1 , self.surface , self.energis,  self.strategie , E_T_principal , E_T_appoint , reseau_principal , reseau_appoint , self.taux_enr_principal , self.taux_enr_appoint , self.encombrement_toiture , self.surface_toiture , self.surface_parking , self.zone , self.masque ,self.systeme_chauffage , self.typologie ,  self.surface_pv , self.prod_solaire_existante, self.pv_saisie , self.thermique_saisie , self.surface_thermique , self.calcul_conso_chauffage , self.rendement_production , self.Consommation_ventilation , self.Conso_specifique, self.Conso_eclairage , self.Energie_ecs ,  self.rendement , self.jours_ouvrés ,self.besoins_ecs_40 , self.temperature_retenue , self.type_prod_ecs , self.usage_thermique, self.zone_climatique , self.typology , self.saisie_conso , self.conso_principal ,self.conso_appoint  )  
           
@@ -539,7 +540,7 @@ class ProjetCalcul:
                 "enr_local_initial": raw_output["taux_ENR_local_initial"],
                # "usages_energitiques": raw_output["usages_energitiques"],
                 "usages_energitiques" : json.loads(raw_output["usages_energitiques"]) ,
-                "distribution_energitique": json.loads(raw_output["conso_energitiques"]),
+                "distributions_energitiques": json.loads(raw_output["conso_energitiques"]),
                 "conso_carbone_initial": int(raw_output["conso_carbone_initial"]),
                 "conso_energitiques" : json.loads(raw_output["conso_energitiques1"])
             },
@@ -587,7 +588,7 @@ class ProjetCalcul:
         "cout_total": int(self.total_cout_geothermie),
         "lettre_faisabilite": self.lettre_geothermie,
                 "faisabilite_calculee":   json.loads(self.details_impacts_geothermie) ,
-                "surface_locale_geothermie" : int(self.surface_locale_geothermie)
+                "surface_locale" : int(self.surface_locale_geothermie)
         
     },
 
@@ -603,7 +604,7 @@ class ProjetCalcul:
         "cout_total": round(self.total_cout_biomasse),
         "lettre_faisabilite": self.lettre_biomasse,
         "faisabilite_calculee":  json.loads(self.details_impacts_biomasse) ,
-        "surface_locale_biomasse" : int(self.surface_locale_biomasse)
+        "surface_locale" : int(self.surface_locale_biomasse)
         
     } , 
 

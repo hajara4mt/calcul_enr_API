@@ -21,6 +21,8 @@ from app.moteur_calcul.hypotheses.Hypothèse_Prod import ZONES
 from app.moteur_calcul.hypotheses.COEF_PERTE_RENDEMENT import COEF_PERTE_RENDEMENT
 from app.moteur_calcul.hypotheses.Hypothèse_Surface_PV import HYPOTHESE_SURFACE_PV
 from app.moteur_calcul.hypotheses.Bdd_conso_carbone import Baisse_conso_besoins
+from app.moteur_calcul.hypotheses.Hypothese_revision_perf import Hypothese_revision_perf
+#from app.moteur_calcul.hypotheses. import Hy
 
 
 
@@ -1177,11 +1179,28 @@ def calcul_Pv (Rendement_globale , slug_principal , slug_appoint ,type_toiture  
         systeme_chauffage1 = 'Autre'
 
     profil_horaire = mapping[(typology, systeme_chauffage1)]
+    ao = (df_charges[profil_horaire]).sum()
+    print(f"la taille de caa est : {ao} , et le profil_horaire est : {profil_horaire}")
    # print((df_charges[profil_horaire].head(50)))
+    print(f"typologyyyyyyyyyyyyyy : {typology}")
     df_occup['charge_electrique'] = (df_charges[profil_horaire] * conso_elec) *(1-taux_baisse)
-   # print(f"la charge elec est : {conso_elec} , typology : {typology} ,systeme_chauffage1 : {systeme_chauffage1} , taux_baisse: {taux_baisse}")
+    print(f"la charge elec est : {conso_elec} , typology : {typology} ,systeme_chauffage1 : {systeme_chauffage1} , taux_baisse: {taux_baisse}")
+   # print(f"la longuer de la colone :{len(df_occup['charge_electrique'])}")
     ##- Baisse_conso_besoins
-    df_occupation = (df_occup[df_occup["occupation_label"] == "Occupation"])
+    df_occupation = (df_occup[df_occup[typology] == "Occupation"])
+   ## df_occupation = df_occupation.groupby("mois")["charge_electrique"]
+   # total = df_occupation.groupby("mois")["charge_electrique"].sum().sum()
+    #n_total = df_occupation.groupby("mois")["charge_electrique"].count().sum()
+   # puissance_talon_elec = total / n_total
+    print("Nb de lignes Occupation :", len(df_occupation))
+    moyennes_par_mois = df_occupation.groupby("Mois")["charge_electrique"].mean()
+    print("Moyenne de charge électrique par mois (Occupation uniquement) :")
+    print(moyennes_par_mois) 
+    print("Mois trouvés :", df_occupation["Mois"].unique())
+    print(df_occupation[["Mois", "charge_electrique"]].head(20))
+
+# 3. Moyenne des moyennes mensuelles
+    puissance_talon_elec = moyennes_par_mois.mean()
     #print(f"df_occupation : {df_occupation.groupby("mois")["charge_electrique"]}")
 
     # Moyenne pondérée à la main
@@ -1194,27 +1213,30 @@ def calcul_Pv (Rendement_globale , slug_principal , slug_appoint ,type_toiture  
     #somme = df_occupation["charge_electrique"].sum()
    # puissance_talon_elec_excel = somme / 2400
    # print(puissance_talon_elec_excel)
-   
+    a= len(df_occupation["charge_electrique"])
 
 
 
 
-    puissance_talon_elec = df_occupation["charge_electrique"].mean()
+    #puissance_talon_elec = df_occupation["charge_electrique"].mean()
 
-    print(f"la puissance_pv_max : {puissance_pv_max} , la puissance talon elec : {puissance_talon_elec} ")
-    print("Somme totale :", df_occupation["charge_electrique"].sum())
-    print("Nombre total :", df_occupation["charge_electrique"].count())
-    print("Moyenne Python :", df_occupation["charge_electrique"].mean())
+ #   print(f"a : {a}, la puissance_pv_max : {puissance_pv_max} , la puissance talon elec : {puissance_talon_elec} ")
+  #  print("Somme totale :", df_occupation["charge_electrique"].sum())
+  #  print("Nombre total :", df_occupation["charge_electrique"].count())
+  #  print("Moyenne Python :", df_occupation["charge_electrique"].mean())
+    #print(f"typologie : {typologie} , typology : {typology}")
 
 
     Puissance_pv_retenue = min(puissance_pv_max, puissance_talon_elec)
     Production_EnR_local_PV = Puissance_pv_retenue * productible 
     production_ENR_local_PV_max = puissance_pv_max *productible
+
+    print(f"puissance pv max : {puissance_pv_max} , productible : {productible} , puissance_pv_max : {puissance_pv_max} , puissance_talon_elec : {puissance_talon_elec} ")
    # print(f"la zone est : {zone}")
 
 
-  #  print ("les productions retenue ")
-   # print(f"la prod enr locale pv : {Production_EnR_local_PV} , productible : {productible} , Puissance_pv_retenue: {Puissance_pv_retenue} ")
+    print (f"les productions retenue talon :{puissance_talon_elec} ")
+    print(f"la prod enr locale pv : {Production_EnR_local_PV} , productible : {productible} , Puissance_pv_retenue: {Puissance_pv_retenue} ")
 
    # dates_occ = set(df_occup["date_heure"])
    # dates_solaire = set(df_Profil_solaire["Date_Heure"])
@@ -1231,14 +1253,17 @@ def calcul_Pv (Rendement_globale , slug_principal , slug_appoint ,type_toiture  
     #print("Nb NaT restant :", df_Profil_solaire["Date_Heure"].isna().sum())
 
     ## Production EnR locale PV autoconsommée optimisé et maximal 
-    df_occup['kWh produit scénario optimisé'] =  ((df_Profil_solaire[zone] * Production_EnR_local_PV)).round(2)
+    df_occup['kWh produit scénario optimisé'] =  (df_Profil_solaire[zone] * Production_EnR_local_PV)
+    total_kwh = df_occup['kWh produit scénario optimisé'].sum()
+    print(df_occup['kWh produit scénario optimisé'].head(50))
+
  
     df_occup["kWh produit scénario optimisé"] = pd.to_numeric(df_occup["kWh produit scénario optimisé"], errors="coerce").fillna(0)
-    total_kwh = df_occup['kWh produit scénario optimisé'].sum()
+   # total_kwh = df_occup['kWh produit scénario optimisé'].sum()
     
     df_occup["charge_electrique"] = pd.to_numeric(df_occup["charge_electrique"], errors="coerce").fillna(0)
     total = df_occup["charge_electrique"].sum()
-    #print(f"le test de la somme : {total} , la somme de kwh : {total_kwh}")
+    print(f"le test de la somme : {total} , la somme de kwh : {total_kwh}")
 
     df_occup["Autoconso PV scénario optimisé"] = df_occup[["kWh produit scénario optimisé", "charge_electrique"]].min(axis=1).round(2)
 
@@ -1247,12 +1272,14 @@ def calcul_Pv (Rendement_globale , slug_principal , slug_appoint ,type_toiture  
 
     taux_autoconsommation_solaire = round(Production_EnR_locale_PV_autoconsommée / Production_EnR_local_PV)
 
-   # print(Production_EnR_locale_PV_autoconsommée)
+    print(f"Production_EnR_locale_PV_autoconsommée : {Production_EnR_locale_PV_autoconsommée}")
 
     ## Production EnR locale PV autoconsommée optimisé et maximal 
     
    ## df_occup = df_occup[~((df_occup.mois == 2) & (df_occup.Jour_semaine == 29))]
     print(f"production_ENR_local_PV_max : {production_ENR_local_PV_max}")
+###############
+#################les changements laa 
 
     df_occup['kWh produit scénario max'] =  (df_Profil_solaire[zone] * production_ENR_local_PV_max)
    # df_occup['kWh produit scénario max'] = (
@@ -1269,23 +1296,30 @@ def calcul_Pv (Rendement_globale , slug_principal , slug_appoint ,type_toiture  
 
 
     df_occup["kWh produit scénario max"] =   pd.to_numeric(df_occup["kWh produit scénario max"], errors="coerce").fillna(0)
+    lenO = ((df_occup["kWh produit scénario max"]).sum())
+    lenA = (df_occup["charge_electrique"].sum())
 
+    print(f"la longueur de la table : {lenA}")
 
   #  print(df_occup["kWh produit scénario max"])
     #print(df_occup["charge_electrique"])
+    #df_occup["Autoconso PV scénario optimisé"] = df_occup[["kWh produit scénario optimisé", "charge_electrique"]].min(axis=1).round(2)
 
-    df_occup['Autoconso PV scénario max'] = df_occup[["kWh produit scénario max", "charge_electrique"]].min(axis=1)
+
+    df_occup['Autoconso PV scénario max'] = df_occup[["kWh produit scénario max", "charge_electrique"]].min(axis=1).round(2)
     pd.set_option("display.max_rows", None)   # affiche toutes les lignes
-    #print(df_occup['Autoconso PV scénario max'])
+   # lenB = ((df_occup["Autoconso PV scénario max"]).sum())
+    #print(f"la longueur de cette colonne : {lenB}")
+ #   print(df_occup['Autoconso PV scénario max'].head(50))
    # a = len(df_occup['Autoconso PV scénario max'])
    # b = len(df_Profil_solaire[zone])
     #print(f"la longuer de la colonne : {a} et pour b est : {b}")
    # print(df_occup['Autoconso PV scénario max'].head(50))
-    Production_EnR_locale_PV_autoconsommée_max = df_occup['Autoconso PV scénario max'].sum()
+    Production_EnR_locale_PV_autoconsommée_max = (df_occup['Autoconso PV scénario max']).sum()
     taux_autoconsommation_solaire_max = round(Production_EnR_locale_PV_autoconsommée_max / production_ENR_local_PV_max)
     
 
- #   print(f"la Production_EnR_locale_PV_autoconsommée_max : {Production_EnR_locale_PV_autoconsommée_max} vs Production_EnR_locale_PV_autoconsommée : {Production_EnR_locale_PV_autoconsommée}")
+    print(f"la Production_EnR_locale_PV_autoconsommée_max : {Production_EnR_locale_PV_autoconsommée_max} vs Production_EnR_locale_PV_autoconsommée : {Production_EnR_locale_PV_autoconsommée}")
 
   #  print("Index égaux ?", df_Profil_solaire.index.equals(df_occup.index))
 
@@ -1293,12 +1327,13 @@ def calcul_Pv (Rendement_globale , slug_principal , slug_appoint ,type_toiture  
 ##Production EnR locale totale (existante + solaire PV)
     Prod_enr_locale_totale = P_EnR_locale_solaire_existante +energie_PAC_delivre - conso_elec_PAC + Prod_enr_bois + Production_EnR_locale_PV_autoconsommée
     Prod_enr_locale_totale_scenario_max =  P_EnR_locale_solaire_existante +energie_PAC_delivre - conso_elec_PAC + Prod_enr_bois + Production_EnR_locale_PV_autoconsommée_max
-    #print(f"Production EnR locale totale (existante + solaire PV) : {Prod_enr_locale_totale}")
+    print(f"Production EnR locale totale (existante + solaire PV) : {Prod_enr_locale_totale}")
 
 ### les consommations projettées : 
 #0 . Consommation élec projetée
     conso_elec_proj = conso_elec * (1 - taux_baisse) - Production_EnR_locale_PV_autoconsommée
     conso_elec_proj_scenario_max = conso_elec * (1 - taux_baisse) - Production_EnR_locale_PV_autoconsommée_max
+    print(f"conso_elec : {conso_elec} ,Production_EnR_locale_PV_autoconsommée_max:{Production_EnR_locale_PV_autoconsommée_max} ")
  # 1. Consommation thermique principale projetée
 
     conso_thermique_principale_proj = conso_principal_1_convertie * (1 - taux_baisse)
@@ -1308,14 +1343,15 @@ def calcul_Pv (Rendement_globale , slug_principal , slug_appoint ,type_toiture  
 
 # 3. Somme globale
     conso_totale_proj_PV = conso_elec_proj + conso_thermique_principale_proj + conso_thermique_appoint_proj
+    conso_total_proj_max = conso_elec_proj_scenario_max + conso_thermique_principale_proj + conso_thermique_appoint_proj
     ratio_conso_totale_proj_PV = conso_totale_proj_PV / surface 
   #  print(f"les resultts de conso total : conso elec : {conso_elec_proj} , conso_thermique_principale_proj : {conso_thermique_principale_proj} , conso_thermique_appoint_proj : {conso_thermique_appoint_proj} ")
 
  #4. Taux ENR&R locale : (optimisé & maximum)
 
     enr_local_pv = (Prod_enr_locale_totale /( conso_totale_proj_PV +energie_PAC_delivre ))*100
-    enr_local_max_pv = (Prod_enr_locale_totale_scenario_max /( conso_totale_proj_PV +energie_PAC_delivre ))*100
-   # print(f"pour le scenario max on a ;Prod_enr_locale_totale_scenario_max: {Prod_enr_locale_totale_scenario_max} vs  Prod_enr_locale_totale : {Prod_enr_locale_totale} , conso_totale_proj_PV : {conso_totale_proj_PV}")
+    enr_local_max_pv = (Prod_enr_locale_totale_scenario_max /( conso_total_proj_max +energie_PAC_delivre ))*100
+    print(f"pour le scenario max on a ;Prod_enr_locale_totale_scenario_max: {Prod_enr_locale_totale_scenario_max} , energie_PAC_delivre : {energie_PAC_delivre} , conso_total_proj_max : {conso_total_proj_max}")
 
 ##on passe au calcul rcu : 
     conso_elec_rcu = conso_elec_proj
@@ -1338,6 +1374,8 @@ def calcul_Pv (Rendement_globale , slug_principal , slug_appoint ,type_toiture  
       
 ## Production enr mix electrique & gaz 
     production_enr_elec = conso_elec_rcu * Taux_EnR_mix_E_national_Elec
+    production_enr_elec_max = conso_elec_proj_scenario_max * Taux_EnR_mix_E_national_Elec
+
     if isinstance(conso_principal_rcu, str):
        conso_principal_rcu = float(conso_principal_rcu)
 
@@ -1359,16 +1397,18 @@ def calcul_Pv (Rendement_globale , slug_principal , slug_appoint ,type_toiture  
 
 
     production_enr_mix = production_enr_elec + enr_gaz_principal + enr_gaz_appoint
+    production_enr_mix_max = production_enr_elec_max +enr_gaz_principal + enr_gaz_appoint
     #print(f"production_enr_mix electrique & gaz : {production_enr_mix}")
 
     ## production ENR globale 
     production_globale = production_enr_mix + production_enr_rcu + Prod_enr_locale_totale
-    production_globale_scenario_max  = production_enr_mix + production_enr_rcu + Prod_enr_locale_totale_scenario_max
-    #print(f"production enr globale : {production_globale}")
+    production_globale_scenario_max  = production_enr_mix_max + production_enr_rcu + Prod_enr_locale_totale_scenario_max
+    print(f"production enr globale : {production_globale_scenario_max}")
 
     ## Taux enr globale 
     enr_globale = (production_globale / (conso_totale_proj_PV + energie_PAC_delivre))*100
-    enr_globale_scenario_max = (production_globale_scenario_max / (conso_totale_proj_PV + energie_PAC_delivre))*100
+    enr_globale_scenario_max = (production_globale_scenario_max / (conso_total_proj_max + energie_PAC_delivre))*100
+    print(f"production_globale:{production_globale} ,conso_totale_proj_PV: {conso_totale_proj_PV} , energie_PAC_delivre : {energie_PAC_delivre}")
     consos = [conso_thermique_principale_proj , conso_thermique_appoint_proj , conso_elec_proj]
     #print(f"conso_thermique_principale_proj : {conso_thermique_principale_proj} , conso_thermique_appoint_proj; {conso_thermique_appoint_proj} ,conso_elec_proj : {conso_elec_proj}  ")
 
@@ -1380,11 +1420,11 @@ def calcul_Pv (Rendement_globale , slug_principal , slug_appoint ,type_toiture  
     total_impact_pv = total_impact_pv / surface
    # print(pmoy_mensuelle)
    # print(f"puissance_talon_elec : {puissance_talon_elec}")
-#    print(f"puissance retenue est : {Puissance_pv_retenue}")
- #   print(f"Production_EnR_locale_PV_autoconsommée : {Production_EnR_locale_PV_autoconsommée}")
+   # print(f"puissance retenue est : {Puissance_pv_retenue}")
+   # print(f"Production_EnR_locale_PV_autoconsommée : {Production_EnR_locale_PV_autoconsommée}")
   #  print(f"Production_EnR_locale_PV_autoconsommée_scénario_maximum : {Production_EnR_locale_PV_autoconsommée_max}")
   #  print(f"taux enr local : {enr_local_pv}")
- #   print(f"Consommation totale projetée:{conso_totale_proj_PV}")
+ #  print(f"Consommation totale projetée:{conso_totale_proj_PV}")
   #  print(production_enr_rcu)
    # print(production_enr_mix)
 
@@ -1804,7 +1844,7 @@ def calcul_geothermie (deperdition_max , strategie , slug_strategie ,energis , r
 #   print(f"deperdition max est : {besoin_chaud}")
 
 
-  #  print(f"le besoin chaud est : {besoin_chaud}")
+    #print(f"le besoin chaud est : {besoin_chaud}")
 
     besoin_froid  = 1
     with engine.connect() as conn:
@@ -2813,13 +2853,55 @@ def faisabilite_recup_chaleur(zone_administrative1 ,situation   ):
 
   #  print("details_impacts (cf):", json.dumps(details_impacts, ensure_ascii=False), "| total=", total_note, "| lettre=", lettre)
     return lettre, json.dumps(details_impacts, ensure_ascii=False)
-    
-
-
-    
 
 
  
  
 
 
+
+def calcul_aerohermie (deperdition_max ,slug_strategie ,strategie,  slug_temperature_emetteurs , usage_thermique , zone , E_T_principal ):
+    besoin_froid = 1
+    
+    taux_baisse = Baisse_conso_besoins.get(strategie, 0)  
+
+    besoin_chaud = deperdition_max *(1-taux_baisse)
+#   print(f"deperdition max est : {besoin_chaud}")
+#COP nominal PAC 
+
+    if slug_strategie == "ra" and slug_temperature_emetteurs == "ht" : 
+        cop_nominal =  cop_table_aerothermie["bt"][usage_thermique]
+    else : 
+        cop_nominal = cop_table_aerothermie[slug_temperature_emetteurs][usage_thermique]
+    
+    #print(f"la valeur de cop nominal est : {cop_nominal}")
+
+ #SCOP annuel PAC 
+    if slug_strategie == "ra" and slug_temperature_emetteurs == "ht" :
+        scop_annuel_pac1 = scop_annuel_aerothermie["bt"][usage_thermique]
+    else : 
+        scop_annuel_pac1 = scop_annuel_aerothermie[slug_temperature_emetteurs][usage_thermique]
+    
+    Hypothese_revision = Hypothese_revision_perf[zone]  
+    SCOP_annuel_pac = Hypothese_revision * scop_annuel_pac1
+
+    #Rapport Chaudfroid 
+    chaud_froid = besoin_chaud / (besoin_froid/(cop_nominal-1)*(cop_nominal))
+
+    ##Puissance PAC chaud retenue
+    
+    if slug_strategie == "bn" or E_T_principal == "aucune" : 
+        if chaud_froid > 1 : 
+            puissance_pac_chaud_retenue = min (besoin_chaud , puissance_pac_chaud)
+        else : 
+            valeur1 = puissance_pac_frigo / (cop_nominal - 1) * cop_nominal
+            valeur2 = besoin_froid / (cop_nominal - 1) * cop_nominal
+            puissance_pac_chaud_retenue =  min(valeur1, valeur2)
+    elif(  chaud_froid > (1/0.5)):
+        puissance_pac_chaud_retenue = min((besoin_chaud*0.5), puissance_pac_chaud)
+    else:
+        puissance_pac_chaud_retenue = min((puissance_pac_frigo /(cop_nominal-1)*cop_nominal) , (besoin_froid/ (cop_nominal-1) *cop_nominal))
+
+    puissance_pac_chaud_retenue_scenario_max = puissance_pac_chaud
+
+   # print(f"la puissance PAC chaud retenue est : {puissance_pac_chaud_retenue}")

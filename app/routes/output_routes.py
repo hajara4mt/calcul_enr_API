@@ -79,7 +79,7 @@ def get_output_by_id(id_projet: str, session: Session = Depends(get_session)):
             "cout_total_initial": data["cout_total_initial"],
             "taux_enr_local_initial": data["taux_ENR_local_initial"],
             "usages_energitiques": data["usages_energitiques"],
-            "distribution_energitique": data["conso_energitiques"],
+            "distributions_energitiques": data["conso_energitiques"],
             "conso_energitiques" : data["conso_energitiques1"] , 
 
             "conso_carbone_initial": data["conso_carbone_initial"]
@@ -125,7 +125,7 @@ def get_output_by_id(id_projet: str, session: Session = Depends(get_session)):
                     "cout_total": int(enr_result.cout_total_géothermie),
                     "lettre_faisabilite": enr_result.lettre_faisabilite_géothermie.strip(),
                     "faisabilite_calculee": _safe_json_load(getattr(enr_result, "Faisabilité_calculée_géothermie", None)),
-                    "surface_locale_geothermie" : int( enr_result.surface_locale_geothermie)
+                    "surface_locale" : int( enr_result.surface_locale_geothermie)
 
                 },
          # --- biomasse ---
@@ -140,7 +140,7 @@ def get_output_by_id(id_projet: str, session: Session = Depends(get_session)):
                     "cout_total": int(enr_result.cout_total_biomasse),
                     "lettre_faisabilite": enr_result.lettre_faisabilite_biomasse.strip(),
                     "faisabilite_calculee": _safe_json_load(getattr(enr_result, "Faisabilité_calculée_biomasse", None)),
-                    "surface_locale_biomasse" : int(enr_result.surface_locale_biomasse)
+                    "surface_locale" : int(enr_result.surface_locale_biomasse)
                 },
          # --- récupération de chaleur ---
                 "recuperation_de_chaleur": {

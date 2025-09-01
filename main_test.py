@@ -5,7 +5,7 @@ import json
 
 if __name__ == "__main__":
     
-    id_projet = "PROJET-20250826-8847"
+    id_projet = "PROJET-20250829-8894"
     print(f"🚀 Lancement du calcul ENR pour le projet : {id_projet}")
     projet = ProjetCalcul(id_projet)
     resultats = projet.run()
