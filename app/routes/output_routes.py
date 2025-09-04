@@ -3,6 +3,7 @@ from sqlmodel import Session, select
 from app.db.database import get_session
 from app.models.output import output
 from app.models.output_enr_r import output_enr_r  
+from app.models.project_model import Projects
 from app.models.inputs import input
 from app.models.response_modele_output import GetOutputByIdResponse
 import json
@@ -24,24 +25,37 @@ def _safe_json_load(val):
 @router.get("/resultats/{id_projet}" , response_model=GetOutputByIdResponse)
 def get_output_by_id(id_projet: str, session: Session = Depends(get_session)):
     # 🔹 Requête dans la table principale
+    enr_projet = session.exec ( select(Projects).where(Projects.id_projet == id_projet)).first()
     result = session.exec(select(output).where(output.id_projet == id_projet)).first()
-
-    if not result:
-        raise HTTPException(status_code=404, detail="Résultat non trouvé dans output")
-
-    # 🔹 Requête dans la table secondaire
     enr_result = session.exec(select(output_enr_r).where(output_enr_r.id_projet == id_projet)).first()
-
-    if not enr_result:
-        raise HTTPException(status_code=404, detail="Résultat ENR non trouvé pour ce projet")
-    
-    # 🔹 Inputs du projet
     input_result = session.exec(select(input).where(input.id_projet == id_projet)).first()
-    if not input_result:
-        raise HTTPException(status_code=404, detail="Inputs du projet non trouvés")
 
+    present = {
+        "projet" : bool(enr_projet) ,
+        "output": bool(result),
+        "output_enr_r": bool(enr_result),
+        "input": bool(input_result)
+    }
 
-    # 🔹 Parser les données JSON de output
+    # Cas 1 : projet totalement inconnu
+    if not any(present.values()):
+        raise HTTPException( status_code=404, detail="Projet inconnu : Résultat ENR non trouvé pour ce projet")
+    
+    if not present["projet"] : 
+        raise HTTPException( status_code=404, detail="Projet inconnu : Résultat ENR non trouvé pour ce projet")
+
+    
+    if not present["output"] and (present["input"] or present["output_enr_r"]):
+        raise HTTPException(status_code=404, detail="Projet existant - Résultat ENR non trouvé pour ce projet ")
+    
+    if not present["output_enr_r"] and (present["input"] or present["projet"]):
+        raise HTTPException(status_code=404, detail="Projet existant - Résultat ENR non trouvé pour ce projet ")
+    
+    if not present["input"]:
+        raise HTTPException(status_code=404, detail="Projet non existant - Résultat ENR non trouvé pour ce projet ")
+  
+
+ # 🔹 Parser les données JSON de output
     data = result.model_dump(exclude={"Id"})
     for champ in ["usages_energitiques", "conso_energitiques", "Faisabilité_calculée" , "conso_energitiques1"]:
         if isinstance(data.get(champ), str):
@@ -142,6 +156,23 @@ def get_output_by_id(id_projet: str, session: Session = Depends(get_session)):
                     "faisabilite_calculee": _safe_json_load(getattr(enr_result, "Faisabilité_calculée_biomasse", None)),
                     "surface_locale" : int(enr_result.surface_locale_biomasse)
                 },
+
+        "aerothermie": {
+                  "puissance_retenue": int(enr_result.puissance_retenue_aerothermie),
+                  "ratio_conso_totale_projet":round(  enr_result.ratio_conso_totale_projet_aerothermie),
+                  "enr_local": enr_result.enr_local_aerothermie,
+                  "enr_local_max": enr_result.enr_local_max_aerothermie,
+                  "enr_global": enr_result.enr_global_aerothermie,
+                   "enr_global_max": enr_result.enr_global_scenario_max_aerothermie,
+                  "conso_carbone": int(enr_result.conso_carbone_aerothermie),
+                 "cout_total": round(enr_result.cout_total_aerothermie),
+                 "lettre_faisabilite": enr_result.lettre_faisabilite_aerothermie ,
+                  "faisabilite_calculee": _safe_json_load(getattr(enr_result, "Faisabilité_calculée_aerothermie", None)),
+                  "surface_locale" : int(enr_result.surface_locale_aerothermie)
+        
+    } , 
+
+
          # --- récupération de chaleur ---
                 "recuperation_de_chaleur": {
                     "puissance_retenue": int(enr_result.puissance_retenue_chaleur),
@@ -174,3 +205,9 @@ def get_output_by_id(id_projet: str, session: Session = Depends(get_session)):
 
 
     }}}
+
+    
+
+            
+        
+

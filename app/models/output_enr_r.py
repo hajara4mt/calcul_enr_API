@@ -59,3 +59,24 @@ class output_enr_r(SQLModel, table=True):
     cout_total_chaleur : Optional[float] = None
     lettre_faisabilite_chaleur : Optional[str] = Field(default=None, max_length=10)
     Faisabilité_calculée_chaleur : Optional[str] = None
+
+    ##Aerothermie 
+
+    puissance_retenue_aerothermie : Optional[float] = None
+    ratio_conso_totale_projet_aerothermie : Optional[float] = None
+    enr_local_aerothermie :  Optional[float] = None 
+    enr_local_max_aerothermie  : Optional[float] = None
+    enr_global_aerothermie : Optional[float] = None
+    enr_global_scenario_max_aerothermie : Optional[float] = None
+    conso_carbone_aerothermie : Optional[float] = None
+    cout_total_aerothermie : Optional[float] = None
+    lettre_faisabilite_aerothermie : Optional[str] = Field(default=None, max_length=10)
+    Faisabilité_calculée_aerothermie : Optional[str] = None
+    surface_locale_aerothermie: Optional[str] = None
+
+
+
+
+
+
+

@@ -9,7 +9,7 @@ import pytz
 from app.moteur_calcul.loader  import load_typologie_data , load_temperature_data , load_coefficients_gv
 from app.moteur_calcul.hypotheses.conversion import conversion
 from app.moteur_calcul.conso_test import convertir_consommation  , calcul_commun ,repartition_usages1 , repartition_usages2 ,  repartition_usages , calcul_Pv ,faisabilite_recup_chaleur ,  faisabilite , calcul_thermique , calcul_hybride , calcul_geothermie , calcul_faisabilite_geothermie , calcul_biomase , calcul_faisabilite_biomasse , recuperation_chaleur
-from app.moteur_calcul.conso_test import calcul_carbone_et_cout_sql
+from app.moteur_calcul.conso_test import calcul_carbone_et_cout_sql , calcul_aerothermie , faisabilite_aerothermie
 from app.models.output import output  # à adapter selon ton arborescence
 from app.db.database import get_session
 import json
@@ -361,12 +361,22 @@ class ProjetCalcul:
         self.lettre_chaleur , self.details_chaleur = faisabilite_recup_chaleur(self.zone_administrative1 ,self.situation  )
         self.resultat_eu_eg = [self.energie_eu_eg  , self.ratio_conso_total_chaleur  , self.enr_local_chaleur , self.enr_local_max_chaleur,  self.enr_global_chaleur , self.enr_global_scenario_max_chaleur,  self.total_impact_chaleur , self.total_cout_chaleur , self.Prod_enr_locale_totale_recuperation , self.conso_elec_proj_recuperation_chaleur , self.conso_totale_proj_chaleur , self.prod_enr_globale_chaleur , self.lettre_chaleur]
 
+        print(f"les resultatas de l'aérothermie sont : ")
+        self.puissance_pac_chaud_retenue_aerothermie , self.ratio_conso_totale_proj_aerothermie , self.enr_local_aerothermie , self.enr_local_aerothermie_scenario_max , self.enr_globale_aerothermie , self.enr_globale_aerothermie_scenario_max , self.total_impact_aerothermie , self.total_cout_aerothermie , self.conso_elec_proj_aerothermie , self.Prod_enr_locale_totale_aerothermie , self.conso_totale_proj_aerothermie , self.prod_enr_globale_aerothermiee , self.besoins_chauds_aerothermie , self.besoins_thermiques , self.surface_local_aerothermie = calcul_aerothermie  (self.deperdition_max , self.strategie , self.slug_strategie ,self.energis , reseau_principal , reseau_appoint , self.taux_enr_principal ,self.taux_enr_appoint ,  self.slug_temperature_emetteurs , self.usage_thermique ,  self.surface_hors_emprise , self.Rendement_globale ,self.surface_parcelle , E_T_principal  , self.zone , self.masque , self.surface_pv , self.prod_solaire_existante, self.pv_saisie , self.thermique_saisie , self.surface_thermique , self.slug_principal , self.slug_appoint , self.calcul_conso_chauffage , self.conso_elec1
+              , self.rendement_production , self.Consommation_ventilation , self.Conso_specifique, self.Conso_eclairage,   self.zone_climatique , surface ,  self.typology ,self.besoins_ecs_40 , self.temperature_retenue , self.type_prod_ecs , self.jours_ouvrés , self.rendement ,  E_T_appoint  , self.Energie_ecs , self.systeme_chauffage , self.saisie_conso , self.conso_principal , self.conso_appoint  )
+        
+        self.lettre_aerothermie , self.detail_aerothermie =  faisabilite_aerothermie (self.zone_administrative1 , self.situation , self.slug_temperature_emetteurs , self.slug_strategie  , self.slug_usage , self.prod_ch_f  )
+
+        
+        self.resultat_aerothermie = [self.puissance_pac_chaud_retenue_aerothermie , self.ratio_conso_totale_proj_aerothermie , self.enr_local_aerothermie , self.enr_local_aerothermie_scenario_max , self.enr_globale_aerothermie , self.enr_globale_aerothermie_scenario_max , self.total_impact_aerothermie , self.total_cout_aerothermie , self.conso_elec_proj_aerothermie , self.Prod_enr_locale_totale_aerothermie , self.conso_totale_proj_aerothermie , self.prod_enr_globale_aerothermiee , self.lettre_aerothermie , self.besoins_chauds_aerothermie , self.besoins_thermiques ]                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+
+
         self.enr_retenue_finale = self.choisir_meilleure_enr_nom()
         self.enraaa = self.choisir_meilleure_enr_exceptSOLAIRE()
        ## print(f"le resultat de choix de meilleur est : {self.enr_retenue_finale} , spart le solare : {self.enraaa}")
        ## print("les resultats de la combinaison est : ")
         (self.enr_combinaison , self.ratio_conso_total_combinaison , self.enr_local_combinaison , self.enr_global_combinaison , self.total_impact_combinaison, self.total_cout_combinaison, self.lettre_combinaison) =self.combinaison_enr()
-
+## 
        ## conso_json = json.dumps(self.conso_energitiques1)
 
         output_enr = output_enr_r( 
@@ -421,7 +431,27 @@ class ProjetCalcul:
         conso_carbone_chaleur= self.total_impact_chaleur , 
         cout_total_chaleur = self.total_cout_chaleur , 
         lettre_faisabilite_chaleur= self.lettre_chaleur , 
-        Faisabilité_calculée_chaleur = self.details_chaleur
+        Faisabilité_calculée_chaleur = self.details_chaleur , 
+    
+    ## Aérothermie 
+        puissance_retenue_aerothermie = self.puissance_pac_chaud_retenue_aerothermie, 
+        ratio_conso_totale_projet_aerothermie = self.ratio_conso_totale_proj_aerothermie , 
+        enr_local_aerothermie = self.enr_local_aerothermie , 
+        enr_local_max_aerothermie = self.enr_local_aerothermie_scenario_max , 
+        enr_global_aerothermie = self.enr_globale_aerothermie , 
+        enr_global_scenario_max_aerothermie = self.enr_globale_aerothermie_scenario_max ,
+        conso_carbone_aerothermie = self.conso_totale_proj_aerothermie, 
+        cout_total_aerothermie = self.total_cout_aerothermie , 
+        lettre_faisabilite_aerothermie = self.lettre_aerothermie , 
+        Faisabilité_calculée_aerothermie = self.detail_aerothermie ,
+        surface_locale_aerothermie = self.surface_local_aerothermie
+
+
+
+
+
+
+       
 
         
 )
@@ -608,6 +638,23 @@ class ProjetCalcul:
         
     } , 
 
+    "aerothermie": {
+        "puissance_retenue": round(self.puissance_pac_chaud_retenue_aerothermie),
+        "ratio_conso_totale_projet":round(  self.ratio_conso_totale_proj_aerothermie),
+        "enr_local": self.enr_local_aerothermie,
+        "enr_local_max": self.enr_local_aerothermie_scenario_max,
+        "enr_global": self.enr_globale_aerothermie,
+        "enr_global_max": self.enr_globale_aerothermie_scenario_max,
+        "conso_carbone": round(self.total_impact_aerothermie),
+        "cout_total": round(self.total_cout_aerothermie),
+        "lettre_faisabilite": self.lettre_aerothermie ,
+        "faisabilite_calculee":  json.loads(self.detail_aerothermie) ,
+        "surface_locale" : int(self.surface_local_aerothermie)
+        
+    } , 
+
+
+
     "recuperation_de_chaleur" : {
         "puissance_retenue": int(self.energie_eu_eg),
         "ratio_conso_totale_projet":int(  self.ratio_conso_total_chaleur),
@@ -646,7 +693,7 @@ class ProjetCalcul:
      nom, taux, result = meilleur
 
     # 3. Mapper dynamiquement le résultat
-     if nom == "pv":
+     if nom == "solaire_pv":
         data = {
             "puissance_retenue": result[0],
             "ratio_conso_totale_projet": result[1],
@@ -658,7 +705,7 @@ class ProjetCalcul:
             "cout_total_pv": result[7],
             "lettre_faisabilite": lettre,
         }
-     elif nom == "thermique":
+     elif nom == "solaire_thermique":
         data = {
             "puissance_retenue": result[0],
             "ratio_conso_totale_projet": result[1],
@@ -740,8 +787,12 @@ class ProjetCalcul:
          "taux" : self.enr_local_chaleur , 
          "lettre" : (self.lettre_chaleur or "").upper() , 
       }
-
-     candidats = [cand_solaire, cand_geo, cand_bio, cand_rcu]
+     cand_aero = {
+         "name" : "aerothermie" ,
+         "taux" : self.enr_local_aerothermie , 
+         "lettre" : (self.lettre_aerothermie or "").upper() , 
+      }
+     candidats = [cand_solaire, cand_geo, cand_bio, cand_rcu, cand_aero]
 
     # Calculer les scores
      for c in candidats:
@@ -800,8 +851,13 @@ class ProjetCalcul:
          "taux" : self.enr_local_chaleur , 
          "lettre" : (self.lettre_chaleur or "").upper() , 
       }
+     cand_aero = {
+         "name" : "aerothermie" ,
+         "taux" : self.enr_local_aerothermie , 
+         "lettre" : (self.lettre_aerothermie or "").upper() , 
+      }
 
-     candidats = [ cand_geo, cand_bio, cand_rcu]
+     candidats = [ cand_geo, cand_bio, cand_rcu , cand_aero]
 
     # Calculer les scores
      for c in candidats:
@@ -834,6 +890,9 @@ class ProjetCalcul:
         elif meilleure_hors_solaire == "recuperation_de_chaleur":
             autre_resultat = self.resultat_eu_eg
             type_enr = "recuperation_de_chaleur"
+        elif meilleure_hors_solaire =="aerothermie" :
+            autre_resultat = self.resultat_aerothermie
+            type_enr = "aerothermie"
         else:
             return None
         

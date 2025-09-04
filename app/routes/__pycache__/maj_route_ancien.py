@@ -4,7 +4,7 @@ from app.db.database import get_session
 from app.models.inputs import input
 from app.models.project_model import Projects
 from app.models.output import output
-from calcul_enr_api import ProjetCalcul
+from calcul_enr import ProjetCalcul
 from app.models.response_modele_maj import Getcalculaftermaj
 import traceback
 
@@ -17,21 +17,13 @@ def mise_a_jour_projet(id_projet: str, data: input, session: Session = Depends(g
         projet = session.exec(select(Projects).where(Projects.id_projet == id_projet)).first()
         if not projet:
             raise HTTPException(status_code=404, detail="Projet non trouvé")
-        
-
-        # ✅ Vérifier qu'il y a bien un id_utilisateur_primaire associé
-        if not projet.id_utilisateur:
-            raise HTTPException(
-                status_code=400,
-                detail=f"Aucun id_utilisateur associé au projet {id_projet}"
-            )
 
         # 2. Récupérer et mettre à jour l'ancien input (sauf date_creation)
         ancien_input = session.exec(select(input).where(input.id_projet == id_projet)).first()
         if not ancien_input:
             raise HTTPException(status_code=404, detail="Input introuvable pour mise à jour")
 
-        nouveaux_inputs = data.model_dump(exclude={"id", "date_creation" , "id_utilisateur_primaire"})
+        nouveaux_inputs = data.model_dump(exclude={"id", "date_creation"})
         for key, value in nouveaux_inputs.items():
             if key != "date_creation":
                 setattr(ancien_input, key, value)
@@ -41,24 +33,21 @@ def mise_a_jour_projet(id_projet: str, data: input, session: Session = Depends(g
         for o in anciens_outputs:
             session.delete(o)
 
-        session.flush()  # ⚠️ on garde en mémoire mais pas encore commit
-
-        # 4. Relancer les calculs avec les données mises à jour (en mémoire)
-        calcul = ProjetCalcul(id_projet=id_projet, donnees_saisie=nouveaux_inputs)
-        resultats = calcul.run()
-
-        # 5. Sauvegarder en base si tout va bien
         session.commit()
 
-        # 6. Reformater la réponse
-        date_modelisation = resultats["api_response"]["date_modelisation"]
+        # 4. Relancer les calculs
+        calcul = ProjetCalcul(id_projet=id_projet)
+        nouveaux_resultats = calcul.run()
+
+        # 5. Extraire la date et reformater le retour
+        date_modelisation = nouveaux_resultats.pop("date_modelisation", None)
 
         return {
             "message": "Mise à jour réussie du projet",
             "id_projet": id_projet,
-            "date_creation": ancien_input.date_creation,
+            "date_creation": ancien_input.date_creation , 
             "date_modelisation_derniere": date_modelisation,
-            "calculs": resultats["api_response"]  #
+            "calculs": nouveaux_resultats
         }
 
     except Exception as e:

@@ -66,9 +66,9 @@ def calcul_carbone_et_cout_sql(energis: list, consos: list, reseau_principal, re
 
         if slug in ["rcu", "rfu"]:
             id_reseau = reseau_principal if i == 0 else reseau_appoint
-            print(f"\n🔁 Energie réseau détectée ({slug}), ID réseau utilisé : {id_reseau}")
-        else:
-            print(f"\n🔁 Energie non réseau : {slug}")
+           # print(f"\n🔁 Energie réseau détectée ({slug}), ID réseau utilisé : {id_reseau}")
+       # else:
+         #   print(f"\n🔁 Energie non réseau : {slug}")
 
         data = load_data_co2_cout(slug, id_reseau)
       #  print("📦 Données chargées :", data)
@@ -1130,7 +1130,7 @@ def repartition_usages(calcul_conso_initial: bool, **kwargs):
 def calcul_Pv (Rendement_globale , slug_principal , slug_appoint ,type_toiture  , conso_elec1 , surface , energis,  strategie , E_T_principal , E_T_appoint , reseau_principal , reseau_appoint , taux_enr_principal , taux_enr_appoint , encombrement_toiture  , surface_toiture , surface_parking , zone , masque ,systeme_chauffage , typologie ,  surface_PV , prod_solaire_existante, pv_saisie , thermique_saisie , surface_thermique , calcul_conso_chauffage , rendement_production , Consommation_ventilation , Conso_specifique, Conso_eclairage  , Energie_ECS ,  rendement , jours_ouvrés ,besoins_ECS , temperature_retenue , type_prod_ecs , usage_thermique,zone_climatique  ,  typology , calcul_conso_initial  , conso_principal ,conso_appoint   ) : 
     hypothese_puissance = 180
     taux_baisse = Baisse_conso_besoins.get(strategie, 0)  
-    print(f"taux baisse est : {taux_baisse} , strategie : {strategie}")
+  #  print(f"taux baisse est : {taux_baisse} , strategie : {strategie}")
 
     P_EnR_locale_solaire_existante  , productible_thermique , productible_PV = calcul_commun(zone , masque , surface_PV , prod_solaire_existante, pv_saisie , thermique_saisie , surface_thermique)
    # conso_surfacique_clim , besoin_60 , perte_bouclage , conso_E_ECS , taux_enr_initial , Prod_enr_bois , conso_elec_PAC , usages_energitiques , conso_energitiques , energie_PAC_delivre = 
@@ -1180,11 +1180,11 @@ def calcul_Pv (Rendement_globale , slug_principal , slug_appoint ,type_toiture  
 
     profil_horaire = mapping[(typology, systeme_chauffage1)]
     ao = (df_charges[profil_horaire]).sum()
-    print(f"la taille de caa est : {ao} , et le profil_horaire est : {profil_horaire}")
+    #print(f"la taille de caa est : {ao} , et le profil_horaire est : {profil_horaire}")
    # print((df_charges[profil_horaire].head(50)))
-    print(f"typologyyyyyyyyyyyyyy : {typology}")
+    #print(f"typologyyyyyyyyyyyyyy : {typology}")
     df_occup['charge_electrique'] = (df_charges[profil_horaire] * conso_elec) *(1-taux_baisse)
-    print(f"la charge elec est : {conso_elec} , typology : {typology} ,systeme_chauffage1 : {systeme_chauffage1} , taux_baisse: {taux_baisse}")
+    #print(f"la charge elec est : {conso_elec} , typology : {typology} ,systeme_chauffage1 : {systeme_chauffage1} , taux_baisse: {taux_baisse}")
    # print(f"la longuer de la colone :{len(df_occup['charge_electrique'])}")
     ##- Baisse_conso_besoins
     df_occupation = (df_occup[df_occup[typology] == "Occupation"])
@@ -1192,12 +1192,12 @@ def calcul_Pv (Rendement_globale , slug_principal , slug_appoint ,type_toiture  
    # total = df_occupation.groupby("mois")["charge_electrique"].sum().sum()
     #n_total = df_occupation.groupby("mois")["charge_electrique"].count().sum()
    # puissance_talon_elec = total / n_total
-    print("Nb de lignes Occupation :", len(df_occupation))
+    #print("Nb de lignes Occupation :", len(df_occupation))
     moyennes_par_mois = df_occupation.groupby("Mois")["charge_electrique"].mean()
-    print("Moyenne de charge électrique par mois (Occupation uniquement) :")
-    print(moyennes_par_mois) 
-    print("Mois trouvés :", df_occupation["Mois"].unique())
-    print(df_occupation[["Mois", "charge_electrique"]].head(20))
+    #print("Moyenne de charge électrique par mois (Occupation uniquement) :")
+    #print(moyennes_par_mois) 
+    #print("Mois trouvés :", df_occupation["Mois"].unique())
+    #print(df_occupation[["Mois", "charge_electrique"]].head(20))
 
 # 3. Moyenne des moyennes mensuelles
     puissance_talon_elec = moyennes_par_mois.mean()
@@ -1231,12 +1231,12 @@ def calcul_Pv (Rendement_globale , slug_principal , slug_appoint ,type_toiture  
     Production_EnR_local_PV = Puissance_pv_retenue * productible 
     production_ENR_local_PV_max = puissance_pv_max *productible
 
-    print(f"puissance pv max : {puissance_pv_max} , productible : {productible} , puissance_pv_max : {puissance_pv_max} , puissance_talon_elec : {puissance_talon_elec} ")
+   # print(f"puissance pv max : {puissance_pv_max} , productible : {productible} , puissance_pv_max : {puissance_pv_max} , puissance_talon_elec : {puissance_talon_elec} ")
    # print(f"la zone est : {zone}")
 
 
-    print (f"les productions retenue talon :{puissance_talon_elec} ")
-    print(f"la prod enr locale pv : {Production_EnR_local_PV} , productible : {productible} , Puissance_pv_retenue: {Puissance_pv_retenue} ")
+   # print (f"les productions retenue talon :{puissance_talon_elec} ")
+   # print(f"la prod enr locale pv : {Production_EnR_local_PV} , productible : {productible} , Puissance_pv_retenue: {Puissance_pv_retenue} ")
 
    # dates_occ = set(df_occup["date_heure"])
    # dates_solaire = set(df_Profil_solaire["Date_Heure"])
@@ -1255,7 +1255,7 @@ def calcul_Pv (Rendement_globale , slug_principal , slug_appoint ,type_toiture  
     ## Production EnR locale PV autoconsommée optimisé et maximal 
     df_occup['kWh produit scénario optimisé'] =  (df_Profil_solaire[zone] * Production_EnR_local_PV)
     total_kwh = df_occup['kWh produit scénario optimisé'].sum()
-    print(df_occup['kWh produit scénario optimisé'].head(50))
+   # print(df_occup['kWh produit scénario optimisé'].head(50))
 
  
     df_occup["kWh produit scénario optimisé"] = pd.to_numeric(df_occup["kWh produit scénario optimisé"], errors="coerce").fillna(0)
@@ -1263,7 +1263,7 @@ def calcul_Pv (Rendement_globale , slug_principal , slug_appoint ,type_toiture  
     
     df_occup["charge_electrique"] = pd.to_numeric(df_occup["charge_electrique"], errors="coerce").fillna(0)
     total = df_occup["charge_electrique"].sum()
-    print(f"le test de la somme : {total} , la somme de kwh : {total_kwh}")
+    #print(f"le test de la somme : {total} , la somme de kwh : {total_kwh}")
 
     df_occup["Autoconso PV scénario optimisé"] = df_occup[["kWh produit scénario optimisé", "charge_electrique"]].min(axis=1).round(2)
 
@@ -1272,12 +1272,12 @@ def calcul_Pv (Rendement_globale , slug_principal , slug_appoint ,type_toiture  
 
     taux_autoconsommation_solaire = round(Production_EnR_locale_PV_autoconsommée / Production_EnR_local_PV)
 
-    print(f"Production_EnR_locale_PV_autoconsommée : {Production_EnR_locale_PV_autoconsommée}")
+    #print(f"Production_EnR_locale_PV_autoconsommée : {Production_EnR_locale_PV_autoconsommée}")
 
     ## Production EnR locale PV autoconsommée optimisé et maximal 
     
    ## df_occup = df_occup[~((df_occup.mois == 2) & (df_occup.Jour_semaine == 29))]
-    print(f"production_ENR_local_PV_max : {production_ENR_local_PV_max}")
+    #print(f"production_ENR_local_PV_max : {production_ENR_local_PV_max}")
 ###############
 #################les changements laa 
 
@@ -1299,7 +1299,7 @@ def calcul_Pv (Rendement_globale , slug_principal , slug_appoint ,type_toiture  
     lenO = ((df_occup["kWh produit scénario max"]).sum())
     lenA = (df_occup["charge_electrique"].sum())
 
-    print(f"la longueur de la table : {lenA}")
+    #print(f"la longueur de la table : {lenA}")
 
   #  print(df_occup["kWh produit scénario max"])
     #print(df_occup["charge_electrique"])
@@ -1319,7 +1319,7 @@ def calcul_Pv (Rendement_globale , slug_principal , slug_appoint ,type_toiture  
     taux_autoconsommation_solaire_max = round(Production_EnR_locale_PV_autoconsommée_max / production_ENR_local_PV_max)
     
 
-    print(f"la Production_EnR_locale_PV_autoconsommée_max : {Production_EnR_locale_PV_autoconsommée_max} vs Production_EnR_locale_PV_autoconsommée : {Production_EnR_locale_PV_autoconsommée}")
+   # print(f"la Production_EnR_locale_PV_autoconsommée_max : {Production_EnR_locale_PV_autoconsommée_max} vs Production_EnR_locale_PV_autoconsommée : {Production_EnR_locale_PV_autoconsommée}")
 
   #  print("Index égaux ?", df_Profil_solaire.index.equals(df_occup.index))
 
@@ -1327,13 +1327,14 @@ def calcul_Pv (Rendement_globale , slug_principal , slug_appoint ,type_toiture  
 ##Production EnR locale totale (existante + solaire PV)
     Prod_enr_locale_totale = P_EnR_locale_solaire_existante +energie_PAC_delivre - conso_elec_PAC + Prod_enr_bois + Production_EnR_locale_PV_autoconsommée
     Prod_enr_locale_totale_scenario_max =  P_EnR_locale_solaire_existante +energie_PAC_delivre - conso_elec_PAC + Prod_enr_bois + Production_EnR_locale_PV_autoconsommée_max
-    print(f"Production EnR locale totale (existante + solaire PV) : {Prod_enr_locale_totale}")
+   # Prod_enr_locale_totale_scenario_max = 1019981
+    #print(f"Production EnR locale totale (existante + solaire PV) : {Prod_enr_locale_totale}")
 
 ### les consommations projettées : 
 #0 . Consommation élec projetée
     conso_elec_proj = conso_elec * (1 - taux_baisse) - Production_EnR_locale_PV_autoconsommée
     conso_elec_proj_scenario_max = conso_elec * (1 - taux_baisse) - Production_EnR_locale_PV_autoconsommée_max
-    print(f"conso_elec : {conso_elec} ,Production_EnR_locale_PV_autoconsommée_max:{Production_EnR_locale_PV_autoconsommée_max} ")
+    #print(f"conso_elec : {conso_elec} ,Production_EnR_locale_PV_autoconsommée_max:{Production_EnR_locale_PV_autoconsommée_max} ")
  # 1. Consommation thermique principale projetée
 
     conso_thermique_principale_proj = conso_principal_1_convertie * (1 - taux_baisse)
@@ -1351,7 +1352,7 @@ def calcul_Pv (Rendement_globale , slug_principal , slug_appoint ,type_toiture  
 
     enr_local_pv = (Prod_enr_locale_totale /( conso_totale_proj_PV +energie_PAC_delivre ))*100
     enr_local_max_pv = (Prod_enr_locale_totale_scenario_max /( conso_total_proj_max +energie_PAC_delivre ))*100
-    print(f"pour le scenario max on a ;Prod_enr_locale_totale_scenario_max: {Prod_enr_locale_totale_scenario_max} , energie_PAC_delivre : {energie_PAC_delivre} , conso_total_proj_max : {conso_total_proj_max}")
+    #print(f"pour le scenario max on a ;Prod_enr_locale_totale_scenario_max: {Prod_enr_locale_totale_scenario_max} , energie_PAC_delivre : {energie_PAC_delivre} , conso_total_proj_max : {conso_total_proj_max}")
 
 ##on passe au calcul rcu : 
     conso_elec_rcu = conso_elec_proj
@@ -1403,12 +1404,12 @@ def calcul_Pv (Rendement_globale , slug_principal , slug_appoint ,type_toiture  
     ## production ENR globale 
     production_globale = production_enr_mix + production_enr_rcu + Prod_enr_locale_totale
     production_globale_scenario_max  = production_enr_mix_max + production_enr_rcu + Prod_enr_locale_totale_scenario_max
-    print(f"production enr globale : {production_globale_scenario_max}")
+    #print(f"production enr globale : {production_globale_scenario_max}")
 
     ## Taux enr globale 
     enr_globale = (production_globale / (conso_totale_proj_PV + energie_PAC_delivre))*100
     enr_globale_scenario_max = (production_globale_scenario_max / (conso_total_proj_max + energie_PAC_delivre))*100
-    print(f"production_globale:{production_globale} ,conso_totale_proj_PV: {conso_totale_proj_PV} , energie_PAC_delivre : {energie_PAC_delivre}")
+    #print(f"production_globale:{production_globale} ,conso_totale_proj_PV: {conso_totale_proj_PV} , energie_PAC_delivre : {energie_PAC_delivre}")
     consos = [conso_thermique_principale_proj , conso_thermique_appoint_proj , conso_elec_proj]
     #print(f"conso_thermique_principale_proj : {conso_thermique_principale_proj} , conso_thermique_appoint_proj; {conso_thermique_appoint_proj} ,conso_elec_proj : {conso_elec_proj}  ")
 
@@ -2216,7 +2217,7 @@ def calcul_faisabilite_geothermie(zone_gmi , situation , slug_temperature_emette
 
         
 
-        print(f"🟩 Critère : {crit}")
+       # print(f"🟩 Critère : {crit}")
         details_impacts_geothermie = {
        remap_keys.get(k.lower(), k.lower()): int(round(float(v)))
        for k, v in details_impacts.items() }
@@ -2243,7 +2244,7 @@ def calcul_faisabilite_geothermie(zone_gmi , situation , slug_temperature_emette
      # --- Lettre finale: forcée si défini, sinon barème ---
     final_letter = lettre_forcee or lettre
 
-    print(f"le details impacts est : {json.dumps(details_impacts_geothermie)} , lettre choisie est : {final_letter}" )
+    #print(f"le details impacts est : {json.dumps(details_impacts_geothermie)} , lettre choisie est : {final_letter}" )
 
     return final_letter , json.dumps(details_impacts_geothermie, ensure_ascii=False)
 
@@ -2517,7 +2518,7 @@ def calcul_faisabilite_biomasse (zone_administrative1 ,situation , slug_temperat
     
     usage_clim = "Sans clim" if inputs["usage_thermique"] in USAGES_SANS_CLIM else "Avec Clim"
     strategie_humaine = "Sans réno ou réno légère" if inputs["strategie"] in STRATEGIES_SANS_RENO else "Réno lourde"
-    print(f"la situation est : {situation}")
+    #print(f"la situation est : {situation}")
 
      ##Cas particulier 3 : situation urbain 
     if situation.lower().strip()  == "urbain":
@@ -2581,7 +2582,7 @@ def calcul_faisabilite_biomasse (zone_administrative1 ,situation , slug_temperat
 
 
     for crit in critères:
-        print(crit)
+        #print(crit)
         filtres = (df_geo["Impacts"].str.lower() == crit["Impacts"].lower()) & (df_geo["Caractéristiques"].str.lower() == crit["Caractéristiques"].lower())
 
         if "Usage_climatisation" in crit:
@@ -2854,19 +2855,21 @@ def faisabilite_recup_chaleur(zone_administrative1 ,situation   ):
   #  print("details_impacts (cf):", json.dumps(details_impacts, ensure_ascii=False), "| total=", total_note, "| lettre=", lettre)
     return lettre, json.dumps(details_impacts, ensure_ascii=False)
 
+def calcul_aerothermie (deperdition_max , strategie , slug_strategie ,energis , reseau_principal , reseau_appoint , taux_enr_principal ,taux_enr_appoint ,  slug_temperature_emetteurs , usage_thermique ,  surface_hors_emprise , Rendement_globale ,surface_parcelle , E_T_principal  , zone , masque , surface_PV , prod_solaire_existante, pv_saisie , thermique_saisie , surface_thermique , slug_principal , slug_appoint ,calcul_conso_chauffage  , conso_elec1 ,  rendement_production , Consommation_ventilation , Conso_specifique, Conso_eclairage , zone_climatique , surface ,  typology ,besoins_ECS , temperature_retenue , type_prod_ecs , jours_ouvrés , rendement ,  E_T_appoint  , Energie_ECS , systeme_chauffage ,  calcul_conso_initial  , conso_principal ,conso_appoint  ) : 
+    conso_elec , conso_principal_2_convertie, conso_principal_1_convertie , Consommations_annuelles_totales_initiales , Consommations_annuelles_totales_initiales_ratio, total_impact, total_cout, prod_enr_locale_site , calibration_ET1_ECS , calibration_ET1_clim , total_chauffage , total_thermique2 ,total_thermique1 , conso_surfacique_clim , total_ECS , besoin_60 , perte_bouclage , conso_E_ECS , taux_enr_initial , Prod_enr_bois , conso_elec_PAC , usages_energitiques , conso_energitiques , energie_PAC_delivre , conso_energitiques_1 = repartition_usages( calcul_conso_initial=calcul_conso_initial, energis=energis, slug_principal=slug_principal, slug_appoint=slug_appoint, calcul_conso_chauffage=calcul_conso_chauffage, conso_elec=conso_elec1, conso_principal=conso_principal, conso_appoint=conso_appoint, rendement_production=rendement_production, Rendement_globale=Rendement_globale, Consommation_ventilation=Consommation_ventilation, Conso_specifique=Conso_specifique, Conso_eclairage=Conso_eclairage, usage_thermique=usage_thermique, zone_climatique=zone_climatique, surface=surface, typology=typology, besoins_ECS=besoins_ECS, temperature_retenue=temperature_retenue, type_prod_ecs=type_prod_ecs, jours_ouvrés=jours_ouvrés, rendement=rendement, E_T_principal=E_T_principal, E_T_appoint=E_T_appoint, Energie_ECS=Energie_ECS, systeme_chauffage=systeme_chauffage, zone=zone, masque=masque, surface_PV=surface_PV, prod_solaire_existante=prod_solaire_existante, pv_saisie=pv_saisie, thermique_saisie=thermique_saisie, surface_thermique=surface_thermique, reseau_principal=reseau_principal, reseau_appoint=reseau_appoint )
 
- 
- 
-
-
-
-def calcul_aerohermie (deperdition_max ,slug_strategie ,strategie,  slug_temperature_emetteurs , usage_thermique , zone , E_T_principal ):
+    P_EnR_locale_solaire_existante  , productible_solaire_thermique , productible_PV  = calcul_commun(zone , masque , surface_PV , prod_solaire_existante, pv_saisie , thermique_saisie , surface_thermique)
+  
     besoin_froid = 1
+    couverture_pac = 0.50     # 50 %
+    couverture_pac_hybride = 0.20
     
     taux_baisse = Baisse_conso_besoins.get(strategie, 0)  
+    with engine.connect() as conn:
+       df_charges = pd.read_sql_query("SELECT * FROM dbo.TableCouverture", conn)
 
     besoin_chaud = deperdition_max *(1-taux_baisse)
-#   print(f"deperdition max est : {besoin_chaud}")
+  #  print(f"le besoin chaud est : {besoin_chaud}")
 #COP nominal PAC 
 
     if slug_strategie == "ra" and slug_temperature_emetteurs == "ht" : 
@@ -2874,7 +2877,11 @@ def calcul_aerohermie (deperdition_max ,slug_strategie ,strategie,  slug_tempera
     else : 
         cop_nominal = cop_table_aerothermie[slug_temperature_emetteurs][usage_thermique]
     
-    #print(f"la valeur de cop nominal est : {cop_nominal}")
+    Hypothese_revision = Hypothese_revision_perf[zone]  
+    
+    cop_nominal = cop_nominal * Hypothese_revision
+    
+   # print(f"la valeur de cop nominal est : {cop_nominal}")
 
  #SCOP annuel PAC 
     if slug_strategie == "ra" and slug_temperature_emetteurs == "ht" :
@@ -2882,26 +2889,365 @@ def calcul_aerohermie (deperdition_max ,slug_strategie ,strategie,  slug_tempera
     else : 
         scop_annuel_pac1 = scop_annuel_aerothermie[slug_temperature_emetteurs][usage_thermique]
     
-    Hypothese_revision = Hypothese_revision_perf[zone]  
+    
     SCOP_annuel_pac = Hypothese_revision * scop_annuel_pac1
 
     #Rapport Chaudfroid 
     chaud_froid = besoin_chaud / (besoin_froid/(cop_nominal-1)*(cop_nominal))
+  #  print(f"le rapport chaud/froid est : {chaud_froid} , le SCOP_annuel_pac : {SCOP_annuel_pac}")
 
     ##Puissance PAC chaud retenue
     
     if slug_strategie == "bn" or E_T_principal == "aucune" : 
         if chaud_froid > 1 : 
-            puissance_pac_chaud_retenue = min (besoin_chaud , puissance_pac_chaud)
+            puissance_pac_chaud_retenue = besoin_chaud 
         else : 
-            valeur1 = puissance_pac_frigo / (cop_nominal - 1) * cop_nominal
-            valeur2 = besoin_froid / (cop_nominal - 1) * cop_nominal
-            puissance_pac_chaud_retenue =  min(valeur1, valeur2)
-    elif(  chaud_froid > (1/0.5)):
-        puissance_pac_chaud_retenue = min((besoin_chaud*0.5), puissance_pac_chaud)
+            puissance_pac_chaud_retenue = besoin_froid / (cop_nominal-1) * cop_nominal
+    elif slug_strategie != "ra" and slug_temperature_emetteurs == "ht":
+        if chaud_froid > 1 :
+            puissance_pac_chaud_retenue = besoin_chaud * couverture_pac_hybride 
+           
+        else :
+            val1 = besoin_chaud * couverture_pac_hybride  /cop_nominal * (cop_nominal-1)
+            puissance_pac_chaud_retenue =  max(besoin_froid, val1)
     else:
-        puissance_pac_chaud_retenue = min((puissance_pac_frigo /(cop_nominal-1)*cop_nominal) , (besoin_froid/ (cop_nominal-1) *cop_nominal))
+        if chaud_froid > 1 :
+            puissance_pac_chaud_retenue = besoin_chaud * couverture_pac
+        else : 
+            val2 = besoin_chaud * couverture_pac / cop_nominal * (cop_nominal - 1 )
+            puissance_pac_chaud_retenue =  max(besoin_froid, val2)
+    
+   # print(f"Puissance PAC chaud retenue  : {puissance_pac_chaud_retenue}")
 
-    puissance_pac_chaud_retenue_scenario_max = puissance_pac_chaud
+    ## Puissance PAC chaud retenue Scénario Max : 
+    if chaud_froid > 1 :
+        puissance_pac_chaud_retenue_scenario_max = besoin_chaud
+    else: 
+        puissance_pac_chaud_retenue_scenario_max = besoin_froid / (cop_nominal - 1) * cop_nominal
+    
+   # print(f"la puissance pac chaud retenue _ maximum : {puissance_pac_chaud_retenue_scenario_max}")
 
-   # print(f"la puissance PAC chaud retenue est : {puissance_pac_chaud_retenue}")
+#%beosins_chauds 
+    besoin_chaud_pourcentage = (puissance_pac_chaud_retenue / besoin_chaud) * 100
+    besoin_chaud_pourcentage_max = (puissance_pac_chaud_retenue_scenario_max /besoin_chaud ) * 100
+   # print(f"le pourcentage normal est : {besoin_chaud_pourcentage} et le scenario max est : {besoin_chaud_pourcentage_max}")
+##Puissance PAC froid correspondante 
+    puissance_pac_froid = puissance_pac_chaud_retenue / cop_nominal * (cop_nominal - 1)
+    surface_local_aerothermie = puissance_pac_chaud_retenue *0.1
+    puissance_pac_froid_max = puissance_pac_chaud_retenue_scenario_max / cop_nominal * (cop_nominal - 1)
+   # print(f"surface_local_aerothermie : {surface_local_aerothermie} , puissance_pac_froid : {puissance_pac_froid} , puissance_pac_froid_max : {puissance_pac_froid_max}")
+
+#Taux couverture des besoins chaud 
+    palier = round(besoin_chaud_pourcentage / 5) * 5
+    palier = max(0, min(100, palier))  
+    # Filtrage de la ligne correspondante
+    ligne = df_charges[df_charges["PuissancePct"] == palier]
+    
+    if ligne.empty:
+        raise ValueError(f"Aucune ligne trouvée pour {palier}% de puissance")
+
+    if typology not in df_charges.columns:
+        raise ValueError(f"Typologie inconnue : {typology}")
+
+    taux_couverture_besoins_chauds =  ligne[typology].values[0]
+   # print(f"le Taux couverture des besoins chaud par la PAC est : {taux_couverture_besoins_chauds}")
+
+#Taux couverture des besoins chaud _scenario_maximum 
+    palier = round(besoin_chaud_pourcentage_max / 5) * 5
+    palier = max(0, min(100, palier))  
+    # Filtrage de la ligne correspondante
+    ligne = df_charges[df_charges["PuissancePct"] == palier]
+    
+    if ligne.empty:
+        raise ValueError(f"Aucune ligne trouvée pour {palier}% de puissance")
+
+    if typology not in df_charges.columns:
+        raise ValueError(f"Typologie inconnue : {typology}")
+
+    taux_couverture_besoins_chauds_max =  ligne[typology].values[0]
+   # print(f"le Taux couverture des besoins chaud par la PAC est : {taux_couverture_besoins_chauds} et le scénario max est : {taux_couverture_besoins_chauds_max}")
+
+
+##Besoins thermiques 
+    besoins_thermiques = (total_chauffage * (1-taux_baisse)* Rendement_globale)
+  #  print(f"les besoins thermiques sont : {besoins_thermiques}")
+
+##Besoins chauds couverts par l’aérothermie (sortie PAC) 
+    besoins_chauds_aerothermie = besoins_thermiques * (taux_couverture_besoins_chauds/100)
+    besoins_chauds_aerothermie_max = besoins_thermiques * (taux_couverture_besoins_chauds_max/100)
+
+   # print(f"besoins_chauds_aerothermie , {besoins_chauds_aerothermie} , vient de besoins_thermiques : {besoins_thermiques} , et taux_couverture : {taux_couverture_besoins_chauds} ")
+
+    
+#besoins chauds couverts par l'appoint 
+    besoins_chauds_appoint = besoins_thermiques - besoins_chauds_aerothermie
+    besoins_chauds_appoint_scenario_max = besoins_thermiques - besoins_chauds_aerothermie_max
+
+   # print(f"les besoins chauds couverts par l'appint sont : {besoins_chauds_appoint} le scenario maximum est : {besoins_chauds_appoint_scenario_max}")
+# Consommations élec PAC aérothermique 
+    conso_ele_pac_aerothermie =  besoins_chauds_aerothermie / SCOP_annuel_pac
+    conso_ele_pac_aerothermie_scenario_max =  besoins_chauds_aerothermie_max / SCOP_annuel_pac
+
+   # print(f"Consommations élec PAC aérothermique  : {conso_ele_pac_aerothermie} , le scenario max est : {conso_ele_pac_aerothermie_scenario_max}")
+#part enr aérothermie 
+    part_enr_aero = besoins_chauds_aerothermie - conso_ele_pac_aerothermie
+    part_enr_aero_max = besoins_chauds_aerothermie_max - conso_ele_pac_aerothermie_scenario_max
+   # print(f"part enr est: {part_enr_aero} ,  conso_ele_pac_aérothermie : {conso_ele_pac_aerothermie}")
+    #print(f"part enr scenario max est : {part_enr_aero_max} ,  conso_ele_pac_aérothermie max est : {conso_ele_pac_aerothermie_scenario_max}")
+# production enr locale totale 
+    Prod_enr_locale_totale_aerothermie =  part_enr_aero +P_EnR_locale_solaire_existante + energie_PAC_delivre - conso_elec_PAC + Prod_enr_bois
+    Prod_enr_locale_totale_aeothermie_scenario_max =  part_enr_aero_max +P_EnR_locale_solaire_existante + energie_PAC_delivre - conso_elec_PAC + Prod_enr_bois
+  #  print(f"la production enr locale totale  est : {Prod_enr_locale_totale_aerothermie} , le scénario max est : {Prod_enr_locale_totale_aeothermie_scenario_max}")
+
+#conso élec totale projetée aérothermie 
+
+    conso_elec_proj_aerothermie1 = conso_elec * (1- taux_baisse) + conso_ele_pac_aerothermie
+    conso_elec_proj_aeothermie_max1 = conso_elec * (1- taux_baisse) + conso_ele_pac_aerothermie_scenario_max
+
+    if E_T_principal == "Aucune":
+        conso_elec_proj_aerothermie = conso_elec_proj_aerothermie1 - ((besoins_chauds_aerothermie + besoins_chauds_appoint )/Rendement_globale)
+        conso_elec_proj_aerothermie_max = conso_elec_proj_aeothermie_max1 - ((besoins_chauds_aerothermie_max + besoins_chauds_appoint_scenario_max )/Rendement_globale)
+
+    else:
+        conso_elec_proj_aerothermie = conso_elec_proj_aerothermie1
+        conso_elec_proj_aerothermie_max = conso_elec_proj_aeothermie_max1
+
+   # print(f"La consommation elec projetée pour l'aérothermie est : {conso_elec_proj_aerothermie} , le scenario max est : {conso_elec_proj_aerothermie_max}")
+##Consommation thermique principale projetée (combustible ou RCU)
+
+    if E_T_principal == "Aucune" :
+        conso_thermique_principale_proj_aerothermie = 0 
+        conso_thermique_principale_proj_aerothermie_max=0
+    elif E_T_principal == "Réseau de froid" :
+        conso_thermique_principale_proj_aerothermie =  calibration_ET1_clim
+        conso_thermique_principale_proj_aerothermie_max = calibration_ET1_clim
+    else : 
+        conso_thermique_principale_proj_aerothermie = besoins_chauds_appoint / Rendement_globale + calibration_ET1_ECS
+        conso_thermique_principale_proj_aerothermie_max = besoins_chauds_appoint_scenario_max / Rendement_globale + calibration_ET1_ECS
+
+   # print(f"Consommation thermique principale projetée : {conso_thermique_principale_proj_aerothermie} , le scénario maximum est : {conso_thermique_principale_proj_aerothermie_max}")
+
+#consommation thermique appoint projetée 
+    conso_thermique_appoint_proj_aerothermie = conso_principal_2_convertie * (1 - taux_baisse) 
+
+   # print(f"consommation thermique appoint projetée est : {conso_thermique_appoint_proj_aerothermie}  ")
+## conso_totale_projetée
+
+    conso_totale_proj_aerothermie = conso_elec_proj_aerothermie + conso_thermique_principale_proj_aerothermie + conso_thermique_appoint_proj_aerothermie
+    ratio_conso_totale_proj_aerothermie = conso_totale_proj_aerothermie  / surface 
+    conso_totale_proj_aerothermie_scenario_max = conso_elec_proj_aerothermie_max + conso_thermique_principale_proj_aerothermie_max + conso_thermique_appoint_proj_aerothermie
+
+   # print(f"consommation totale projetée : {conso_totale_proj_aerothermie}, et le scenario max est : {conso_totale_proj_aerothermie_scenario_max}")
+##Taux enr locale geothermie 
+    enr_local_aerothermie = round(((Prod_enr_locale_totale_aerothermie /( besoins_thermiques +conso_elec_proj_aerothermie ))*100),2)
+    enr_local_aerothermie_scenario_max = round(((Prod_enr_locale_totale_aeothermie_scenario_max /( besoins_thermiques + conso_elec_proj_aerothermie_max ))*100),2)
+   # print(f"enr local : {enr_local_aerothermie} , Prod_enr_locale_totale_aerothermie : {Prod_enr_locale_totale_aerothermie} , conso_elec_proj_aerothermie: {conso_elec_proj_aerothermie}")
+   # print(f"enr local scenario max est : {enr_local_aerothermie_scenario_max} , Prod_enr_locale_totale_aerothermie : {Prod_enr_locale_totale_aeothermie_scenario_max} , conso_elec_proj_aerothermie: {conso_elec_proj_aerothermie_max}")
+
+##Production EnR RCU
+    part_reseau1 = taux_enr_principal * conso_thermique_principale_proj_aerothermie if E_T_principal == "Réseau de chaleur" else 0
+    part_reseau1_max = taux_enr_principal * conso_thermique_principale_proj_aerothermie_max if E_T_principal == "Réseau de chaleur" else 0
+
+
+    part_reseau2 = taux_enr_appoint * conso_thermique_appoint_proj_aerothermie if E_T_appoint ==  "Réseau de chaleur" else 0
+
+    prod_enr_rcu_aerothermie = round(((part_reseau1 + part_reseau2)*100),0)
+    prod_enr_rcu_aerothermie_max = round(((part_reseau1_max + part_reseau2)*100),0)
+
+
+   # print(f"Production EnR RCU : {prod_enr_rcu_aerothermie} , le scénario maximum : {prod_enr_rcu_aerothermie_max}")
+
+##Production EnR mix élec et gaz
+    prod_enr_mix_aerothermie =  conso_elec_proj_aerothermie * Taux_EnR_mix_E_national_Elec
+    prod_enr_mix_aerothermie_max = conso_elec_proj_aerothermie_max * Taux_EnR_mix_E_national_Elec
+
+    if E_T_principal == "Gaz naturel":
+      prod_enr_mix_aerothermie += conso_thermique_principale_proj_aerothermie * Taux_EnR_mix_E_national_Gaz
+      prod_enr_mix_aerothermie_max += conso_thermique_principale_proj_aerothermie_max * Taux_EnR_mix_E_national_Gaz
+
+    if E_T_appoint == "Gaz naturel":
+      prod_enr_mix_aerothermie += conso_thermique_appoint_proj_aerothermie * Taux_EnR_mix_E_national_Gaz
+      prod_enr_mix_aerothermie_max += conso_thermique_appoint_proj_aerothermie * Taux_EnR_mix_E_national_Gaz
+
+    
+   # print(f"Production EnR mix élec et gaz : {prod_enr_mix_aerothermie}, le scenario max est : {prod_enr_mix_aerothermie_max}")
+
+##production enr globale geothermie 
+    prod_enr_globale_aerothermiee = ( Prod_enr_locale_totale_aerothermie + prod_enr_rcu_aerothermie + prod_enr_mix_aerothermie)
+    prod_enr_globale_aerothermiee_scenario_max = ( Prod_enr_locale_totale_aeothermie_scenario_max + prod_enr_rcu_aerothermie_max + prod_enr_mix_aerothermie_max)
+
+   # print(f"production enr&r globale : {prod_enr_globale_aerothermiee} , le scénario maximum est : {prod_enr_globale_aerothermiee_scenario_max}")
+##Taux enR&R global 
+    enr_globale_aerothermie = round((  (prod_enr_globale_aerothermiee / (besoins_thermiques+ conso_elec_proj_aerothermie))*100),2)
+    enr_globale_aerothermie_scenario_max = round((  (prod_enr_globale_aerothermiee_scenario_max / (besoins_thermiques+ conso_elec_proj_aerothermie_max))*100),2)
+
+  #  print(f"le taux enr&r global est : {enr_globale_aerothermie} , et le scenario max est : {enr_globale_aerothermie_scenario_max}")
+##cout et impact carbone 
+    conso_thermique = [ conso_thermique_principale_proj_aerothermie , conso_thermique_appoint_proj_aerothermie  , conso_elec_proj_aerothermie]
+    conso_thermique_scenario_max = [ conso_thermique_principale_proj_aerothermie_max , conso_thermique_appoint_proj_aerothermie  , conso_elec_proj_aerothermie_max]
+
+    total_impact_aerothermie, total_cout_aerothermie = calcul_carbone_et_cout_sql(energis , conso_thermique ,reseau_principal , reseau_appoint )
+    total_impact_aerothermie_max, total_impact_aerothermie_max = calcul_carbone_et_cout_sql(energis , conso_thermique_scenario_max ,reseau_principal , reseau_appoint )
+
+    total_impact_aerothermie = (total_impact_aerothermie / surface)
+    total_cout_aerothermie = (  total_cout_aerothermie / surface)
+   # print(f"les couts sont : {total_cout_aerothermie*surface} et les impacts sont : {total_impact_aerothermie*surface}")
+
+    return round(puissance_pac_chaud_retenue,1) ,round(ratio_conso_totale_proj_aerothermie,1)  , enr_local_aerothermie  , enr_local_aerothermie_scenario_max ,  enr_globale_aerothermie  , enr_globale_aerothermie_scenario_max,  round(total_impact_aerothermie,1) , round(total_cout_aerothermie,1) , round(conso_elec_proj_aerothermie , 2) , round(Prod_enr_locale_totale_aerothermie , 2) , conso_totale_proj_aerothermie , prod_enr_globale_aerothermiee,  round(besoins_chauds_aerothermie , 2) , besoins_thermiques , surface_local_aerothermie
+
+def faisabilite_aerothermie (zone_administrative1 , situation , slug_temperature_emetteurs , slug_strategie  , slug_usage , prod_ch_f  ):
+
+    total_note = 0
+    lettre_forcee = None 
+    details_impacts = {}
+
+
+    TABLE_FAISABILITE = "dbo.régles_faisabilité" 
+   # print(f"la strategie est : {slug_strategie}")
+
+    inputs = {
+        "zone_administrative1": zone_administrative1.lower(), # rouge 
+        "situation": situation.lower() , # urbain 
+        "regime_temperature_emetteurs": slug_temperature_emetteurs, ## slugs 
+        "strategie": slug_strategie, ## slugs 
+        "usage_thermique": slug_usage , ## slugs 
+        "type_production": prod_ch_f
+                
+
+    }
+    # Correspondance pour adapter les clés de sortie
+    remap_keys = {
+        "zone_administrative1" : "zone_administrative",
+        "contribution ilot de chaleur urbain": "cicu",
+        "acoustique": "acoustique",
+        "installation existante émetteur _ régime de température": "installation_emetteur",
+        "installation existante production": "installation_production"
+    }
+
+  #  print(f"la production chaud et froid : {prod_ch_f}")
+    # Mappings pour les critères
+    STRATEGIES_SANS_RENO = ["be", "bn", "rl"]
+    USAGES_SANS_CLIM = ["ch", "ch_ecs"]
+    
+    usage_clim = "Sans clim" if inputs["usage_thermique"] in USAGES_SANS_CLIM else "Avec Clim"
+    strategie_humaine = "Sans réno ou réno légère" if inputs["strategie"] in STRATEGIES_SANS_RENO else "Réno lourde"
+
+    
+
+    # Cas particulier 2 : stratégie ≠ réno lourde et prod = individuelle
+    if strategie_humaine != "Réno lourde" and inputs["type_production"] == "production individuelle":
+        print("⚠️ Cas particulier : stratégie ≠ réno lourde + production individuelle → faisabilité forcée à E")
+        lettre_forcee="E"
+        
+    
+
+    # Récupérer la table complète
+    with engine.connect() as conn:
+        df = pd.read_sql(f"SELECT * FROM {TABLE_FAISABILITE}", conn)
+
+    df_geo = df[df["Aérothermie"].notnull()] ## filtrer sur la colonne geothermie qu'on veut 
+
+    critères = [
+        # zone_gmi => Cartographie nationale géothermie
+        {
+            "Impacts": "zone administrative",
+            "Caractéristiques": inputs["zone_administrative1"]
+
+        },
+        # situation => Contribution ilot de chaleur
+        {
+            "Impacts": "Contribution ilot de chaleur urbain",
+            "Caractéristiques": inputs["situation"]
+        },
+        # situation => Acoustique
+        {
+            "Impacts": "Acoustique",
+            "Caractéristiques": inputs["situation"]
+        },
+        # régime température + usage_clim => Installation existante émetteur
+        {
+            "Impacts": "Installation existante émetteur _ Régime de température",
+            "Caractéristiques": inputs["regime_temperature_emetteurs"].lower(),
+            "Usage_climatisation": usage_clim,
+            "Stratégie_de_rénovation": strategie_humaine
+        },
+        # type_production => Installation existante production
+        {
+            "Impacts": "Installation existante production",
+            "Caractéristiques": inputs["type_production"].lower(),
+            "Usage_climatisation": usage_clim,
+            "Stratégie_de_rénovation": strategie_humaine
+        }
+    ]
+
+
+    for crit in critères:
+        filtres = (df_geo["Impacts"].str.lower() == crit["Impacts"].lower()) & (df_geo["Caractéristiques"].str.lower() == crit["Caractéristiques"].lower())
+
+        if "Usage_climatisation" in crit:
+            filtres &= (df_geo["Usage_climatisation"].str.lower() == crit["Usage_climatisation"].lower())
+        if "Stratégie_de_rénovation" in crit:
+            filtres &=(
+                (df_geo["Stratégie_de_rénovation"].isna()) |
+                (df_geo["Stratégie_de_rénovation"].str.lower() == crit["Stratégie_de_rénovation"].lower())
+            
+            ) 
+            
+            
+        ligne = df_geo[filtres]
+
+        if ligne.empty:
+            print(f"[WARN] Ligne manquante pour critère {crit}")
+            continue
+
+        note = ligne["Aérothermie"].values[0]
+        ponderation = ligne["Pondération"].values[0]
+
+        # 🟢 Nouveau cas spécial
+        if crit["Impacts"].lower() == "contribution ilot de chaleur urbain" and inputs["usage_thermique"] in USAGES_SANS_CLIM:
+           print("⚠️ Cas particulier : usage sans clim → note CICU forcée à 5")
+           note = 5  # on écrase la note récupérée
+        
+        if pd.isna(ponderation):
+            print(f"[WARN] Pondération manquante pour critère : {crit} → ignoré")
+            continue
+
+        total_note += note * ponderation
+         # Utilisation des noms renommés
+        impact = crit["Impacts"].lower()
+        clean_key = remap_keys.get(impact, impact)
+        details_impacts[clean_key] = note
+
+        
+
+       # print(f"🟩 Critère : {crit}")
+        details_impacts_aerothermie = {
+       remap_keys.get(k.lower(), k.lower()): int(round(float(v)))
+       for k, v in details_impacts.items() }
+        # k: v for k, v in details_impacts.items()}
+       # print(f"    ➤ Valeur saisie        : {valeur_utilisateur}")
+        #print(f"    ➤ Note trouvée         : {note}")
+        #print(f"    ➤ Pondération          : {ponderation}")
+        #print(f"    ➤ Score pondéré        : {total_note}")
+
+
+
+    # Attribution de lettre selon barème
+    if total_note >= 69:
+        lettre = "A"
+    elif total_note >= 52:
+        lettre = "B"
+    elif total_note >= 35:
+        lettre = "C"
+    elif total_note >= 18:
+        lettre =  "D"
+    else:
+        lettre = "E"
+
+     # --- Lettre finale: forcée si défini, sinon barème ---
+    final_letter = lettre_forcee or lettre
+
+    #print(f"le details impacts est : {json.dumps(details_impacts_aerothermie)} , lettre choisie est : {final_letter}" )
+
+    return final_letter , json.dumps(details_impacts_aerothermie, ensure_ascii=False)
+

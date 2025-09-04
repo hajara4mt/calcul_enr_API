@@ -176,6 +176,19 @@ class input(SQLModel, table=True):
             for champ in champs:
                 if getattr(self, champ) is None:
                     raise ValueError(f"{champ} est requis si saisie_conso = True")
+                
+        
+         # ✅ Cas où l'énergie principale est "aucune"
+        if self.e_t_principal == "aucune":
+            if self.conso_principal not in (None, 0):
+                raise ValueError("conso_principal doit être 0 si e_t_principal = 'aucune'")
+            self.conso_principal = 0   # on force à 0 si pas déjà
+
+        # ✅ Cas où l'énergie d’appoint est "aucune"
+        if self.e_t_appoint == "aucune":
+            if self.conso_appoint not in (None, 0):
+                raise ValueError("conso_appoint doit être 0 si e_t_appoint = 'aucune'")
+            self.conso_appoint = 0  # on force à 0 si pas déjà
         
 # Principal thermique
         if self.e_t_principal in ["rcu", "rfu"]:
@@ -216,6 +229,6 @@ class input(SQLModel, table=True):
     
 
         
-        return self
+        return self 
 
 
