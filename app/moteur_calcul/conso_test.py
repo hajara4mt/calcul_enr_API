@@ -3117,7 +3117,7 @@ def faisabilite_aerothermie (zone_administrative1 , situation , slug_temperature
     }
     # Correspondance pour adapter les clés de sortie
     remap_keys = {
-        "zone_administrative1" : "zone_administrative",
+        "zone administrative": "zone_administrative",
         "contribution ilot de chaleur urbain": "cicu",
         "acoustique": "acoustique",
         "installation existante émetteur _ régime de température": "installation_emetteur",
@@ -3247,7 +3247,7 @@ def faisabilite_aerothermie (zone_administrative1 , situation , slug_temperature
      # --- Lettre finale: forcée si défini, sinon barème ---
     final_letter = lettre_forcee or lettre
 
-    #print(f"le details impacts est : {json.dumps(details_impacts_aerothermie)} , lettre choisie est : {final_letter}" )
+    print(f"le details impacts est : {json.dumps(details_impacts_aerothermie)} , lettre choisie est : {final_letter}" )
 
     return final_letter , json.dumps(details_impacts_aerothermie, ensure_ascii=False)
 

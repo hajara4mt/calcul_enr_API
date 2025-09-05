@@ -166,7 +166,7 @@ def get_output_by_id(id_projet: str, session: Session = Depends(get_session)):
                    "enr_global_max": enr_result.enr_global_scenario_max_aerothermie,
                   "conso_carbone": int(enr_result.conso_carbone_aerothermie),
                  "cout_total": round(enr_result.cout_total_aerothermie),
-                 "lettre_faisabilite": enr_result.lettre_faisabilite_aerothermie ,
+                 "lettre_faisabilite": enr_result.lettre_faisabilite_aerothermie.strip(),
                   "faisabilite_calculee": _safe_json_load(getattr(enr_result, "Faisabilité_calculée_aerothermie", None)),
                   "surface_locale" : int(enr_result.surface_locale_aerothermie)
         
